@@ -1,28 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
+using AirCinelMVC.Helpers;
+
 
 namespace AirCinelMVC.Controllers
 {
     public class AirplanesController : Controller
     {
         private readonly IAirplaneRepository _airplaneRepository;
+        private readonly IUserHelper _userHelper;
 
-        public AirplanesController(IAirplaneRepository airplaneRepository)
+        public AirplanesController(
+            IAirplaneRepository airplaneRepository, 
+            IUserHelper userHelper)
         {
             _airplaneRepository = airplaneRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Airplanes
         public async Task<IActionResult> Index()
         {
-            return View(_airplaneRepository.GetAll());
+            return View(_airplaneRepository.GetAll().OrderBy(a => a.Model));
         }
 
         // GET: Airplanes/Details/5
@@ -57,7 +60,9 @@ namespace AirCinelMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _airplaneRepository.CreateAsync(airplane);                
+                //TODO: "Change to the logged user"
+                airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
+                await _airplaneRepository.CreateAsync(airplane);
                 return RedirectToAction(nameof(Index));
             }
             return View(airplane);
@@ -95,11 +100,13 @@ namespace AirCinelMVC.Controllers
             {
                 try
                 {
+                    //TODO: "Change to the logged user"
+                    airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
                     await _airplaneRepository.UpdateAsync(airplane);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await _airplaneRepository.ExistAsync(airplane.Id))
+                    if (!await _airplaneRepository.ExistAsync(airplane.Id))
                     {
                         return NotFound();
                     }

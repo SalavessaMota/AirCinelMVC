@@ -1,9 +1,10 @@
 ﻿using AirCinelMVC.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirCinelMVC.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User>
     {
         public DbSet<Airplane> Airplanes { get; set; }
         public DbSet<Country> Countries { get; set; }

@@ -22,5 +22,8 @@ namespace AirCinelMVC.Data.Entities
 
         [Display(Name = "Year of Manufacture")]
         public int YearOfManufacture { get; set; }
+
+
+        public User User { get; set; }
     }
 }
