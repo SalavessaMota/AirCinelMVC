@@ -12,28 +12,28 @@ namespace AirCinelMVC.Controllers
 {
     public class AirplanesController : Controller
     {
-        private readonly IRepository _repository;
+        private readonly IAirplaneRepository _airplaneRepository;
 
-        public AirplanesController(IRepository repository)
+        public AirplanesController(IAirplaneRepository airplaneRepository)
         {
-            _repository = repository;
+            _airplaneRepository = airplaneRepository;
         }
 
         // GET: Airplanes
         public async Task<IActionResult> Index()
         {
-            return View(_repository.GetAirplanes());
+            return View(_airplaneRepository.GetAll());
         }
 
         // GET: Airplanes/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var airplane = _repository.GetAirplane(id.Value);
+            var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
                 return NotFound();
@@ -57,23 +57,21 @@ namespace AirCinelMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _repository.AddAirplane(airplane);
-                await _repository.SaveAllAsync();
-                
+                await _airplaneRepository.CreateAsync(airplane);                
                 return RedirectToAction(nameof(Index));
             }
             return View(airplane);
         }
 
         // GET: Airplanes/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var airplane = _repository.GetAirplane(id.Value);
+            var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
                 return NotFound();
@@ -97,12 +95,11 @@ namespace AirCinelMVC.Controllers
             {
                 try
                 {
-                    _repository.UpdateAirplane(airplane);
-                    await _repository.SaveAllAsync();
+                    await _airplaneRepository.UpdateAsync(airplane);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_repository.AirplaneExists(airplane.Id))
+                    if (! await _airplaneRepository.ExistAsync(airplane.Id))
                     {
                         return NotFound();
                     }
@@ -117,14 +114,14 @@ namespace AirCinelMVC.Controllers
         }
 
         // GET: Airplanes/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var airplane = _repository.GetAirplane(id.Value);
+            var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
                 return NotFound();
@@ -138,9 +135,8 @@ namespace AirCinelMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var airplane = _repository.GetAirplane(id);
-            _repository.RemoveAirplane(airplane);
-            await _repository.SaveAllAsync();
+            var airplane = await _airplaneRepository.GetByIdAsync(id);
+            await _airplaneRepository.DeleteAsync(airplane);
             return RedirectToAction(nameof(Index));
         }
     }

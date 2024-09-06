@@ -30,7 +30,7 @@ namespace AirCinelMVC
             });
 
             services.AddTransient<SeedDb>();
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 
             services.AddControllersWithViews();
         }
