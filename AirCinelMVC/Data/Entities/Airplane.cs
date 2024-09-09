@@ -41,7 +41,7 @@ namespace AirCinelMVC.Data.Entities
                     return null;
                 }
 
-                return $"https://localhost:44334{ImageUrl.Substring(1)}";
+                return $"https://aircinelmvc.azurewebsites.net{ImageUrl.Substring(1)}";
             }
         }
 
