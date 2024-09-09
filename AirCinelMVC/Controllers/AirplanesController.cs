@@ -16,13 +16,19 @@ namespace AirCinelMVC.Controllers
     {
         private readonly IAirplaneRepository _airplaneRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
         public AirplanesController(
             IAirplaneRepository airplaneRepository, 
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
             _airplaneRepository = airplaneRepository;
             _userHelper = userHelper;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Airplanes
@@ -67,23 +73,10 @@ namespace AirCinelMVC.Controllers
 
                 if (airplaneViewModel.ImageFile != null && airplaneViewModel.ImageFile.Length > 0)
                 {
-                    var guid = Guid.NewGuid().ToString();
-                    var file = $"{guid}.jpg";
-
-                    path = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot\\images\\airplanes",
-                        file);
-
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await airplaneViewModel.ImageFile.CopyToAsync(stream);
-                    }
-
-                    path = $"~/images/airplanes/{file}";
+                    path = await _imageHelper.UploadImageAsync(airplaneViewModel.ImageFile, "airplanes");
                 }
 
-                var airplane = this.ToAirplane(airplaneViewModel, path);
+                var airplane = _converterHelper.ToAirplane(airplaneViewModel, path, true);
 
                 //TODO: "Change to the logged user"
                 airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
@@ -92,20 +85,6 @@ namespace AirCinelMVC.Controllers
             }
 
             return View(airplaneViewModel);
-        }
-
-        private Airplane ToAirplane(AirplaneViewModel model, string path)
-        {
-            return new Airplane
-            {
-                Id = model.Id,
-                Model = model.Model,
-                Manufacturer = model.Manufacturer,
-                Capacity = model.Capacity,
-                YearOfManufacture = model.YearOfManufacture,
-                ImageUrl = path,
-                User = model.User
-            };
         }
 
         // GET: Airplanes/Edit/5
@@ -122,23 +101,9 @@ namespace AirCinelMVC.Controllers
                 return NotFound();
             }
 
-            var airplaneViewModel = this.ToAirplaneViewModel(airplane);
+            var airplaneViewModel = _converterHelper.ToAirplaneViewModel(airplane);
 
             return View(airplaneViewModel);
-        }
-
-        private AirplaneViewModel ToAirplaneViewModel(Airplane airplane)
-        {
-            return new AirplaneViewModel
-            {
-                Id = airplane.Id,
-                Model = airplane.Model,
-                Manufacturer = airplane.Manufacturer,
-                Capacity = airplane.Capacity,
-                YearOfManufacture = airplane.YearOfManufacture,
-                ImageUrl = airplane.ImageUrl,
-                User = airplane.User
-            };
         }
 
         // POST: Airplanes/Edit/5
@@ -156,23 +121,10 @@ namespace AirCinelMVC.Controllers
 
                     if(airplaneViewModel.ImageFile != null && airplaneViewModel.ImageFile.Length > 0)
                     {
-                        var guid = Guid.NewGuid().ToString();
-                        var file = $"{guid}.jpg";
-
-                        path = Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            "wwwroot\\images\\airplanes",
-                            file);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await airplaneViewModel.ImageFile.CopyToAsync(stream);
-                        }
-
-                        path = $"~/images/airplanes/{file}";
+                        path = await _imageHelper.UploadImageAsync(airplaneViewModel.ImageFile, "airplanes");
                     }
 
-                    var airplane = this.ToAirplane(airplaneViewModel, path);
+                    var airplane = _converterHelper.ToAirplane(airplaneViewModel, path, false);
 
                     //TODO: "Change to the logged user"
                     airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
