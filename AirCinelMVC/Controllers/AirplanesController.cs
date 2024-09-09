@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Helpers;
+using AirCinelMVC.Models;
+using System.IO;
+using System;
 
 
 namespace AirCinelMVC.Controllers
@@ -56,16 +59,53 @@ namespace AirCinelMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Airplane airplane)
+        public async Task<IActionResult> Create(AirplaneViewModel airplaneViewModel)
         {
             if (ModelState.IsValid)
             {
+                var path = string.Empty;
+
+                if (airplaneViewModel.ImageFile != null && airplaneViewModel.ImageFile.Length > 0)
+                {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
+                    path = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot\\images\\airplanes",
+                        file);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await airplaneViewModel.ImageFile.CopyToAsync(stream);
+                    }
+
+                    path = $"~/images/airplanes/{file}";
+                }
+
+                var airplane = this.ToAirplane(airplaneViewModel, path);
+
                 //TODO: "Change to the logged user"
                 airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
                 await _airplaneRepository.CreateAsync(airplane);
                 return RedirectToAction(nameof(Index));
             }
-            return View(airplane);
+
+            return View(airplaneViewModel);
+        }
+
+        private Airplane ToAirplane(AirplaneViewModel model, string path)
+        {
+            return new Airplane
+            {
+                Id = model.Id,
+                Model = model.Model,
+                Manufacturer = model.Manufacturer,
+                Capacity = model.Capacity,
+                YearOfManufacture = model.YearOfManufacture,
+                ImageUrl = path,
+                User = model.User
+            };
         }
 
         // GET: Airplanes/Edit/5
@@ -81,7 +121,24 @@ namespace AirCinelMVC.Controllers
             {
                 return NotFound();
             }
-            return View(airplane);
+
+            var airplaneViewModel = this.ToAirplaneViewModel(airplane);
+
+            return View(airplaneViewModel);
+        }
+
+        private AirplaneViewModel ToAirplaneViewModel(Airplane airplane)
+        {
+            return new AirplaneViewModel
+            {
+                Id = airplane.Id,
+                Model = airplane.Model,
+                Manufacturer = airplane.Manufacturer,
+                Capacity = airplane.Capacity,
+                YearOfManufacture = airplane.YearOfManufacture,
+                ImageUrl = airplane.ImageUrl,
+                User = airplane.User
+            };
         }
 
         // POST: Airplanes/Edit/5
@@ -89,24 +146,41 @@ namespace AirCinelMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Airplane airplane)
+        public async Task<IActionResult> Edit(AirplaneViewModel airplaneViewModel)
         {
-            if (id != airplane.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var path = airplaneViewModel.ImageUrl;
+
+                    if(airplaneViewModel.ImageFile != null && airplaneViewModel.ImageFile.Length > 0)
+                    {
+                        var guid = Guid.NewGuid().ToString();
+                        var file = $"{guid}.jpg";
+
+                        path = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "wwwroot\\images\\airplanes",
+                            file);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await airplaneViewModel.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/airplanes/{file}";
+                    }
+
+                    var airplane = this.ToAirplane(airplaneViewModel, path);
+
                     //TODO: "Change to the logged user"
                     airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
                     await _airplaneRepository.UpdateAsync(airplane);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _airplaneRepository.ExistAsync(airplane.Id))
+                    if (!await _airplaneRepository.ExistAsync(airplaneViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -117,7 +191,7 @@ namespace AirCinelMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(airplane);
+            return View(airplaneViewModel);
         }
 
         // GET: Airplanes/Delete/5

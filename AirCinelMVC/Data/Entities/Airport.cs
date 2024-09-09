@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirCinelMVC.Data.Entities
 {
@@ -14,6 +15,10 @@ namespace AirCinelMVC.Data.Entities
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string Code { get; set; }
+
+
+        [Display(Name = "Image")]
+        public Guid ImageId { get; set; }
 
 
         public int CityID { get; set; }

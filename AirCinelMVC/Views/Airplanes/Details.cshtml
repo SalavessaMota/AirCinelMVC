@@ -36,6 +36,15 @@
         </dd>
     </dl>
 </div>
+
+<div class="col-md-4">
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Url.Content(Model.ImageUrl)" alt="@Model.Model" style="width: 200px; height: auto; max-width:100%;" />
+    }
+</div>
+<br />
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
