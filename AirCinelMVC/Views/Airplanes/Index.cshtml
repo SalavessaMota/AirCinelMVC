@@ -37,9 +37,9 @@
                 @Html.DisplayFor(modelItem => item.Model)
             </td>
             <td>
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                @if (!string.IsNullOrEmpty(item.ImageFullPath))
                 {
-                    <img src="@Url.Content(item.ImageUrl)" alt="@item.Model" style="width: 100px; height: auto; max-width:100%;" />
+                    <img src="@Url.Content(item.ImageFullPath)" alt="@item.Model" style="width: 100px; height: auto; max-width:100%;" />
                 }                
             </td>
             <td>

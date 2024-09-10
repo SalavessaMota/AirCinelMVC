@@ -18,7 +18,7 @@ namespace AirCinelMVC.Data.Entities
 
 
         [Display(Name = "Image")]
-        public string ImageUrl { get; set; }
+        public Guid ImageId { get; set; }
 
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
@@ -32,18 +32,8 @@ namespace AirCinelMVC.Data.Entities
         public User User { get; set; }
 
 
-        public string ImageFullPath
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(ImageUrl))
-                {
-                    return null;
-                }
-
-                return $"https://aircinelmvc.azurewebsites.net{ImageUrl.Substring(1)}";
-            }
-        }
-
+        public string ImageFullPath => ImageId == Guid.Empty
+            ? $"https://aircinelmvc.azurewebsites.net/images/noimage.png"
+            : $"https://aircinelmvc.blob.core.windows.net/airplanes/{ImageId}";
     }
 }

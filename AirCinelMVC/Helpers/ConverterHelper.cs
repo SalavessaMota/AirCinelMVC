@@ -1,11 +1,12 @@
-﻿using AirCinelMVC.Data.Entities;
+﻿using System;
+using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 
 namespace AirCinelMVC.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
-        public Airplane ToAirplane(AirplaneViewModel model, string path, bool isNew)
+        public Airplane ToAirplane(AirplaneViewModel model, Guid imageId, bool isNew)
         {
             return new Airplane
             {
@@ -14,7 +15,7 @@ namespace AirCinelMVC.Helpers
                 Manufacturer = model.Manufacturer,
                 Capacity = model.Capacity,
                 YearOfManufacture = model.YearOfManufacture,
-                ImageUrl = path,
+                ImageId = imageId,
                 User = model.User
             };
         }
@@ -28,7 +29,7 @@ namespace AirCinelMVC.Helpers
                 Manufacturer = airplane.Manufacturer,
                 Capacity = airplane.Capacity,
                 YearOfManufacture = airplane.YearOfManufacture,
-                ImageUrl = airplane.ImageUrl,
+                ImageId = airplane.ImageId,
                 User = airplane.User
             };
         }

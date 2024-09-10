@@ -1,13 +1,13 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AirCinelMVC.Data;
-using AirCinelMVC.Data.Entities;
+﻿using AirCinelMVC.Data;
 using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+
 
 
 namespace AirCinelMVC.Controllers
@@ -16,18 +16,18 @@ namespace AirCinelMVC.Controllers
     {
         private readonly IAirplaneRepository _airplaneRepository;
         private readonly IUserHelper _userHelper;
-        private readonly IImageHelper _imageHelper;
+        private readonly IBlobHelper _blobHelper;
         private readonly IConverterHelper _converterHelper;
 
         public AirplanesController(
-            IAirplaneRepository airplaneRepository, 
+            IAirplaneRepository airplaneRepository,
             IUserHelper userHelper,
-            IImageHelper imageHelper,
+            IBlobHelper blobHelper,
             IConverterHelper converterHelper)
         {
             _airplaneRepository = airplaneRepository;
             _userHelper = userHelper;
-            _imageHelper = imageHelper;
+            _blobHelper = blobHelper;
             _converterHelper = converterHelper;
         }
 
@@ -69,14 +69,14 @@ namespace AirCinelMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                Guid imageId = Guid.Empty;
 
                 if (airplaneViewModel.ImageFile != null && airplaneViewModel.ImageFile.Length > 0)
                 {
-                    path = await _imageHelper.UploadImageAsync(airplaneViewModel.ImageFile, "airplanes");
+                    imageId = await _blobHelper.UploadBlobAsync(airplaneViewModel.ImageFile, "airplanes");
                 }
 
-                var airplane = _converterHelper.ToAirplane(airplaneViewModel, path, true);
+                var airplane = _converterHelper.ToAirplane(airplaneViewModel, imageId, true);
 
                 //TODO: "Change to the logged user"
                 airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
@@ -117,14 +117,14 @@ namespace AirCinelMVC.Controllers
             {
                 try
                 {
-                    var path = airplaneViewModel.ImageUrl;
+                    Guid imageId = airplaneViewModel.ImageId;
 
-                    if(airplaneViewModel.ImageFile != null && airplaneViewModel.ImageFile.Length > 0)
+                    if (airplaneViewModel.ImageFile != null && airplaneViewModel.ImageFile.Length > 0)
                     {
-                        path = await _imageHelper.UploadImageAsync(airplaneViewModel.ImageFile, "airplanes");
+                        imageId = await _blobHelper.UploadBlobAsync(airplaneViewModel.ImageFile, "airplanes");
                     }
 
-                    var airplane = _converterHelper.ToAirplane(airplaneViewModel, path, false);
+                    var airplane = _converterHelper.ToAirplane(airplaneViewModel, imageId, false);
 
                     //TODO: "Change to the logged user"
                     airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
