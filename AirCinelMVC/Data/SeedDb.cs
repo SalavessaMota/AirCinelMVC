@@ -2,6 +2,7 @@
 using AirCinelMVC.Helpers;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,24 +28,20 @@ namespace AirCinelMVC.Data
             
             if (!_context.Countries.Any())
             {
-                _context.Countries.Add(new Country { Name = "Portugal", Code = "PT" });
+                var cities = new List<City>();
+                cities.Add(new City { Name = "Lisbon" });
+                cities.Add(new City { Name = "Porto" });
+                cities.Add(new City { Name = "Faro" });
+
+                _context.Countries.Add(new Country
+                {
+                    Cities = cities,
+                    Name = "Portugal"
+                });
+
                 await _context.SaveChangesAsync();
             }
 
-            
-            var country = _context.Countries.FirstOrDefault(c => c.Name == "Portugal");
-
-            
-            if (!_context.Cities.Any())
-            {
-                _context.Cities.Add(new City { Name = "Lisboa", CountryID = country.Id });
-                await _context.SaveChangesAsync();
-            }
-
-            
-            var city = _context.Cities.FirstOrDefault(c => c.Name == "Lisboa");
-
-            
             var user = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
             if (user == null)
             {
@@ -56,8 +53,8 @@ namespace AirCinelMVC.Data
                     Address = "Rua Jau 33",
                     UserName = "nunosalavessa@hotmail.com",
                     PhoneNumber = "123456789",
-                    CityId = city.Id,  
-                    City = city
+                    CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
+                    City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
                 };
 
                 var result = await _userHelper.AddUserAsync(user, "123456");

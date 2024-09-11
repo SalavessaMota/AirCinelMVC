@@ -14,13 +14,6 @@ namespace AirCinelMVC.Data.Entities
         public string Name { get; set; }
 
 
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        public int CountryID { get; set; }
-
-
-        public Country Country { get; set; }
-
-
         public ICollection<Airport> Airports { get; set; } = new List<Airport>();
 
 

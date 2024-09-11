@@ -55,6 +55,7 @@ namespace AirCinelMVC
             services.AddScoped<IConverterHelper, ConverterHelper>();
 
             services.AddScoped<IAirplaneRepository, AirplaneRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
 
             services.AddControllersWithViews();
         }

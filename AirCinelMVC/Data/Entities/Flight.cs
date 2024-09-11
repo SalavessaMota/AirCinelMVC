@@ -15,12 +15,10 @@ namespace AirCinelMVC.Data.Entities
 
 
         [Display(Name = "Departure Airport")]
-        public int DepartureAirportID { get; set; }
         public Airport DepartureAirport { get; set; }
 
 
         [Display(Name = "Arrival Airport")]
-        public int ArrivalAirportID { get; set; }
         public Airport ArrivalAirport { get; set; }
 
 

@@ -12,18 +12,5 @@ namespace AirCinelMVC.Data.Entities
         [MaxLength(50, ErrorMessage = "The field {0} must contain less than {1} characters.")]
         public string Name { get; set; }
 
-
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        public string Code { get; set; }
-
-
-        [Display(Name = "Image")]
-        public Guid ImageId { get; set; }
-
-
-        public int CityID { get; set; }
-
-        public City City { get; set; }
-
     }
 }
