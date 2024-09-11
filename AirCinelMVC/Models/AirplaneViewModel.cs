@@ -6,6 +6,7 @@ namespace AirCinelMVC.Models
 {
     public class AirplaneViewModel : Airplane
     {
+        [Required]
         [Display(Name = "Image")]
         public IFormFile ImageFile { get; set; }
     }

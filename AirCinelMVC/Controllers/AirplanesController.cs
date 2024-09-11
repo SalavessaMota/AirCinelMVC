@@ -1,6 +1,7 @@
 ﻿using AirCinelMVC.Data;
 using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace AirCinelMVC.Controllers
 {
+    [Authorize]
     public class AirplanesController : Controller
     {
         private readonly IAirplaneRepository _airplaneRepository;
