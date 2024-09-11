@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AirCinelMVC.Models
 {
-    public class RegisterNewUserViewModel
+    public class ChangeUserViewModel
     {
         [Required]
         [Display(Name = "First Name")]
@@ -14,11 +14,6 @@ namespace AirCinelMVC.Models
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
-
-
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Username { get; set; }
 
 
         [MaxLength(100, ErrorMessage = "The field {0} only can contain {1} characters length.")]
@@ -43,15 +38,5 @@ namespace AirCinelMVC.Models
 
 
         public IEnumerable<SelectListItem> Countries { get; set; }
-
-
-        [Required]
-        [MinLength(6)]
-        public string Password { get; set; }
-
-
-        [Required]
-        [Compare("Password")]
-        public string Confirm { get; set; }
     }
 }
