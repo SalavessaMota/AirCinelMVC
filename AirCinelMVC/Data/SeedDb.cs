@@ -42,6 +42,10 @@ namespace AirCinelMVC.Data
                 await _context.SaveChangesAsync();
             }
 
+            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Employee");
+            await _userHelper.CheckRoleAsync("Customer");
+
             var user = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
             if (user == null)
             {
@@ -62,8 +66,15 @@ namespace AirCinelMVC.Data
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");
                 }
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
 
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+            if (!isInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
+            }
             
             if (!_context.Airplanes.Any())
             {

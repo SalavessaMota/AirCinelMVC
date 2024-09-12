@@ -101,6 +101,21 @@ namespace AirCinelMVC.Controllers
                         return View(model);
                     }
 
+                    await _userHelper.AddUserToRoleAsync(user, "Customer");
+                    
+                    var loginViewModel = new LoginViewModel
+                    {
+                        Password = model.Password,
+                        RememberMe = false,
+                        Username = model.Username
+                    };
+
+                    var result2 = await _userHelper.LoginAsync(loginViewModel);
+                    if (result2.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+
                     ModelState.AddModelError(string.Empty, "The user couldn't be logged.");
 
                 }

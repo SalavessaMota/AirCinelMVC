@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AirCinelMVC.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AirplanesController : Controller
     {
         private readonly IAirplaneRepository _airplaneRepository;
