@@ -94,6 +94,7 @@ namespace AirCinelMVC.Controllers
                         CityId = model.CityId
                     };
 
+                    await _userHelper.AddUserToRoleAsync(user, "Customer");
                     var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
@@ -101,7 +102,7 @@ namespace AirCinelMVC.Controllers
                         return View(model);
                     }
 
-                    await _userHelper.AddUserToRoleAsync(user, "Customer");
+                    
                     
                     var loginViewModel = new LoginViewModel
                     {
@@ -149,6 +150,8 @@ namespace AirCinelMVC.Controllers
                 //    }
                 //}
             }
+
+            //TODO: THIS HAS TO BE FIXED, try using a breakpoint
 
             model.Countries = _countryRepository.GetComboCountries();
 
@@ -222,6 +225,12 @@ namespace AirCinelMVC.Controllers
             }
 
             return View(model);
+        }
+
+
+        public IActionResult NotAuthorized()
+        {
+            return View();
         }
 
 

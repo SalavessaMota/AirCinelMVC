@@ -44,14 +44,14 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirplaneNotFound");
             }
 
             var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
-                return NotFound();
-            }
+				return new NotFoundViewResult("AirplaneNotFound");
+			}
 
             return View(airplane);
         }
@@ -94,14 +94,14 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
-            }
+				return new NotFoundViewResult("AirplaneNotFound");
+			}
 
             var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
-                return NotFound();
-            }
+				return new NotFoundViewResult("AirplaneNotFound");
+			}
 
             var airplaneViewModel = _converterHelper.ToAirplaneViewModel(airplane);
 
@@ -136,8 +136,8 @@ namespace AirCinelMVC.Controllers
                 {
                     if (!await _airplaneRepository.ExistAsync(airplaneViewModel.Id))
                     {
-                        return NotFound();
-                    }
+						return new NotFoundViewResult("AirplaneNotFound");
+					}
                     else
                     {
                         throw;
@@ -153,14 +153,14 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
-            }
+				return new NotFoundViewResult("AirplaneNotFound");
+			}
 
             var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
-                return NotFound();
-            }
+				return new NotFoundViewResult("AirplaneNotFound");
+			}
 
             return View(airplane);
         }
@@ -174,5 +174,13 @@ namespace AirCinelMVC.Controllers
             await _airplaneRepository.DeleteAsync(airplane);
             return RedirectToAction(nameof(Index));
         }
-    }
+
+
+        public IActionResult AirplaneNotFound()
+        {
+            return View();
+        }
+
+
+	}
 }

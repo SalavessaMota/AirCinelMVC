@@ -11,7 +11,8 @@ using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AirCinelMVC.Controllers
-{    
+{
+    [Authorize(Roles = "Admin")]
     public class CountriesController : Controller
     {
         private readonly ICountryRepository _countryRepository;
