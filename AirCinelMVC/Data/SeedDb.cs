@@ -28,15 +28,26 @@ namespace AirCinelMVC.Data
             
             if (!_context.Countries.Any())
             {
-                var cities = new List<City>();
-                cities.Add(new City { Name = "Lisbon" });
-                cities.Add(new City { Name = "Porto" });
-                cities.Add(new City { Name = "Faro" });
+                var citiesPortugal = new List<City>();
+                citiesPortugal.Add(new City { Name = "Lisbon" });
+                citiesPortugal.Add(new City { Name = "Porto" });
+                citiesPortugal.Add(new City { Name = "Faro" });                
 
                 _context.Countries.Add(new Country
                 {
-                    Cities = cities,
+                    Cities = citiesPortugal,
                     Name = "Portugal"
+                });
+
+                var citiesSpain = new List<City>();
+                citiesSpain.Add(new City { Name = "Madrid" });
+                citiesSpain.Add(new City { Name = "Barcelona" });
+                citiesSpain.Add(new City { Name = "Valencia" });
+
+                _context.Countries.Add(new Country
+                {
+                    Cities = citiesSpain,
+                    Name = "Spain"
                 });
 
                 await _context.SaveChangesAsync();

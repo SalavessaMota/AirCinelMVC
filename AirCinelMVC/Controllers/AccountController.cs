@@ -126,6 +126,7 @@ namespace AirCinelMVC.Controllers
         }
 
 
+        // GET
         public async Task<IActionResult> ChangeUser()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
@@ -137,30 +138,27 @@ namespace AirCinelMVC.Controllers
                 model.Address = user.Address;
                 model.PhoneNumber = user.PhoneNumber;
 
-                //var city = await _countryRepository.GetCityAsync(user.CityId);
-                //if (city != null)
-                //{
-                //    var country = await _countryRepository.GetCountryAsync(city);
-                //    if (country != null)
-                //    {
-                //        model.CountryId = country.Id;
-                //        model.Cities = _countryRepository.GetComboCities(country.Id);
-                //        model.Countries = _countryRepository.GetComboCountries();
-                //        model.CityId = city.Id;
-                //    }
-                //}
+                var city = await _countryRepository.GetCityAsync(user.CityId);
+                if (city != null)
+                {
+                    var country = await _countryRepository.GetCountryAsync(city);
+                    if (country != null)
+                    {
+                        model.CountryId = country.Id;
+                        model.CityId = city.Id;
+
+                        // Populando as listas de países e cidades
+                        model.Countries = _countryRepository.GetComboCountries();
+                        model.Cities = _countryRepository.GetComboCities(country.Id);
+                    }
+                }
             }
-
-            //TODO: THIS HAS TO BE FIXED, try using a breakpoint
-
-            model.Countries = _countryRepository.GetComboCountries();
-
-            model.Cities = _countryRepository.GetComboCities(model.CountryId);
 
             return View(model);
         }
 
 
+        // POST
         [HttpPost]
         public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
         {
@@ -171,6 +169,7 @@ namespace AirCinelMVC.Controllers
                 {
                     var city = await _countryRepository.GetCityAsync(model.CityId);
 
+                    // Atualizando o utilizador com as novas informações
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
                     user.Address = model.Address;
@@ -185,9 +184,15 @@ namespace AirCinelMVC.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault()?.Description);
                     }
                 }
+            }
+            
+            model.Countries = _countryRepository.GetComboCountries();
+            if (model.CountryId != 0)
+            {
+                model.Cities = _countryRepository.GetComboCities(model.CountryId);
             }
 
             return View(model);

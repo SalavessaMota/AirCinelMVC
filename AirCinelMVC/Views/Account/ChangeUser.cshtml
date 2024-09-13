@@ -65,30 +65,79 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#CountryId").change(function () {
+            // Primeiro, seleciona o país e a cidade previamente associados ao utilizador
+            var selectedCountry = '@Model.CountryId';
+            var selectedCity = '@Model.CityId';
+
+            // Função para carregar cidades baseado no país selecionado
+            function loadCities(countryId, selectedCity) {
                 $("#CityId").empty();
                 $.ajax({
                     url: '@Url.Action("GetCitiesAsync", "Account")',
                     type: 'POST',
                     dataType: 'json',
-                    data: { countryId: $("#CountryId").val() },
+                    data: { countryId: countryId },
                     success: function (cities) {
-                        debugger;
                         $("#CityId").append('<option value="0">(Select a city...)</option>');
                         $.each(cities, function (i, city) {
                             $("#CityId").append('<option value="'
                                 + city.id + '">'
                                 + city.name + '</option>');
                         });
+
+                        // Pré-seleciona a cidade se existir uma
+                        if (selectedCity) {
+                            $("#CityId").val(selectedCity);
+                        }
                     },
                     error: function (ex) {
-                        debugger;
                         alert('Failed to retrieve cities.' + ex);
                     }
                 });
-                return false;
-            })
+            }
+
+            // Mensagem de erro caso o país não seja válido
+            function showCountryError() {
+                if ($("#country-error").length === 0) {
+                    $("#CountryId").after('<span id="country-error" class="text-danger">Please select a valid country.</span>');
+                }
+            }
+
+            function hideCountryError() {
+                $("#country-error").remove();
+            }
+
+            // Carrega as cidades automaticamente ao carregar a página com o país pré-selecionado
+            if (selectedCountry && selectedCountry !== "0") {
+                // Garante que o país também seja corretamente selecionado
+                $("#CountryId").val(selectedCountry);
+                loadCities(selectedCountry, selectedCity);
+            }
+
+            // Ao mudar o país, carrega as cidades correspondentes
+            $("#CountryId").change(function () {
+                var countryId = $(this).val();
+                if (countryId && countryId !== "0") {
+                    loadCities(countryId, null);
+                    hideCountryError();
+                } else {
+                    // Se o valor for 0, exibe a mensagem de erro
+                    showCountryError();
+                    $("#CityId").empty(); // Limpa a lista de cidades
+                }
+            });
+
+            // Verifica se o país é válido ao selecionar uma cidade
+            $("#CityId").change(function () {
+                var countryId = $("#CountryId").val();
+                if (!countryId || countryId === "0") {
+                    showCountryError();
+                }
+            });
         });
     </script>
+
+
+
 }
 
