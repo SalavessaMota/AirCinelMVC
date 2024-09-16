@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirCinelMVC.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240906145701_AddUsers")]
-    partial class AddUsers
+    [Migration("20240916155600_FixCountriesAgain")]
+    partial class FixCountriesAgain
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,6 +31,9 @@ namespace AirCinelMVC.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Manufacturer")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -41,15 +44,15 @@ namespace AirCinelMVC.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("ModelId")
+                        .HasColumnType("int");
 
                     b.Property<int>("YearOfManufacture")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ModelId");
 
                     b.ToTable("Airplanes");
                 });
@@ -61,12 +64,8 @@ namespace AirCinelMVC.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CityID")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -75,7 +74,10 @@ namespace AirCinelMVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityID");
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Airports");
                 });
@@ -87,7 +89,7 @@ namespace AirCinelMVC.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CountryID")
+                    b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -97,7 +99,10 @@ namespace AirCinelMVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryID");
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Cities");
                 });
@@ -111,7 +116,8 @@ namespace AirCinelMVC.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -119,6 +125,9 @@ namespace AirCinelMVC.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Countries");
                 });
@@ -133,13 +142,13 @@ namespace AirCinelMVC.Migrations
                     b.Property<int>("AirplaneID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ArrivalAirportID")
+                    b.Property<int?>("ArrivalAirportId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartureAirportID")
+                    b.Property<int?>("DepartureAirportId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DepartureTime")
@@ -149,11 +158,56 @@ namespace AirCinelMVC.Migrations
 
                     b.HasIndex("AirplaneID");
 
-                    b.HasIndex("ArrivalAirportID");
+                    b.HasIndex("ArrivalAirportId");
 
-                    b.HasIndex("DepartureAirportID");
+                    b.HasIndex("DepartureAirportId");
 
                     b.ToTable("Flights");
+                });
+
+            modelBuilder.Entity("AirCinelMVC.Data.Entities.Manufacturer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Manufacturer");
+                });
+
+            modelBuilder.Entity("AirCinelMVC.Data.Entities.Model", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ManufacturerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManufacturerId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Models");
                 });
 
             modelBuilder.Entity("AirCinelMVC.Data.Entities.Ticket", b =>
@@ -397,33 +451,23 @@ namespace AirCinelMVC.Migrations
 
             modelBuilder.Entity("AirCinelMVC.Data.Entities.Airplane", b =>
                 {
-                    b.HasOne("AirCinelMVC.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
+                    b.HasOne("AirCinelMVC.Data.Entities.Model", null)
+                        .WithMany("Airplanes")
+                        .HasForeignKey("ModelId");
                 });
 
             modelBuilder.Entity("AirCinelMVC.Data.Entities.Airport", b =>
                 {
-                    b.HasOne("AirCinelMVC.Data.Entities.City", "City")
+                    b.HasOne("AirCinelMVC.Data.Entities.City", null)
                         .WithMany("Airports")
-                        .HasForeignKey("CityID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("City");
+                        .HasForeignKey("CityId");
                 });
 
             modelBuilder.Entity("AirCinelMVC.Data.Entities.City", b =>
                 {
-                    b.HasOne("AirCinelMVC.Data.Entities.Country", "Country")
+                    b.HasOne("AirCinelMVC.Data.Entities.Country", null)
                         .WithMany("Cities")
-                        .HasForeignKey("CountryID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Country");
+                        .HasForeignKey("CountryId");
                 });
 
             modelBuilder.Entity("AirCinelMVC.Data.Entities.Flight", b =>
@@ -431,20 +475,16 @@ namespace AirCinelMVC.Migrations
                     b.HasOne("AirCinelMVC.Data.Entities.Airplane", "Airplane")
                         .WithMany()
                         .HasForeignKey("AirplaneID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AirCinelMVC.Data.Entities.Airport", "ArrivalAirport")
                         .WithMany()
-                        .HasForeignKey("ArrivalAirportID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ArrivalAirportId");
 
                     b.HasOne("AirCinelMVC.Data.Entities.Airport", "DepartureAirport")
                         .WithMany()
-                        .HasForeignKey("DepartureAirportID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("DepartureAirportId");
 
                     b.Navigation("Airplane");
 
@@ -453,18 +493,24 @@ namespace AirCinelMVC.Migrations
                     b.Navigation("DepartureAirport");
                 });
 
+            modelBuilder.Entity("AirCinelMVC.Data.Entities.Model", b =>
+                {
+                    b.HasOne("AirCinelMVC.Data.Entities.Manufacturer", null)
+                        .WithMany("Models")
+                        .HasForeignKey("ManufacturerId");
+                });
+
             modelBuilder.Entity("AirCinelMVC.Data.Entities.Ticket", b =>
                 {
                     b.HasOne("AirCinelMVC.Data.Entities.Flight", "Flight")
                         .WithMany("Tickets")
                         .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AirCinelMVC.Data.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Flight");
 
@@ -476,7 +522,7 @@ namespace AirCinelMVC.Migrations
                     b.HasOne("AirCinelMVC.Data.Entities.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("City");
@@ -546,6 +592,16 @@ namespace AirCinelMVC.Migrations
             modelBuilder.Entity("AirCinelMVC.Data.Entities.Flight", b =>
                 {
                     b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("AirCinelMVC.Data.Entities.Manufacturer", b =>
+                {
+                    b.Navigation("Models");
+                });
+
+            modelBuilder.Entity("AirCinelMVC.Data.Entities.Model", b =>
+                {
+                    b.Navigation("Airplanes");
                 });
 #pragma warning restore 612, 618
         }

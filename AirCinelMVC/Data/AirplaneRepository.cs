@@ -13,9 +13,9 @@ namespace AirCinelMVC.Data
             _context = context;
         }
 
-        public IQueryable<Airplane> GetAllWithUsers()
+        public IQueryable<Airplane> GetAll()
         {
-            return _context.Airplanes.Include(a => a.User);
+            return _context.Airplanes;
         }
 
     }

@@ -81,7 +81,7 @@ namespace AirCinelMVC.Controllers
                 var airplane = _converterHelper.ToAirplane(airplaneViewModel, imageId, true);
 
                 //TODO: "Change to the logged user"
-                airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
+                //airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
                 await _airplaneRepository.CreateAsync(airplane);
                 return RedirectToAction(nameof(Index));
             }
@@ -129,7 +129,7 @@ namespace AirCinelMVC.Controllers
                     var airplane = _converterHelper.ToAirplane(airplaneViewModel, imageId, false);
 
                     //TODO: "Change to the logged user"
-                    airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
+                    //airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
                     await _airplaneRepository.UpdateAsync(airplane);
                 }
                 catch (DbUpdateConcurrencyException)

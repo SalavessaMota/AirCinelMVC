@@ -7,6 +7,7 @@ namespace AirCinelMVC.Data.Entities
     {
         public int Id { get; set; }
 
+        
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(50, ErrorMessage = "The field {0} must contain less than {1} characters.")]
         public string Model { get; set; }
@@ -27,9 +28,6 @@ namespace AirCinelMVC.Data.Entities
 
         [Display(Name = "Year of Manufacture")]
         public int YearOfManufacture { get; set; }
-
-
-        public User User { get; set; }
 
 
         public string ImageFullPath => ImageId == Guid.Empty

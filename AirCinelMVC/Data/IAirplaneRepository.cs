@@ -5,6 +5,6 @@ namespace AirCinelMVC.Data
 {
     public interface IAirplaneRepository : IGenericRepository<Airplane>
     {
-        public IQueryable<Airplane> GetAllWithUsers();
+        public IQueryable<Airplane> GetAll();
     }
 }

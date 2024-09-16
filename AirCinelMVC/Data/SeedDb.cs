@@ -25,6 +25,48 @@ namespace AirCinelMVC.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
+            if (!_context.Manufacturers.Any())
+            {
+                var modelsAirbus = new List<Model>();
+                modelsAirbus.Add(new Model { Name = "A319" });
+                modelsAirbus.Add(new Model { Name = "A320" });
+                modelsAirbus.Add(new Model { Name = "A350" });
+                modelsAirbus.Add(new Model { Name = "A380" });
+
+                _context.Manufacturers.Add(new Manufacturer
+                {
+                    Name = "Airbus",
+                    Models = modelsAirbus
+                });
+
+                var modelsBoeing = new List<Model>();
+                modelsBoeing.Add(new Model { Name = "737" });
+                modelsBoeing.Add(new Model { Name = "747" });
+                modelsBoeing.Add(new Model { Name = "767" });
+                modelsBoeing.Add(new Model { Name = "777" });
+
+                _context.Manufacturers.Add(new Manufacturer
+                {
+                    Name = "Boeing",
+                    Models = modelsBoeing
+                });
+
+                await _context.SaveChangesAsync();
+            }
+            
+            if (!_context.Airplanes.Any())
+            {
+                AddAirplane("A319","Airbus");
+                AddAirplane("A320", "Airbus");
+                AddAirplane("A350", "Airbus");
+                AddAirplane("A380", "Airbus");
+                AddAirplane("737", "Boeing");
+                AddAirplane("747", "Boeing");
+                AddAirplane("767", "Boeing");
+                AddAirplane("777", "Boeing");
+
+                await _context.SaveChangesAsync();
+            }
             
             if (!_context.Countries.Any())
             {
@@ -36,7 +78,8 @@ namespace AirCinelMVC.Data
                 _context.Countries.Add(new Country
                 {
                     Cities = citiesPortugal,
-                    Name = "Portugal"
+                    Name = "Portugal",
+                    Code = "PT"
                 });
 
                 var citiesSpain = new List<City>();
@@ -47,7 +90,8 @@ namespace AirCinelMVC.Data
                 _context.Countries.Add(new Country
                 {
                     Cities = citiesSpain,
-                    Name = "Spain"
+                    Name = "Spain",
+                    Code = "ES"
                 });
 
                 await _context.SaveChangesAsync();
@@ -86,26 +130,16 @@ namespace AirCinelMVC.Data
             {
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
-            
-            if (!_context.Airplanes.Any())
-            {
-                AddAirplane("A319", user);
-                AddAirplane("A320", user);
-                AddAirplane("A350", user);
-                AddAirplane("A380", user);
-                await _context.SaveChangesAsync();
-            }
         }
 
-        private void AddAirplane(string model, User user)
+        private void AddAirplane(string model, string manufacturer)
         {
             _context.Airplanes.Add(new Airplane
             {
                 Model = model,
                 Capacity = _random.Next(100, 300),
-                Manufacturer = "Airbus",
+                Manufacturer = manufacturer,
                 YearOfManufacture = DateTime.Now.Year,
-                User = user
             });
         }
     }

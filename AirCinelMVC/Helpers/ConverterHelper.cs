@@ -15,8 +15,7 @@ namespace AirCinelMVC.Helpers
                 Manufacturer = model.Manufacturer,
                 Capacity = model.Capacity,
                 YearOfManufacture = model.YearOfManufacture,
-                ImageId = imageId,
-                User = model.User
+                ImageId = imageId
             };
         }
 
@@ -29,8 +28,7 @@ namespace AirCinelMVC.Helpers
                 Manufacturer = airplane.Manufacturer,
                 Capacity = airplane.Capacity,
                 YearOfManufacture = airplane.YearOfManufacture,
-                ImageId = airplane.ImageId,
-                User = airplane.User
+                ImageId = airplane.ImageId
             };
         }
     }
