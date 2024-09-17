@@ -1,4 +1,5 @@
 ﻿using System;
+using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 
@@ -6,13 +7,20 @@ namespace AirCinelMVC.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
+        private readonly IAirplaneRepository _airplaneRepository;
+
+        public ConverterHelper(IAirplaneRepository airplaneRepository)
+        {
+            _airplaneRepository = airplaneRepository;
+        }
+
         public Airplane ToAirplane(AirplaneViewModel model, Guid imageId, bool isNew)
         {
             return new Airplane
             {
                 Id = isNew ? 0 : model.Id,
-                Model = model.Model,
-                Manufacturer = model.Manufacturer,
+                Model = _airplaneRepository.GetModelNameById(model.ModelId),
+                Manufacturer = _airplaneRepository.GetManufacturerNameById(model.ManufacturerId),
                 Capacity = model.Capacity,
                 YearOfManufacture = model.YearOfManufacture,
                 ImageId = imageId

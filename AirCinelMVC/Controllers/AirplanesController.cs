@@ -36,7 +36,7 @@ namespace AirCinelMVC.Controllers
         // GET: Airplanes
         public async Task<IActionResult> Index()
         {
-            return View(_airplaneRepository.GetAll().OrderBy(a => a.Model));
+            return View(_airplaneRepository.GetAllAirplanes().OrderBy(a => a.Manufacturer).ThenBy(a => a.Model));
         }
 
         // GET: Airplanes/Details/5
@@ -59,7 +59,13 @@ namespace AirCinelMVC.Controllers
         // GET: Airplanes/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new AirplaneViewModel
+            {
+                Manufacturers = _airplaneRepository.GetComboManufacturers(),
+                Models = _airplaneRepository.GetComboModels(0)
+            };
+
+            return View(model);
         }
 
         // POST: Airplanes/Create
@@ -69,6 +75,8 @@ namespace AirCinelMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AirplaneViewModel airplaneViewModel)
         {
+            
+
             if (ModelState.IsValid)
             {
                 Guid imageId = Guid.Empty;
@@ -83,6 +91,7 @@ namespace AirCinelMVC.Controllers
                 //TODO: "Change to the logged user"
                 //airplane.User = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
                 await _airplaneRepository.CreateAsync(airplane);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -181,6 +190,12 @@ namespace AirCinelMVC.Controllers
             return View();
         }
 
-
+        [HttpPost]
+        [Route("Airplanes/GetModelsAsync")]
+        public async Task<JsonResult> GetModelsAsync(int manufacturerId)
+        {
+            var manufacturer = await _airplaneRepository.GetManufacturerWithModelsAsync(manufacturerId);
+            return Json(manufacturer.Models.OrderBy(m => m.Name));  
+        }
 	}
 }

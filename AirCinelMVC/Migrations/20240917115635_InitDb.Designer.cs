@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirCinelMVC.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240916155600_FixCountriesAgain")]
-    partial class FixCountriesAgain
+    [Migration("20240917115635_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,7 +182,7 @@ namespace AirCinelMVC.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Manufacturer");
+                    b.ToTable("Manufacturers");
                 });
 
             modelBuilder.Entity("AirCinelMVC.Data.Entities.Model", b =>

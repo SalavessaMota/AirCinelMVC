@@ -27,11 +27,25 @@ namespace AirCinelMVC.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Manufacturers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Manufacturers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,6 +85,26 @@ namespace AirCinelMVC.Migrations
                         name: "FK_Cities_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Models",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ManufacturerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Models", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Models_Manufacturers_ManufacturerId",
+                        column: x => x.ManufacturerId,
+                        principalTable: "Manufacturers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -141,15 +175,15 @@ namespace AirCinelMVC.Migrations
                     ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     YearOfManufacture = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ModelId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Airplanes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Airplanes_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Airplanes_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -302,14 +336,20 @@ namespace AirCinelMVC.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Airplanes_UserId",
+                name: "IX_Airplanes_ModelId",
                 table: "Airplanes",
-                column: "UserId");
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Airports_CityId",
                 table: "Airports",
                 column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Airports_Name",
+                table: "Airports",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -361,6 +401,12 @@ namespace AirCinelMVC.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_Name",
+                table: "Cities",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Countries_Name",
                 table: "Countries",
                 column: "Name",
@@ -380,6 +426,23 @@ namespace AirCinelMVC.Migrations
                 name: "IX_Flights_DepartureAirportId",
                 table: "Flights",
                 column: "DepartureAirportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Manufacturers_Name",
+                table: "Manufacturers",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Models_ManufacturerId",
+                table: "Models",
+                column: "ManufacturerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Models_Name",
+                table: "Models",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_FlightId",
@@ -416,6 +479,9 @@ namespace AirCinelMVC.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Flights");
 
             migrationBuilder.DropTable(
@@ -425,10 +491,13 @@ namespace AirCinelMVC.Migrations
                 name: "Airports");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Models");
 
             migrationBuilder.DropTable(
                 name: "Cities");
+
+            migrationBuilder.DropTable(
+                name: "Manufacturers");
 
             migrationBuilder.DropTable(
                 name: "Countries");

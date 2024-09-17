@@ -33,4 +33,71 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var selectedManufacturer = '@Model.ManufacturerId' || "0";
+            var selectedModel = '@Model.ModelId' || "0";
+
+            function loadModels(manufacturerId, selectedModel) {
+                $("#ModelId").empty();
+                $.ajax({
+                    url: '@Url.Action("GetModelsAsync", "Airplanes")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { manufacturerId: manufacturerId },
+                    success: function (models) {
+                        $("#ModelId").append('<option value="0">(Select a model...)</option>');
+                        $.each(models, function (i, model) {
+                            $("#ModelId").append('<option value="'
+                                + model.id + '">'
+                                + model.name + '</option>');
+                        });
+
+                        if (selectedModel) {
+                            $("#ModelId").val(selectedModel);
+                        }
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve models.' + ex);
+                    }
+                });
+            }
+
+            
+            function showManufacturerError() {
+                if ($("#manufacturer-error").length === 0) {
+                    $("#ManufacturerId").after('<span id="manufacturer-error" class="text-danger">Please select a valid manufacturer.</span>');
+                }
+            }
+
+            function hideManufacturerError() {
+                $("#manufacturer-error").remove();
+            }
+
+
+            if (selectedManufacturer && selectedManufacturer !== "0") {
+                $("#ManufacturerId").val(selectedManufacturer);
+                loadModels(selectedManufacturer, selectedModel);
+            }
+
+            $("#ManufacturerId").change(function () {
+                var manufacturerId = $(this).val();
+                if (manufacturerId && manufacturerId !== "0") {
+                    loadModels(manufacturerId, null);
+                    hideManufacturerError();
+                } else {
+                    showManufacturerError();
+                    $("#ModelId").empty();
+                }
+            });
+
+            $("#ModelId").change(function () {
+                var manufacturerId = $("#ManufacturerId").val();
+                if (!manufacturerId || manufacturerId === "0") {
+                    showManufacturerError();
+                }
+            });
+        });
+    </script>
 }
