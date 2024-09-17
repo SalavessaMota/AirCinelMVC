@@ -103,16 +103,20 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-				return new NotFoundViewResult("AirplaneNotFound");
-			}
+                return new NotFoundViewResult("AirplaneNotFound");
+            }
 
             var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
-				return new NotFoundViewResult("AirplaneNotFound");
-			}
+                return new NotFoundViewResult("AirplaneNotFound");
+            }
 
             var airplaneViewModel = _converterHelper.ToAirplaneViewModel(airplane);
+
+            
+            airplaneViewModel.Manufacturers = _airplaneRepository.GetComboManufacturers();
+            airplaneViewModel.Models = _airplaneRepository.GetComboModels(airplaneViewModel.ManufacturerId);
 
             return View(airplaneViewModel);
         }

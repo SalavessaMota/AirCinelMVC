@@ -15,6 +15,7 @@
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="ImageId" />
 
+            <!-- Vista parcial para os campos de ManufacturerId e ModelId -->
             <partial name="_Airplanes" />
 
             <div class="form-group">
@@ -36,9 +37,11 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var selectedManufacturer = '@Model.ManufacturerId' || "0";
-            var selectedModel = '@Model.ModelId' || "0";
+            // Primeiro, seleciona o manufacturer e o model previamente associados ao avião
+            var selectedManufacturer = '@Model.ManufacturerId';
+            var selectedModel = '@Model.ModelId';
 
+            // Função para carregar os modelos baseado no manufacturer selecionado
             function loadModels(manufacturerId, selectedModel) {
                 $("#ModelId").empty();
                 $.ajax({
@@ -50,10 +53,10 @@
                         $("#ModelId").append('<option value="0">(Select a model...)</option>');
                         $.each(models, function (i, model) {
                             $("#ModelId").append('<option value="'
-                                + model.id + '">'
-                                + model.name + '</option>');
+                                + model.id + '"> ' + model.name + '</option>');
                         });
 
+                        // Pré-seleciona o modelo APÓS garantir que os modelos foram carregados
                         if (selectedModel) {
                             $("#ModelId").val(selectedModel);
                         }
@@ -64,7 +67,7 @@
                 });
             }
 
-            
+            // Mensagem de erro caso o manufacturer não seja válido
             function showManufacturerError() {
                 if ($("#manufacturer-error").length === 0) {
                     $("#ManufacturerId").after('<span id="manufacturer-error" class="text-danger">Please select a valid manufacturer.</span>');
@@ -75,23 +78,27 @@
                 $("#manufacturer-error").remove();
             }
 
-
+            // Função para carregar o manufacturer e modelos automaticamente ao carregar a página
             if (selectedManufacturer && selectedManufacturer !== "0") {
+                // Garante que o manufacturer também seja corretamente selecionado
                 $("#ManufacturerId").val(selectedManufacturer);
                 loadModels(selectedManufacturer, selectedModel);
             }
 
+            // Ao mudar o manufacturer, carrega os modelos correspondentes
             $("#ManufacturerId").change(function () {
                 var manufacturerId = $(this).val();
                 if (manufacturerId && manufacturerId !== "0") {
                     loadModels(manufacturerId, null);
                     hideManufacturerError();
                 } else {
+                    // Se o valor for 0, exibe a mensagem de erro
                     showManufacturerError();
-                    $("#ModelId").empty();
+                    $("#ModelId").empty(); // Limpa a lista de modelos
                 }
             });
 
+            // Verifica se o manufacturer é válido ao selecionar um modelo
             $("#ModelId").change(function () {
                 var manufacturerId = $("#ManufacturerId").val();
                 if (!manufacturerId || manufacturerId === "0") {

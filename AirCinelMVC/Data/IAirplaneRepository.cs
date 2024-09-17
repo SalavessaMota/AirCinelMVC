@@ -19,6 +19,10 @@ namespace AirCinelMVC.Data
         public IEnumerable<SelectListItem> GetComboModels(int manufacturerId);
         string GetManufacturerNameById(int manufacturerId);
         public Task<Manufacturer> GetManufacturerWithModelsAsync(int id);
-        string GetModelNameById(int modelId);
+        public string GetModelNameById(int modelId);
+
+        public int GetManufacturerIdByName(string name);
+
+        public int GetModelIdByName(string name);
     }
 }

@@ -92,5 +92,15 @@ namespace AirCinelMVC.Data
         {
             return _context.Manufacturers.Find(manufacturerId).Name;
         }
+
+        public int GetManufacturerIdByName(string name)
+        {
+            return _context.Manufacturers.FirstOrDefault(m => m.Name == name).Id;
+        }
+
+        public int GetModelIdByName(string name)
+        {
+            return _context.Models.FirstOrDefault(m => m.Name == name).Id;
+        }
     }
 }

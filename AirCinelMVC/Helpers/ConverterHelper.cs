@@ -36,7 +36,9 @@ namespace AirCinelMVC.Helpers
                 Manufacturer = airplane.Manufacturer,
                 Capacity = airplane.Capacity,
                 YearOfManufacture = airplane.YearOfManufacture,
-                ImageId = airplane.ImageId
+                ImageId = airplane.ImageId,
+                ManufacturerId = _airplaneRepository.GetManufacturerIdByName(airplane.Manufacturer),
+                ModelId = _airplaneRepository.GetModelIdByName(airplane.Model)
             };
         }
     }
