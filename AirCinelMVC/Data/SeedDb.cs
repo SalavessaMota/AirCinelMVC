@@ -140,6 +140,7 @@ namespace AirCinelMVC.Data
                 Capacity = _random.Next(100, 300),
                 Manufacturer = manufacturer,
                 YearOfManufacture = DateTime.Now.Year,
+                ModelId = _context.Models.FirstOrDefault(m => m.Name == model).Id
             });
         }
     }

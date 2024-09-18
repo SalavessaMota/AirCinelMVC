@@ -60,6 +60,7 @@ namespace AirCinelMVC
 
             services.AddScoped<IAirplaneRepository, AirplaneRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IAirportRepository, AirportRepository>();
 
             services.ConfigureApplicationCookie(options =>
             {

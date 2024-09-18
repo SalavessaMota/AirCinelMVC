@@ -9,5 +9,9 @@ namespace AirCinelMVC.Helpers
         Airplane ToAirplane(AirplaneViewModel model, Guid imageId, bool isNew); 
 
         AirplaneViewModel ToAirplaneViewModel(Airplane airplane);
+
+        Airport ToAirport(CreateNewAirportViewModel model, Guid imageId, bool isNew);
+
+        CreateNewAirportViewModel ToCreateNewAirportViewModel(Airport airport);
     }
 }

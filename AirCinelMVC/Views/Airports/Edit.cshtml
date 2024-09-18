@@ -1,0 +1,109 @@
+﻿@model AirCinelMVC.Models.CreateNewAirportViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Airport</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageId" />
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CountryId" class="control-label">Country</label>
+                <select asp-for="CountryId" asp-items="Model.Countries" class="form-control"></select>
+                <span asp-validation-for="CountryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CityId" class="control-label">City</label>
+                <select asp-for="CityId" asp-items="Model.Cities" class="form-control"></select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label">Upload airport country flag</label>
+                <input asp-for="ImageFile" class="form-control" type="file" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <img src="@Url.Content(Model.ImageFullPath)" alt="@Model.Name" style="width: 200px; height: auto; max-width:100%;" />
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Pre-select the country and city based on the model data
+            var selectedCountry = '@Model.CountryId';
+            var selectedCity = '@Model.CityId';
+
+            // Function to load cities based on the selected country
+            function loadCities(countryId, selectedCity) {
+                $("#CityId").empty();
+                $.ajax({
+                    url: '@Url.Action("GetCitiesAsync", "Airports")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { countryId: countryId },
+                    success: function (cities) {
+                        $("#CityId").append('<option value="0">(Select a city...)</option>');
+                        $.each(cities, function (i, city) {
+                            $("#CityId").append('<option value="'
+                                + city.id + '">'
+                                + city.name + '</option>');
+                        });
+
+                        // Pre-select the city if there is one
+                        if (selectedCity) {
+                            $("#CityId").val(selectedCity);
+                        }
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve cities.' + ex);
+                    }
+                });
+            }
+
+            // Load cities when the page is loaded and a country is pre-selected
+            if (selectedCountry && selectedCountry !== "0") {
+                $("#CountryId").val(selectedCountry); // Pre-select the country
+                loadCities(selectedCountry, selectedCity); // Load cities for that country
+            }
+
+            // Load cities when the user changes the selected country
+            $("#CountryId").change(function () {
+                var countryId = $(this).val();
+                if (countryId && countryId !== "0") {
+                    loadCities(countryId, null); // Load cities for the new country, but don't pre-select any city
+                } else {
+                    $("#CityId").empty(); // Clear the city dropdown if no country is selected
+                }
+            });
+        });
+    </script>
+}

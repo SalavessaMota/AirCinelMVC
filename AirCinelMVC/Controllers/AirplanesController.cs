@@ -34,7 +34,7 @@ namespace AirCinelMVC.Controllers
         }
 
         // GET: Airplanes
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View(_airplaneRepository.GetAllAirplanes().OrderBy(a => a.Manufacturer).ThenBy(a => a.Model));
         }
@@ -74,9 +74,7 @@ namespace AirCinelMVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AirplaneViewModel airplaneViewModel)
-        {
-            
-
+        {            
             if (ModelState.IsValid)
             {
                 Guid imageId = Guid.Empty;

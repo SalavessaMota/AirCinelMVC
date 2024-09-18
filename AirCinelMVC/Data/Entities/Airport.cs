@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AirCinelMVC.Data.Entities
 {
@@ -11,6 +12,16 @@ namespace AirCinelMVC.Data.Entities
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(50, ErrorMessage = "The field {0} must contain less than {1} characters.")]
         public string Name { get; set; }
+
+        public int CityId { get; set; }
+
+        [Display(Name = "Country Flag")]
+        public Guid ImageId { get; set; }
+
+
+        public string ImageFullPath => ImageId == Guid.Empty
+            ? $"https://aircinelmvc.azurewebsites.net/images/noimage.png"
+            : $"https://aircinelmvc.blob.core.windows.net/flags/{ImageId}";
 
     }
 }

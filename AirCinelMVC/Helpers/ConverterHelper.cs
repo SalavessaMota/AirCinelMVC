@@ -8,10 +8,14 @@ namespace AirCinelMVC.Helpers
     public class ConverterHelper : IConverterHelper
     {
         private readonly IAirplaneRepository _airplaneRepository;
+        private readonly ICountryRepository _countryRepository;
 
-        public ConverterHelper(IAirplaneRepository airplaneRepository)
+        public ConverterHelper(
+            IAirplaneRepository airplaneRepository,
+            ICountryRepository countryRepository)
         {
             _airplaneRepository = airplaneRepository;
+            _countryRepository = countryRepository;
         }
 
         public Airplane ToAirplane(AirplaneViewModel model, Guid imageId, bool isNew)
@@ -23,7 +27,8 @@ namespace AirCinelMVC.Helpers
                 Manufacturer = _airplaneRepository.GetManufacturerNameById(model.ManufacturerId),
                 Capacity = model.Capacity,
                 YearOfManufacture = model.YearOfManufacture,
-                ImageId = imageId
+                ImageId = imageId,
+                ModelId = model.ModelId
             };
         }
 
@@ -39,6 +44,33 @@ namespace AirCinelMVC.Helpers
                 ImageId = airplane.ImageId,
                 ManufacturerId = _airplaneRepository.GetManufacturerIdByName(airplane.Manufacturer),
                 ModelId = _airplaneRepository.GetModelIdByName(airplane.Model)
+            };
+        }
+
+
+        public Airport ToAirport(CreateNewAirportViewModel model, Guid imageId, bool isNew)
+        {
+            return new Airport
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
+                CityId = model.CityId,
+                ImageId = imageId
+            };
+        }
+
+        public CreateNewAirportViewModel ToCreateNewAirportViewModel(Airport airport)
+        {
+            var city = _countryRepository.GetCityAsync(airport.CityId).Result;
+            var country = _countryRepository.GetCountryAsync(city).Result;
+
+            return new CreateNewAirportViewModel
+            {
+                Id = airport.Id,
+                Name = airport.Name,
+                CityId = airport.CityId,
+                ImageId = airport.ImageId,
+                CountryId = country.Id
             };
         }
     }
