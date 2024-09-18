@@ -9,6 +9,7 @@ using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using AirCinelMVC.Helpers;
 
 namespace AirCinelMVC.Controllers
 {
@@ -37,8 +38,22 @@ namespace AirCinelMVC.Controllers
                 return NotFound();
             }
 
-            var countryId = await _countryRepository.DeleteCityAsync(city);
-            return this.RedirectToAction($"Details", new { id = countryId });
+            try
+            {
+                var countryId = await _countryRepository.DeleteCityAsync(city);
+                return this.RedirectToAction($"Details", new { id = countryId });
+            }
+            catch (DbUpdateException ex)
+            {
+                if(ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"The City {city.Name} is probably being used!!";
+                    ViewBag.ErrorMessage = $"{city.Name}  can't be deleted because it is being used.</br></br>";
+                }
+
+                return View("Error");
+            }
+
         }
 
         public async Task<IActionResult> EditCity(int? id)
@@ -179,21 +194,40 @@ namespace AirCinelMVC.Controllers
             return View(country);
         }
 
+        // GET Countries/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var country = await _countryRepository.GetByIdAsync(id.Value);
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
-            await _countryRepository.DeleteAsync(country);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _countryRepository.DeleteAsync(country);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"The Country {country.Name} is probably being used!!";
+                    ViewBag.ErrorMessage = $"{country.Name}  can't be deleted because it is being used.</br></br>";
+                }
+
+                return View("Error");
+            }
+        }
+
+        public IActionResult CountryNotFound()
+        {
+            return View();
         }
     }
 }

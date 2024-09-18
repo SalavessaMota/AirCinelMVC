@@ -174,19 +174,24 @@ namespace AirCinelMVC.Controllers
 				return new NotFoundViewResult("AirplaneNotFound");
 			}
 
-            return View(airplane);
-        }
+            try
+            {
+                await _airplaneRepository.DeleteAsync(airplane);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"This {airplane.Manufacturer} {airplane.Model} is probably being used!!";
+                    ViewBag.ErrorMessage = $"{airplane.Manufacturer} {airplane.Model}  can't be deleted because there are flights that use it.</br></br>" +
+                                           $"If you want to delete this airplane, please remove the flights that are using it," +
+                                           $"and then try to delete it again.";
+                }
 
-        // POST: Airplanes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var airplane = await _airplaneRepository.GetByIdAsync(id);
-            await _airplaneRepository.DeleteAsync(airplane);
-            return RedirectToAction(nameof(Index));
+                return View("Error");
+            }           
         }
-
 
         public IActionResult AirplaneNotFound()
         {
