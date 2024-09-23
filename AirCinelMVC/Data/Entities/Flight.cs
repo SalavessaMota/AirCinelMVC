@@ -9,16 +9,21 @@ namespace AirCinelMVC.Data.Entities
     {
         public int Id { get; set; }
 
-
+        [Required]
+        [Display(Name = "Airplane")]
         public int AirplaneID { get; set; }
         public Airplane Airplane { get; set; }
 
 
+        [Required]
         [Display(Name = "Departure Airport")]
+        public int DepartureAirportID { get; set; }
         public Airport DepartureAirport { get; set; }
 
 
+        [Required]
         [Display(Name = "Arrival Airport")]
+        public int ArrivalAirportID { get; set; }
         public Airport ArrivalAirport { get; set; }
 
 

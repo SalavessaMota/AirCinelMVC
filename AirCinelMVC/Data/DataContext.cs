@@ -44,6 +44,19 @@ namespace AirCinelMVC.Data
                 .HasIndex(m => m.Name)
                 .IsUnique();
 
+            modelBuilder.Entity<Flight>()
+                .HasOne(f => f.DepartureAirport)
+                .WithMany()
+                .HasForeignKey(f => f.DepartureAirportID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Flight>()
+                .HasOne(f => f.ArrivalAirport)
+                .WithMany()
+                .HasForeignKey(f => f.ArrivalAirportID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
             base.OnModelCreating(modelBuilder);
         }
 

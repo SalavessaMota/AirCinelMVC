@@ -14,6 +14,7 @@ namespace AirCinelMVC.Data.Entities
         public string Name { get; set; }
 
         public int CityId { get; set; }
+        public City City { get; set; }
 
         [Display(Name = "Country Flag")]
         public Guid ImageId { get; set; }

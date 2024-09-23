@@ -9,9 +9,11 @@ using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 using AirCinelMVC.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AirCinelMVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AirportsController : Controller
     {
         private readonly IAirportRepository _airportRepository;
@@ -198,7 +200,15 @@ namespace AirCinelMVC.Controllers
         public async Task<JsonResult> GetCitiesAsync(int countryId)
         {
             var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
-            return Json(country.Cities.OrderBy(c => c.Name));
+            
+            var cities = country.Cities
+                .OrderBy(c => c.Name)
+                .Select(c => new {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList();
+
+            return Json(cities);
         }
     }
 }

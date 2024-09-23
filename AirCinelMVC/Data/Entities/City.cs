@@ -12,6 +12,8 @@ namespace AirCinelMVC.Data.Entities
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(50, ErrorMessage = "The field {0} must contain less than {1} characters.")]
         public string Name { get; set; }
+        public int CountryId { get; set; }
+        public Country Country { get; set; }
 
 
         public ICollection<Airport> Airports { get; set; } = new List<Airport>();
