@@ -1,5 +1,7 @@
 ﻿using AirCinelMVC.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,6 +23,22 @@ namespace AirCinelMVC.Data
                 .Include(f => f.DepartureAirport)
                 .Include(f => f.ArrivalAirport);
         }
+
+        public IQueryable GetAllWithTickets()
+        {
+            return _context.Flights
+                .Include(f => f.Tickets)
+                .ThenInclude(t => t.User);
+        }
+
+        public IEnumerable<Flight> GetFlightsByUserId(string userId)
+        {
+            return _context.Flights
+                .Include(f => f.Tickets)
+                .Where(f => f.Tickets.Any(t => t.UserId == userId))
+                .ToList();
+        }
+
 
         public async Task<Flight> GetFlightWithAirplaneAndAirports(int id)
         {
