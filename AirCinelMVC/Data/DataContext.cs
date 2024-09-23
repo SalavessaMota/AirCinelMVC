@@ -7,9 +7,7 @@ namespace AirCinelMVC.Data
     public class DataContext : IdentityDbContext<User>
     {
         public DbSet<Manufacturer> Manufacturers { get; set; }
-
         public DbSet<Model> Models { get; set; }
-
         public DbSet<Airplane> Airplanes { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<City> Cities { get; set; }
@@ -18,15 +16,13 @@ namespace AirCinelMVC.Data
         public DbSet<Ticket> Tickets { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {            
+        {
         }
-
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+                protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Country>()
                 .HasIndex(c => c.Name)
-            .IsUnique();
+                .IsUnique();
 
             modelBuilder.Entity<City>()
                 .HasIndex(c => c.Name)
@@ -56,10 +52,26 @@ namespace AirCinelMVC.Data
                 .HasForeignKey(f => f.ArrivalAirportID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Flight>()
+                .HasOne(f => f.Airplane)
+                .WithMany()
+                .HasForeignKey(f => f.AirplaneID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Flight)
+                .WithMany(f => f.Tickets)
+                .HasForeignKey(t => t.FlightId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.City)
+                .WithMany()
+                .HasForeignKey(u => u.CityId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }
-
-
     }
 }
+
