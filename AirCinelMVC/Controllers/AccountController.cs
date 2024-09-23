@@ -4,6 +4,8 @@ using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,12 +15,20 @@ namespace AirCinelMVC.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly ICountryRepository _countryRepository;
+        private readonly IBlobHelper _blobHelper;
 
-        public AccountController(IUserHelper userHelper, ICountryRepository countryRepository)
+        public AccountController(
+            IUserHelper userHelper, 
+            ICountryRepository countryRepository,
+            IBlobHelper blobHelper)
         {
             _userHelper = userHelper;
             _countryRepository = countryRepository;
+            _blobHelper = blobHelper;
         }
+
+
+
 
 
         public IActionResult Login()
@@ -94,6 +104,14 @@ namespace AirCinelMVC.Controllers
                         CityId = model.CityId
                     };
 
+                    // Verifica se há uma imagem para upload
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        // Faz o upload para o Azure Blob Storage e obtém o GUID do arquivo
+                        var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                        user.ImageId = imageId;
+                    }
+
                     var result = await _userHelper.AddUserAsync(user, model.Password);
                     await _userHelper.AddUserToRoleAsync(user, "Customer");
                     if (result != IdentityResult.Success)
@@ -102,8 +120,6 @@ namespace AirCinelMVC.Controllers
                         return View(model);
                     }
 
-                    
-                    
                     var loginViewModel = new LoginViewModel
                     {
                         Password = model.Password,
@@ -118,7 +134,6 @@ namespace AirCinelMVC.Controllers
                     }
 
                     ModelState.AddModelError(string.Empty, "The user couldn't be logged.");
-
                 }
             }
 
@@ -169,13 +184,20 @@ namespace AirCinelMVC.Controllers
                 {
                     var city = await _countryRepository.GetCityAsync(model.CityId);
 
-                    // Atualizando o utilizador com as novas informações
+                    // Atualiza os dados do usuário
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
                     user.Address = model.Address;
                     user.PhoneNumber = model.PhoneNumber;
                     user.CityId = model.CityId;
                     user.City = city;
+
+                    // Verifica se há uma nova imagem para upload
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                        user.ImageId = imageId;
+                    }
 
                     var response = await _userHelper.UpdateUserAsync(user);
                     if (response.Succeeded)
@@ -188,7 +210,8 @@ namespace AirCinelMVC.Controllers
                     }
                 }
             }
-            
+
+            // Recarrega as listas de países e cidades
             model.Countries = _countryRepository.GetComboCountries();
             if (model.CountryId != 0)
             {
@@ -244,7 +267,11 @@ namespace AirCinelMVC.Controllers
         public async Task<JsonResult> GetCitiesAsync(int countryId)
         {
             var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
-            return Json(country.Cities.OrderBy(c => c.Name));
+            return Json(country.Cities.OrderBy(c => c.Name).Select(c => new
+            {
+                Id = c.Id,
+                Name = c.Name
+            }));
         }
     }
 }

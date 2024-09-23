@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,9 @@ namespace AirCinelMVC.Models
 {
     public class RegisterNewUserViewModel
     {
+        [Display(Name = "Profile Picture")]
+        public IFormFile ImageFile { get; set; }
+
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -53,5 +57,7 @@ namespace AirCinelMVC.Models
         [Required]
         [Compare("Password")]
         public string Confirm { get; set; }
+
+
     }
 }

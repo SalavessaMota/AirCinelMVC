@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace AirCinelMVC.Data.Entities
@@ -19,13 +20,22 @@ namespace AirCinelMVC.Data.Entities
         public string Address { get; set; }
 
 
-        public int CityId { get; set; } 
+        public int CityId { get; set; }
 
         public City City { get; set; }
 
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
+
+
+        [Display(Name = "Image")]
+        public Guid ImageId { get; set; }
+
+        public string ImageFullPath => ImageId == Guid.Empty
+            ? $"https://aircinelmvc.azurewebsites.net/images/noimage.png"
+            : $"https://aircinelmvc.blob.core.windows.net/users/{ImageId}";
+
 
     }
 }

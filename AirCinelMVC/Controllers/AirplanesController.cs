@@ -17,7 +17,6 @@ namespace AirCinelMVC.Controllers
     public class AirplanesController : Controller
     {
         private readonly IAirplaneRepository _airplaneRepository;
-        private readonly IUserHelper _userHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IConverterHelper _converterHelper;
 
@@ -28,7 +27,6 @@ namespace AirCinelMVC.Controllers
             IConverterHelper converterHelper)
         {
             _airplaneRepository = airplaneRepository;
-            _userHelper = userHelper;
             _blobHelper = blobHelper;
             _converterHelper = converterHelper;
         }

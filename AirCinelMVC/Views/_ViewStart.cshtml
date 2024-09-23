@@ -1,3 +1,16 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.DependencyInjection
+@{
     Layout = "_Layout";
+}
+
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        var userManager = Context.RequestServices.GetService<UserManager<AirCinelMVC.Data.Entities.User>>();
+        var user = await userManager.FindByNameAsync(User.Identity.Name);
+
+        ViewBag.FullName = user.FullName;
+        ViewBag.ImageFullPath = user.ImageFullPath;
+    }
 }
