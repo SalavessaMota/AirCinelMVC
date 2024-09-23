@@ -42,7 +42,7 @@ namespace AirCinelMVC.Controllers
                 return new NotFoundViewResult("FlightNotFound");
             }
 
-            var flight = await _flightRepository.GetByIdAsync(id.Value);
+            var flight = await _flightRepository.GetFlightWithAirplaneAndAirports(id.Value);
             if (flight == null)
             {
                 return new NotFoundViewResult("FlightNotFound");

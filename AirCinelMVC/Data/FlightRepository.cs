@@ -1,6 +1,7 @@
 ﻿using AirCinelMVC.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AirCinelMVC.Data
 {
@@ -19,6 +20,15 @@ namespace AirCinelMVC.Data
                 .Include(f => f.Airplane)
                 .Include(f => f.DepartureAirport)
                 .Include(f => f.ArrivalAirport);
+        }
+
+        public async Task<Flight> GetFlightWithAirplaneAndAirports(int id)
+        {
+            return await _context.Flights
+                .Include(f => f.Airplane)
+                .Include(f => f.DepartureAirport)
+                .Include(f => f.ArrivalAirport)
+                .FirstOrDefaultAsync(f => f.Id == id);
         }
 
         public bool ExistFlight(int id)
