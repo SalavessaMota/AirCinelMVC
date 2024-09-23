@@ -51,6 +51,5 @@ tl.to(box, 4, {
 
 tl.call(function () {
     $(box).addClass('scanned');
-    $('.scan-window').addClass('scanning');
     scanning();
 }, null, null, 2.5);

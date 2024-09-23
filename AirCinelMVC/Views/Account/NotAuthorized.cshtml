@@ -1,6 +1,16 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.DependencyInjection
+
 @{
     ViewData["Title"] = "NotAuthorized";
+    if (User.Identity.IsAuthenticated)
+    {
+        var userManager = Context.RequestServices.GetService<UserManager<AirCinelMVC.Data.Entities.User>>();
+        var user = await userManager.FindByNameAsync(User.Identity.Name);
+
+        ViewBag.ImageFullPath = user.ImageFullPath;
+        ViewBag.FirstName = user.FirstName;
+    }
 }
 
 <link rel="stylesheet" href="~/css/notauthorized.css" />
@@ -13,9 +23,23 @@
     <div class="monitor text"></div>
 
     <div class="box">
-        @* TODO: Put User picture here *@
-        <p>@this.User.Identity.Name</p>
-        <div class="user"></div>
+        @if (this.User.Identity.IsAuthenticated)
+        {
+           @if (ViewBag.ImageFullPath != "https://aircinelmvc.azurewebsites.net/images/noimage.png")
+           {
+                <img src="@ViewBag.ImageFullPath" alt="Profile Picture" style="width: 40px; height: 40px;" />
+           }
+           else
+           {
+               <p>@ViewBag.FirstName</p>
+               <div class="user"></div>
+           }
+        }
+        else
+        {
+            <div class="user"></div>
+        }
+
     </div>
 </div>
 
