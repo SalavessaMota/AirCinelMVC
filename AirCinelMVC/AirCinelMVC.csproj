@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\airplanes\" />
+    <Folder Include="wwwroot\images\cities\" />
   </ItemGroup>
 
 </Project>

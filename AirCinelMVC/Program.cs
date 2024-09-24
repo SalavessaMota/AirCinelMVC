@@ -1,13 +1,9 @@
 using AirCinelMVC.Data;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AirCinelMVC
 {
@@ -16,17 +12,25 @@ namespace AirCinelMVC
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            RunSeeding(host);
+            RunSeeding(host); // Executa o seeding antes de rodar o app
             host.Run();
         }
 
         private static void RunSeeding(IHost host)
         {
-            var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
+            using (var scope = host.Services.CreateScope())
             {
-                var seeder = scope.ServiceProvider.GetService<SeedDb>();
-                seeder.SeedAsync().Wait();
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var seeder = services.GetRequiredService<SeedDb>(); // Obtém o serviço de seeding
+                    seeder.SeedAsync().Wait(); // Executa o seeding
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database."); // Log de erro caso haja problemas no seed
+                }
             }
         }
 

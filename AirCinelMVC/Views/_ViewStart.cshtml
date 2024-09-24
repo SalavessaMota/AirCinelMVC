@@ -4,7 +4,7 @@
     Layout = "_Layout";
 }
 
-@{
+@* @{
     if (User.Identity.IsAuthenticated)
     {
         var userManager = Context.RequestServices.GetService<UserManager<AirCinelMVC.Data.Entities.User>>();
@@ -13,4 +13,4 @@
         ViewBag.FullName = user.FullName;
         ViewBag.ImageFullPath = user.ImageFullPath;
     }
-}
+} *@
