@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirCinelMVC.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240923145553_RestrictDeleteBehaviorFix")]
-    partial class RestrictDeleteBehaviorFix
+    [Migration("20240924134333_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -469,7 +469,7 @@ namespace AirCinelMVC.Migrations
                     b.HasOne("AirCinelMVC.Data.Entities.City", "City")
                         .WithMany("Airports")
                         .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("City");
@@ -480,7 +480,7 @@ namespace AirCinelMVC.Migrations
                     b.HasOne("AirCinelMVC.Data.Entities.Country", "Country")
                         .WithMany("Cities")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");

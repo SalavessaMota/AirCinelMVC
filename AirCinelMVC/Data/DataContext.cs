@@ -18,7 +18,8 @@ namespace AirCinelMVC.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-                protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Country>()
                 .HasIndex(c => c.Name)
@@ -64,6 +65,18 @@ namespace AirCinelMVC.Data
                 .HasForeignKey(t => t.FlightId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<City>()
+                .HasOne(c => c.Country)
+                .WithMany(p => p.Cities)
+                .HasForeignKey(c => c.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Airport>()
+                .HasOne(a => a.City)
+                .WithMany(c => c.Airports)
+                .HasForeignKey(a => a.CityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.City)
                 .WithMany()
@@ -74,4 +87,3 @@ namespace AirCinelMVC.Data
         }
     }
 }
-

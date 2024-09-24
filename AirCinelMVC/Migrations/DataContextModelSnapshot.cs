@@ -467,7 +467,7 @@ namespace AirCinelMVC.Migrations
                     b.HasOne("AirCinelMVC.Data.Entities.City", "City")
                         .WithMany("Airports")
                         .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("City");
@@ -478,7 +478,7 @@ namespace AirCinelMVC.Migrations
                     b.HasOne("AirCinelMVC.Data.Entities.Country", "Country")
                         .WithMany("Cities")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");

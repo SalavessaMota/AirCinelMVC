@@ -361,3 +361,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/AirCinelMVC/Migrations/20240921144238_AddFlightAirportsIds.cs
+/AirCinelMVC/Migrations/20240921144238_AddFlightAirportsIds.Designer.cs
+/AirCinelMVC/Migrations/20240923103724_FixCityAndAirportEntities.cs
+/AirCinelMVC/Migrations/20240923103724_FixCityAndAirportEntities.Designer.cs
+/AirCinelMVC/Migrations/20240923130829_AddUserPhoto.cs
+/AirCinelMVC/Migrations/20240923130829_AddUserPhoto.Designer.cs
+/AirCinelMVC/Migrations/20240923144402_RestrictDeleteBehavior.cs
+/AirCinelMVC/Migrations/20240923144402_RestrictDeleteBehavior.Designer.cs
+/AirCinelMVC/Migrations/20240923145553_RestrictDeleteBehaviorFix.cs
+/AirCinelMVC/Migrations/20240923145553_RestrictDeleteBehaviorFix.Designer.cs
