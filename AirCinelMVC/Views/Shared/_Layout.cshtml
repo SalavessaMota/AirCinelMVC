@@ -26,17 +26,19 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="" asp-action="">Users</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="" asp-action="">Roles</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ManageUsers">Admin Panel</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index">Countries and Cities</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Airplanes" asp-action="Index">Airplanes</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index">Airports</a></li>
                                 </ul>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Flights</a>
-                        </li>
+                        @if (this.User.Identity.IsAuthenticated && !this.User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Flights</a>
+                            </li>
+                        }                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

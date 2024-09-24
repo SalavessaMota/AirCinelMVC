@@ -1,0 +1,28 @@
+﻿@using AirCinelMVC.Data.Entities
+@model IEnumerable<User>
+
+<h2>Manage Users</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>
+                    <a asp-action="EditUserRoles" asp-route-userEmail="@user.Email" class="btn btn-primary">Edit Roles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="RegisterEmployee" class="btn btn-success">Register New Employee</a>

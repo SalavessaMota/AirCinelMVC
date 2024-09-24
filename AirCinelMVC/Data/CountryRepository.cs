@@ -108,7 +108,8 @@ namespace AirCinelMVC.Data
 
         public IEnumerable<SelectListItem> GetComboCities(int countryId)
         {
-            var country = _context.Countries.Find(countryId);
+            var country = _context.Countries.Include(c => c.Cities)
+                          .FirstOrDefault(c => c.Id == countryId);
             var list = new List<SelectListItem>();
             if (country != null)
             {
