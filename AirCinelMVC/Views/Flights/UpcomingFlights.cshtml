@@ -1,0 +1,32 @@
+﻿@model IEnumerable<AirCinelMVC.Data.Entities.Flight>
+
+@{
+    ViewData["Title"] = "UpcomingFlights";
+}
+
+<h2>Upcoming Flights</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Departure Airport</th>
+            <th>Arrival Airport</th>
+            <th>Departure Time</th>
+            <th>Arrival Time</th>
+            <th>Airplane</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DepartureAirport.Name</td>
+                <td>@item.ArrivalAirport.Name</td>
+                <td>@item.DepartureTime</td>
+                <td>@item.ArrivalTime</td>
+                <td>@item.Airplane.Manufacturer @item.Airplane.Model</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

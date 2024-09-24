@@ -33,12 +33,30 @@
                                 </ul>
                             </li>
                         }
-                        @if (this.User.Identity.IsAuthenticated && !this.User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Flights</a>
-                            </li>
-                        }                        
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Flights</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Manage Flights</a>
+                                    </li>
+                                }
+
+                                @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee") || this.User.IsInRole("Customer"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightHistory">Flights History</a>
+                                    </li>
+                                }
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UpcomingFlights">Upcoming Flights</a>
+                                </li>
+                            </ul>
+                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

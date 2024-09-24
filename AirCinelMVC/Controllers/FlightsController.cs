@@ -39,6 +39,23 @@ namespace AirCinelMVC.Controllers
             return View(_flightRepository.GetAllFlightsWithAirplaneAndAirports().OrderBy(f => f.DepartureTime));
         }
 
+        public async Task<IActionResult> FlightHistory()
+        {
+            var pastFlights = _flightRepository.GetAllFlightsWithAirplaneAndAirports()
+                .Where(f => f.DepartureTime < DateTime.Now)
+                .OrderByDescending(f => f.DepartureTime);
+            return View(pastFlights);
+        }
+
+
+        public async Task<IActionResult> UpcomingFlights()
+        {
+            var futureFlights = _flightRepository.GetAllFlightsWithAirplaneAndAirports()
+                .Where(f => f.DepartureTime >= DateTime.Now)
+                .OrderBy(f => f.DepartureTime);
+            return View(futureFlights);
+        }
+
         // GET: Flights/Details/5
         public async Task<IActionResult> Details(int? id)
         {
