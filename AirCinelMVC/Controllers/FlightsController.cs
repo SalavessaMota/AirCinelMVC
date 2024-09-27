@@ -9,6 +9,7 @@ using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using AirCinelMVC.Helpers;
+using AirCinelMVC.Models;
 
 namespace AirCinelMVC.Controllers
 {
@@ -17,15 +18,18 @@ namespace AirCinelMVC.Controllers
         private readonly IFlightRepository _flightRepository;
         private readonly IAirplaneRepository _airplaneRepository;
         private readonly IAirportRepository _airportRepository;
+        private readonly IUserHelper _userHelper;
 
         public FlightsController(
             IFlightRepository flightRepository,
             IAirplaneRepository airplaneRepository,
-            IAirportRepository airportRepository)
+            IAirportRepository airportRepository,
+            IUserHelper userHelper)
         {
             _flightRepository = flightRepository;
             _airplaneRepository = airplaneRepository;
             _airportRepository = airportRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Flights
@@ -302,5 +306,128 @@ namespace AirCinelMVC.Controllers
         {
             return View();
         }
+
+
+        [HttpGet]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> PurchaseTicket(int flightId)
+        {
+            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTickets(flightId);
+
+            if (flight == null)
+            {
+                return NotFound();
+            }
+
+            var availableSeats = GetAvailableSeats(flight);
+
+            
+            var model = new PurchaseTicketViewModel
+            {
+                FlightId = flight.Id,
+                AvailableSeats = availableSeats.Select(seat => ConvertSeatNumber(seat, flight.Airplane.Model)).ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PurchaseTicket(PurchaseTicketViewModel model)
+        {
+            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTickets(model.FlightId);
+
+            if (flight == null)
+            {
+                return NotFound();
+            }
+
+            if (flight.Tickets.Any(t => t.SeatNumber == model.SelectedSeat))
+            {
+                ModelState.AddModelError("", "The selected seat is already reserved.");
+                return View(model);
+            }
+
+            if (flight.Tickets.Count >= flight.Airplane.Capacity)
+            {
+                ModelState.AddModelError("", "No more tickets available for this flight.");
+                return View(model);
+            }
+
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var ticket = new Ticket
+            {
+                FlightId = model.FlightId,
+                SeatNumber = model.SelectedSeat,
+                UserId = user.Id
+            };
+
+            flight.Tickets.Add(ticket);
+            await _flightRepository.UpdateAsync(flight);
+
+            return RedirectToAction("Details", new { id = model.FlightId });
+        }
+
+        private List<int> GetAvailableSeats(Flight flight)
+        {
+            var reservedSeats = flight.Tickets
+                                    .Select(t => ConvertSeatStringToNumber(t.SeatNumber, flight.Airplane.Model))
+                                    .ToList();
+
+            var totalSeats = Enumerable.Range(1, flight.Airplane.Capacity).ToList();
+            return totalSeats.Except(reservedSeats).ToList();
+        }
+
+        private string ConvertSeatNumber(int seatNumber, string airplaneModel)
+        {
+            int seatsPerRow = GetSeatsPerRowByModel(airplaneModel);
+            int row = (seatNumber - 1) / seatsPerRow + 1;
+            int seatPositionInRow = (seatNumber - 1) % seatsPerRow;
+            char seatLetter = (char)('A' + seatPositionInRow);
+            return $"{row}{seatLetter}";
+        }
+
+
+        private int ConvertSeatStringToNumber(string seatString, string airplaneModel)
+        {
+            string rowPart = new string(seatString.TakeWhile(char.IsDigit).ToArray());
+            char seatLetter = seatString.Last();
+
+            int row = int.Parse(rowPart);
+            
+            int seatsPerRow = GetSeatsPerRowByModel(airplaneModel);
+            
+            int seatPositionInRow = seatLetter - 'A';
+
+            int seatNumber = (row - 1) * seatsPerRow + seatPositionInRow + 1;
+
+            return seatNumber;
+        }
+
+
+        private int GetSeatsPerRowByModel(string model)
+        {
+            return model switch
+            {
+                "A319" => 6,
+                "A320" => 6,
+                "A330" => 8,
+                "A350" => 9,
+                "A380" => 10,
+                "737" => 6,
+                "747" => 10,
+                "757" => 6,
+                "767" => 7,
+                "777" => 9,
+                "E170" => 4,
+                "E175" => 4,
+                "E190" => 4,
+                "E195" => 4,
+                _ => 6
+            };
+        }
+
+
     }
 }

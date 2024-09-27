@@ -11,9 +11,11 @@ namespace AirCinelMVC.Data
 
         public Task<Flight> GetFlightWithAirplaneAndAirports(int id);
 
-        public IQueryable GetAllWithTickets();
+        public IQueryable GetAllFlightsWithTickets();
 
         public IEnumerable<Flight> GetFlightsByUserId(string userId);
+
+        public Task<Flight> GetFlightWithAirplaneAirportsAndTickets(int id);
 
         public bool ExistFlight(int id);
     }

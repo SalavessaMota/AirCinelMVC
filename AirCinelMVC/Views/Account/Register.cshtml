@@ -76,19 +76,40 @@
         </form>
     </div>
 </div>
-<div class="text-success">
-    <p>
-        @ViewBag.Message
-    </p>
+
+<div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Registration Successful</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Your registration was successful!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnOk">Ok</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script type="text/javascript">
         $(document).ready(function () {
+            var successMessage = '@ViewBag.Message';
+            if (successMessage !== "") {
+                $('#successModal').modal('show');
+            }
+
+            $('#btnOk').click(function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+
             $("#CountryId").change(function () {
                 $("#CityId").empty();
                 $.ajax({
@@ -97,7 +118,6 @@
                     dataType: 'json',
                     data: { countryId: $("#CountryId").val() },
                     success: function (cities) {
-                        debugger;
                         $("#CityId").append('<option value="0">(Select a city...)</option>');
                         $.each(cities, function (i, city) {
                             $("#CityId").append('<option value="'
@@ -106,12 +126,11 @@
                         });
                     },
                     error: function (ex) {
-                        debugger;
                         alert('Failed to retrieve cities.' + ex);
                     }
                 });
                 return false;
-            })
+            });
         });
     </script>
 }

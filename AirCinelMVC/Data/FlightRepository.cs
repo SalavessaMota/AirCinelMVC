@@ -24,7 +24,16 @@ namespace AirCinelMVC.Data
                 .Include(f => f.ArrivalAirport);
         }
 
-        public IQueryable GetAllWithTickets()
+        public async Task<Flight> GetFlightWithAirplaneAndAirports(int id)
+        {
+            return await _context.Flights
+                .Include(f => f.Airplane)
+                .Include(f => f.DepartureAirport)
+                .Include(f => f.ArrivalAirport)
+                .FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        public IQueryable GetAllFlightsWithTickets()
         {
             return _context.Flights
                 .Include(f => f.Tickets)
@@ -39,13 +48,13 @@ namespace AirCinelMVC.Data
                 .ToList();
         }
 
-
-        public async Task<Flight> GetFlightWithAirplaneAndAirports(int id)
+        public async Task<Flight> GetFlightWithAirplaneAirportsAndTickets(int id)
         {
             return await _context.Flights
                 .Include(f => f.Airplane)
                 .Include(f => f.DepartureAirport)
                 .Include(f => f.ArrivalAirport)
+                .Include(f => f.Tickets)
                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 

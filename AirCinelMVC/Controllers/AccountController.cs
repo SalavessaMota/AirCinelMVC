@@ -89,56 +89,60 @@ namespace AirCinelMVC.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
-                if (user == null)
+                if (user != null)
                 {
-                    var city = await _countryRepository.GetCityAsync(model.CityId);
-
-                    user = new User
-                    {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Username,
-                        UserName = model.Username,
-                        Address = model.Address,
-                        PhoneNumber = model.PhoneNumber,
-                        CityId = model.CityId
-                    };
-
-                    // Verifica se há uma imagem para upload
-                    if (model.ImageFile != null && model.ImageFile.Length > 0)
-                    {
-                        // Faz o upload para o Azure Blob Storage e obtém o GUID do arquivo
-                        var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-                        user.ImageId = imageId;
-                    }
-
-                    var result = await _userHelper.AddUserAsync(user, model.Password);
-                    await _userHelper.AddUserToRoleAsync(user, "Customer");
-                    if (result != IdentityResult.Success)
-                    {
-                        ModelState.AddModelError(string.Empty, "The user couldn't be created.");
-                        return View(model);
-                    }
-
-                    var loginViewModel = new LoginViewModel
-                    {
-                        Password = model.Password,
-                        RememberMe = false,
-                        Username = model.Username
-                    };
-
-                    var result2 = await _userHelper.LoginAsync(loginViewModel);
-                    if (result2.Succeeded)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-
-                    ModelState.AddModelError(string.Empty, "The user couldn't be logged.");
+                    ModelState.AddModelError(string.Empty, "The email is already registered.");
+                    return View(model);
                 }
+
+                var city = await _countryRepository.GetCityAsync(model.CityId);
+
+                user = new User
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Username,
+                    UserName = model.Username,
+                    Address = model.Address,
+                    PhoneNumber = model.PhoneNumber,
+                    CityId = model.CityId
+                };
+
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                    user.ImageId = imageId;
+                }
+
+                var result = await _userHelper.AddUserAsync(user, model.Password);
+                if (result != IdentityResult.Success)
+                {
+                    ModelState.AddModelError(string.Empty, "The user couldn't be created.");
+                    return View(model);
+                }
+
+                await _userHelper.AddUserToRoleAsync(user, "Customer");
+
+                var loginViewModel = new LoginViewModel
+                {
+                    Password = model.Password,
+                    RememberMe = false,
+                    Username = model.Username
+                };
+
+                var result2 = await _userHelper.LoginAsync(loginViewModel);
+                if (result2.Succeeded)
+                {
+                    ViewBag.Message = "Registration successful!";
+                    return View(model);
+                }
+
+                ModelState.AddModelError(string.Empty, "The user couldn't be logged in.");
             }
 
             return View(model);
         }
+
 
 
         // GET

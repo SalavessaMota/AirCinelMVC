@@ -1,0 +1,19 @@
+﻿@model PurchaseTicketViewModel
+
+<h2>Select a seat for Flight @Model.FlightId</h2>
+
+<form asp-action="PurchaseTicket" method="post">
+    <input type="hidden" asp-for="FlightId" />
+
+    <div class="form-group">
+        <label for="seat">Available Seats:</label>
+        <select asp-for="SelectedSeat" class="form-control">
+            @foreach (var seat in Model.AvailableSeats)
+            {
+                <option value="@seat">@seat</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Confirm Purchase</button>
+</form>
