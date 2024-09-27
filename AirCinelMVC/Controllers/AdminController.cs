@@ -41,6 +41,9 @@ public class AdminController : Controller
             return new NotFoundViewResult("UserNotFound");
         }
 
+        var userRoles = await _userHelper.GetRolesAsync(user);
+        var userRole = userRoles.FirstOrDefault();
+
         var model = new EditUserRolesViewModel
         {
             UserId = user.Id,
@@ -48,9 +51,9 @@ public class AdminController : Controller
             Email = user.Email,
             Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
             {
-                RoleName = u.Name,
-                IsSelected = _userHelper.IsUserInRoleAsync(user, u.Name).Result
-            }).ToList()
+                RoleName = u.Name
+            }).ToList(),
+            SelectedRole = userRole
         };
 
         return View(model);
@@ -66,15 +69,38 @@ public class AdminController : Controller
             return new NotFoundViewResult("UserNotFound");
         }
 
+        if (string.IsNullOrEmpty(model.SelectedRole))
+        {
+            ModelState.AddModelError("", "Please select a role.");
+            model.Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
+            {
+                RoleName = u.Name
+            }).ToList();
+            return View(model);
+        }
+
         var roles = await _userHelper.GetRolesAsync(user);
         var result = await _userHelper.RemoveRolesAsync(user, roles);
         if (!result.Succeeded)
         {
             ModelState.AddModelError("", "Failed to remove existing roles.");
+            model.Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
+            {
+                RoleName = u.Name
+            }).ToList();
             return View(model);
         }
 
-        await _userHelper.AddUserToRoleAsync(user, model.Roles.Where(x => x.IsSelected).Select(x => x.RoleName).FirstOrDefault());
+        var addResult = await _userHelper.AddUserToRoleAsync(user, model.SelectedRole);
+        if (!addResult.Succeeded)
+        {
+            ModelState.AddModelError("", "Failed to add the selected role.");
+            model.Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
+            {
+                RoleName = u.Name
+            }).ToList();
+            return View(model);
+        }
 
         return RedirectToAction("ManageUsers");
     }

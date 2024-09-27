@@ -20,11 +20,33 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.DepartureAirport.Name</td>
-                <td>@item.ArrivalAirport.Name</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
+                    {
+                        <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                    }
+                    @item.DepartureAirport.Name
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
+                    {
+                        <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                    }
+                    @item.ArrivalAirport.Name
+                </td>
                 <td>@item.DepartureTime</td>
                 <td>@item.ArrivalTime</td>
-                <td>@item.Airplane.Manufacturer @item.Airplane.Model</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
+                    {
+                        <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
+                    }
+                    @item.Airplane.Manufacturer @item.Airplane.Model
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                    {
+                        <span>- ID @item.Airplane.Id</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>

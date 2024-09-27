@@ -26,7 +26,7 @@ namespace AirCinelMVC.Helpers
 
         Task CheckRoleAsync(string roleName);
 
-        Task AddUserToRoleAsync(User user, string roleName);
+        Task<IdentityResult> AddUserToRoleAsync(User user, string role);
 
         Task<bool> IsUserInRoleAsync(User user, string roleName);
 

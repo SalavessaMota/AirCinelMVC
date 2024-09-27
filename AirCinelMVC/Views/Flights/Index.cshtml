@@ -63,11 +63,10 @@
                         <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
                 }
                 @item.Airplane.Manufacturer @item.Airplane.Model
-                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
                 {
                             <span>- ID @item.Airplane.Id</span>
-                 }
-                
+                 }                
             </td>
             <td>
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))

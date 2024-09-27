@@ -37,9 +37,9 @@ namespace AirCinelMVC.Helpers
             return await _userManager.CreateAsync(user, password);
         }
 
-        public async Task AddUserToRoleAsync(User user, string roleName)
+        public async Task<IdentityResult> AddUserToRoleAsync(User user, string role)
         {
-            await _userManager.AddToRoleAsync(user, roleName);
+            return await _userManager.AddToRoleAsync(user, role);
         }
 
         public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)
