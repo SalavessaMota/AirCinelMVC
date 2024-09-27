@@ -33,7 +33,7 @@ namespace AirCinelMVC.Data.Entities
         public int ModelId { get; set; }
 
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://aircinelmvc.azurewebsites.net/images/noimage.png"
+            ? $"https://aircinelmvc.blob.core.windows.net/resources/noimage.png"
             : $"https://aircinelmvc.blob.core.windows.net/airplanes/{ImageId}";
     }
 }

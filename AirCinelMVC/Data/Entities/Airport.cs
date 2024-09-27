@@ -21,7 +21,7 @@ namespace AirCinelMVC.Data.Entities
 
 
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://aircinelmvc.azurewebsites.net/images/noimage.png"
+            ? $"https://aircinelmvc.blob.core.windows.net/resources/noimage.png"
             : $"https://aircinelmvc.blob.core.windows.net/flags/{ImageId}";
 
     }
