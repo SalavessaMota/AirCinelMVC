@@ -46,7 +46,7 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ManageUsers"><i class="fas fa-user-cog"></i>  Admin Panel</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Airplanes" asp-action="Index"><i class="fas fa-plane"></i>  Airplanes</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index"><i class="fas fa-globe-europe"></i>  Countries/Cities</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index"><img src="https://aircinelmvc.blob.core.windows.net/resources/airport.ico" height="25px" width="auto"/>  Airports</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index"><img src="https://aircinelmvc.blob.core.windows.net/resources/airport.ico" class="ml-0" height="20px"/> Airports</a></li>
                             </ul>
                         </li>
                     }
@@ -84,23 +84,35 @@
                     {
                         <li class="nav-item d-flex align-items-center">
                             <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="ChangeUser">
-                                Edit Account
+                                <span class="d-flex align-items-center">
+                                    <i class="fas fa-user-circle mr-2"></i>
+                                    Edit Account
+                                </span>
                             </a>
                         </li>
 
                         <li class="nav-item d-flex align-items-center">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">
-                                Logout
+                            <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Logout">
+                                <span class="d-flex align-items-center">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    Logout
+                                </span>
                             </a>
                         </li>
                     }
                     else
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                        <li class="nav-item d-flex align-items-center">
+                            <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Login">
+                                <span class="d-flex align-items-center">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>
+                                    Login
+                                </span>
+                            </a>
                         </li>
                     }
                 </ul>
+
             </div>
         </nav>
 

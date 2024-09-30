@@ -22,13 +22,13 @@
                 <i class="fas fa-plane-departure"></i>  Origin
             </th>
             <th>
-                <i class="fas fa-plane-departure"></i>  @Html.DisplayNameFor(model => model.DepartureTime)
+                @* <i class="fas fa-plane-departure"></i>  @Html.DisplayNameFor(model => model.DepartureTime) *@
             </th>
             <th>
                 <i class="fas fa-plane-arrival"></i>  Destination
             </th>
             <th>
-                <i class="fas fa-plane-arrival"></i>  @Html.DisplayNameFor(model => model.ArrivalTime)
+                @* <i class="fas fa-plane-arrival"></i>  @Html.DisplayNameFor(model => model.ArrivalTime) *@
             </th>
             <th>
                 <i class="fas fa-plane"></i>  @Html.DisplayNameFor(model => model.Airplane)
@@ -76,12 +76,12 @@
             <td>
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
                 {
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
                 }
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
                 {
-                            <a asp-action="Delete" asp-route-id="@item.Id" data-id="@item.Id" class="btn btn-danger" id="btnDelete">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" data-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
                 }
             </td>
         </tr>

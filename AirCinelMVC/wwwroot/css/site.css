@@ -121,13 +121,6 @@ video#bgVideo {
     align-content: center;
 }
 
-/*SLIDER*/
-.slider .btn {
-    margin-top: 20px;
-    position: relative;
-    width: 100vw;
-    z-index: 1;
-}
 
 /*Text shadow*/
 .text-shadow {
