@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AirCinelMVC</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -42,10 +43,10 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ManageUsers">Admin Panel</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Airplanes" asp-action="Index">Airplanes</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index">Countries/Cities</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index">Airports</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ManageUsers"><i class="fas fa-user-cog"></i>  Admin Panel</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Airplanes" asp-action="Index"><i class="fas fa-plane"></i>  Airplanes</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index"><i class="fas fa-globe-europe"></i>  Countries/Cities</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index"><img src="https://aircinelmvc.blob.core.windows.net/resources/airport.ico" height="25px" width="auto"/>  Airports</a></li>
                             </ul>
                         </li>
                     }
@@ -114,8 +115,8 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="border-top footer text-muted text-center mt-6">
+        <div class="container-fluid">
             &copy; 2024 - CINEL & AirCinel – Partners in training and innovation in aviation. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

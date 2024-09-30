@@ -11,8 +11,8 @@
         <tr>
             <th>Departure Airport</th>
             <th>Arrival Airport</th>
-            <th>Departure Time</th>
-            <th>Arrival Time</th>
+            <th>Departure</th>
+            <th>Arrival</th>
             <th>Airplane</th>
             <th></th>
         </tr>
@@ -48,11 +48,11 @@
                 <td>
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
                     {
-                        <a class="btn btn-primary" asp-action="PurchaseTicket" asp-route-flightId="@item.Id">Buy Ticket</a>
+                        <a class="btn btn-primary" asp-action="PurchaseTicket" asp-route-flightId="@item.Id"><i class="fas fa-ticket-alt"></i>  Buy Ticket</a>
                     }
                     else
                     {
-                        <button type="button" class="btn btn-primary" onclick="showModal()">Buy Ticket</button>
+                        <button type="button" class="btn btn-primary" onclick="showModal()"><i class="fas fa-ticket-alt"></i>  Buy Ticket</button>
                     }
                 </td>
             </tr>
@@ -61,7 +61,7 @@
 </table>
 
 
-<a href="~/Home/index" class="btn btn-primary btn-lg mt-3">Return Home</a>
+<a href="~/Home/index" class="btn btn-primary btn-lg mt-3"><i class="fas fa-home"></i>  Return Home</a>
 
 
 <div id="alertModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
