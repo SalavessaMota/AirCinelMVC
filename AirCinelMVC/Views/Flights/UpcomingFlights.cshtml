@@ -9,18 +9,19 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Departure Airport</th>
-            <th>Arrival Airport</th>
-            <th>Departure</th>
-            <th>Arrival</th>
-            <th>Airplane</th>
-            <th></th>
+            <th>Flight Number</th>
+            <th><i class="fas fa-plane-departure"></i>  Origin</th>
+            <th><i class="fas fa-plane-departure"></i>  Departure Time</th>
+            <th><i class="fas fa-plane-arrival"></i>  Destination</th>
+            <th><i class="fas fa-plane-arrival"></i>  Arrival Time</th>
+            <th><i class="fas fa-plane"></i>  Airplane</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>@item.FlightNumber</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
                     {
@@ -28,6 +29,7 @@
                     }
                     @item.DepartureAirport.Name
                 </td>
+                <td>@item.DepartureTime</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
                     {
@@ -35,7 +37,6 @@
                     }
                     @item.ArrivalAirport.Name
                 </td>
-                <td>@item.DepartureTime</td>
                 <td>@item.ArrivalTime</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
@@ -77,7 +78,10 @@
                 <p>You need a customer account to buy tickets.</p>
             </div>
             <div class="modal-footer">
+                @if (!User.Identity.IsAuthenticated || !User.IsInRole("Customer"))
+                {
                 <button type="button" class="btn btn-primary" id="btnLogin">Login</button>
+                }
                 <button type="button" class="btn btn-primary" id="btnRegister">Register</button>
                 <button type="button" class="btn btn-secondary" id="btnReturn">Return</button>
             </div>

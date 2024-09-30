@@ -39,6 +39,19 @@ namespace AirCinelMVC.Data.Entities
         public DateTime ArrivalTime { get; set; }
 
 
+        [Display(Name = "Flight Number")]
+        public string FlightNumber
+        {
+            get
+            {
+                return $"AC{Id:D4}"; // Exemplo: "AC0001", "AC0010", etc.
+            }
+        }
+
+
+
         public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+
+
     }
 }

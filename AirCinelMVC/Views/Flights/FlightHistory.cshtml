@@ -8,17 +8,19 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Departure Airport</th>
-            <th>Arrival Airport</th>
-            <th>Departure Time</th>
-            <th>Arrival Time</th>
-            <th>Airplane</th>
+            <th>Flight Number</th>
+            <th><i class="fas fa-plane-departure"></i>  Origin</th>
+            <th><i class="fas fa-plane-departure"></i>  Departure Time</th>
+            <th><i class="fas fa-plane-arrival"></i>  Destination</th>
+            <th><i class="fas fa-plane-arrival"></i>  Arrival Time</th>
+            <th><i class="fas fa-plane"></i>  Airplane</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>@item.FlightNumber</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
                     {
@@ -26,6 +28,7 @@
                     }
                     @item.DepartureAirport.Name
                 </td>
+                <td>@item.DepartureTime</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
                     {
@@ -33,7 +36,6 @@
                     }
                     @item.ArrivalAirport.Name
                 </td>
-                <td>@item.DepartureTime</td>
                 <td>@item.ArrivalTime</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))

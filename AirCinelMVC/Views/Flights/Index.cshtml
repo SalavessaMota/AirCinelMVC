@@ -16,19 +16,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DepartureAirport)
+                Flight Number
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalAirport)
+                <i class="fas fa-plane-departure"></i>  Origin
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DepartureTime)
+                <i class="fas fa-plane-departure"></i>  @Html.DisplayNameFor(model => model.DepartureTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
+                <i class="fas fa-plane-arrival"></i>  Destination
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Airplane)
+                <i class="fas fa-plane-arrival"></i>  @Html.DisplayNameFor(model => model.ArrivalTime)
+            </th>
+            <th>
+                <i class="fas fa-plane"></i>  @Html.DisplayNameFor(model => model.Airplane)
             </th>
             <th></th>
         </tr>
@@ -37,21 +40,24 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.FlightNumber)
+            </td>
+            <td>
                 @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
                 {
                     <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
                 }
                 @item.DepartureAirport.Name
-            </td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DepartureTime)
+                </td>
             <td>
                 @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
                 {
                     <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
                 }
                 @item.ArrivalAirport.Name
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DepartureTime)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ArrivalTime)
