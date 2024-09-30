@@ -12,96 +12,99 @@
     @inject UserManager<AirCinelMVC.Data.Entities.User> UserManager
 
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="https://aircinelmvc.blob.core.windows.net/resources/logoAirCinel.jpg" alt="LogoAirCinel" height="30px" width="auto" />
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="https://aircinelmvc.blob.core.windows.net/resources/logoAirCinel.jpg" alt="LogoAirCinel" height="30px" width="auto" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    @if (this.User.Identity.IsAuthenticated)
+                    {
+                        var user = await UserManager.FindByNameAsync(User.Identity.Name);
+
+                        <li class="nav-item d-flex align-items-center text-dark">
+                            @if (!string.IsNullOrEmpty(user?.ImageFullPath) && user.ImageFullPath != "https://aircinelmvc.azurewebsites.net/images/noimage.png")
+                            {
+                                <img src="@user.ImageFullPath" alt="Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;" />
+                            }
+                            Welcome, @user?.FullName
                         </li>
-                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ManageUsers">Admin Panel</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Airplanes" asp-action="Index">Airplanes</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index">Countries/Cities</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index">Airports</a></li>
-                                </ul>
-                            </li>
-                        }
-
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
+                    {
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Flights</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Manage Flights</a>
-                                    </li>
-                                }
-
-                                @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Employee") || this.User.IsInRole("Customer")))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightHistory">Flights History</a>
-                                    </li>
-                                }
-
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UpcomingFlights">Upcoming Flights</a>
-                                </li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ManageUsers">Admin Panel</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Airplanes" asp-action="Index">Airplanes</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index">Countries/Cities</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index">Airports</a></li>
                             </ul>
                         </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        @if (this.User.Identity.IsAuthenticated)
-                        {
-                            var user = await UserManager.FindByNameAsync(User.Identity.Name);
+                    }
 
-                            <li class="nav-item d-flex align-items-center">
-                                @if (!string.IsNullOrEmpty(user?.ImageFullPath) && user.ImageFullPath != "https://aircinelmvc.azurewebsites.net/images/noimage.png")
-                                {
-                                    <img src="@user.ImageFullPath" alt="Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;" />
-                                }
-                                Welcome, @user?.FullName
-                            </li>
-                            <li class="nav-item d-flex align-items-center">
-                                <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="ChangeUser">
-                                    Edit Account
-                                </a>
-                            </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Flights</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Manage Flights</a>
+                                </li>
+                            }
 
-                            <li class="nav-item d-flex align-items-center">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">
-                                    Logout
-                                </a>
-                            </li>
-                        }
-                        else
-                        {
+                            @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Employee") || this.User.IsInRole("Customer")))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightHistory">Flights History</a>
+                                </li>
+                            }
+
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UpcomingFlights">Upcoming Flights</a>
                             </li>
-                        }
-                    </ul>
-                </div>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+                    @if (this.User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item d-flex align-items-center">
+                            <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="ChangeUser">
+                                Edit Account
+                            </a>
+                        </li>
+
+                        <li class="nav-item d-flex align-items-center">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">
+                                Logout
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                        </li>
+                    }
+                </ul>
             </div>
         </nav>
+
     </header>
-    <div class="container">
+    <div class="container-fluid">
         <video id="bgVideo" autoplay loop muted preload="auto">
             <source src="https://aircinelmvc.blob.core.windows.net/resources/backgroundcompressed.mp4" type="video/mp4">
             Seu navegador não suporta vídeos em HTML5.

@@ -1,101 +1,62 @@
 ﻿@{
     ViewData["Title"] = "AirCinel - Home";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to AirCinel</h1>
-    <p>Soar high with the aviation experts in Lisbon.</p>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css'>
+
+<section class="slider text-shadow">
+    <ul class="slides">
+        <li>
+            <img src="https://aircinelmvc.blob.core.windows.net/resources/lisbon.jpeg" alt="Lisbon Image">
+            <div class="caption center-align text-outline">
+                <h2>Welcome to AirCinel</h2>
+                <h5 class="light grey-text text-lighten-3 hide-on-small-only">Soar high with the aviation experts in Lisbon.</h5>
+            </div>
+        </li>
+        <li>
+            <img src="https://aircinelmvc.blob.core.windows.net/resources/madrid.jpeg" alt="Madrid Image">
+            <div class="caption left-align text-outline">
+                <h2>What is your dream vacation destination?</h2>
+                <h5 class="light grey-text text-lighten-3 hide-on-small-only">We will take you there!</h5>
+            </div>
+        </li>
+        <li>
+            <img src="https://aircinelmvc.blob.core.windows.net/resources/paris.jpeg" alt="Paris Image">
+            <div class="caption right-align text-outline">
+                <h2>You can count on us!</h2>
+                <h5 class="light grey-text text-lighten-3 hide-on-small-only"></h5>
+            </div>
+        </li>
+    </ul>
+</section>
+
+<br />
+
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-sm-3 text-center">
+            <a class="nav-link btn btn-primary" asp-action="Destinations">Destinations</a>
+        </div>
+        <div class="col-sm-3 text-center">
+            <a class="nav-link btn btn-primary" asp-controller="Flights" asp-action="UpcomingFlights">Flights</a>
+        </div>
+        <div class="col-sm-3 text-center">
+            <a class="nav-link btn btn-primary" asp-action="aboutus">About us</a>
+        </div>
+    </div>
 </div>
 
-<div class="container mt-5">
-    <h2 class="font-weight-normal">Discover More</h2>
-    <p>Explore our destinations and special offers, and learn how we are transforming air travel with technology and innovation.</p>
 
-
-    <div class="container mt-4">
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/lisbon.jpeg" class="img-fluid" alt="Lisboa">
-            </div>
-            <div class="col-md-6">
-                <h3>Lisbon</h3>
-                <p>Explore the vibrant culture, history, and stunning views of Lisbon. As the capital of Portugal, Lisbon offers a unique blend of traditional heritage with modern innovation.</p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6 order-md-2">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/porto.jpeg" class="img-fluid" alt="Porto">
-            </div>
-            <div class="col-md-6 order-md-1">
-                <h3>Porto</h3>
-                <p>Famous for its port wine, the city of Porto is filled with history, colorful architecture, and stunning riverside views. A perfect destination for food and culture lovers.</p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/faro.jpeg" class="img-fluid" alt="Faro">
-            </div>
-            <div class="col-md-6">
-                <h3>Faro</h3>
-                <p>Located in the Algarve region, Faro offers warm beaches, historic sites, and a relaxed atmosphere, perfect for a sunny getaway.</p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6 order-md-2">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/madrid.jpeg" class="img-fluid" alt="Madrid">
-            </div>
-            <div class="col-md-6 order-md-1">
-                <h3>Madrid</h3>
-                <p>The Spanish capital is a bustling hub of art, culture, and history. Enjoy the lively streets, world-class museums, and delicious Spanish cuisine in Madrid.</p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/barcelona.jpeg" class="img-fluid" alt="Barcelona">
-            </div>
-            <div class="col-md-6">
-                <h3>Barcelona</h3>
-                <p>Barcelona combines the beauty of its Mediterranean beaches with its unique Gothic architecture. Visit the iconic Sagrada Familia and stroll down Las Ramblas.</p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6 order-md-2">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/paris.jpeg" class="img-fluid" alt="Paris">
-            </div>
-            <div class="col-md-6 order-md-1">
-                <h3>Paris</h3>
-                <p>Known as the City of Lights, Paris is a top destination for art, fashion, and cuisine. Don't miss the Eiffel Tower, Louvre Museum, and the charming streets of Montmartre.</p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/rome.jpeg" class="img-fluid" alt="Rome">
-            </div>
-            <div class="col-md-6">
-                <h3>Rome</h3>
-                <p>Step back into history in Rome, where ancient monuments like the Colosseum and the Roman Forum stand side by side with bustling modern life. Enjoy traditional Italian food and vibrant street life.</p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6 order-md-2">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/athens.jpeg" class="img-fluid" alt="Athens">
-            </div>
-            <div class="col-md-6 order-md-1">
-                <h3>Athens</h3>
-                <p>Athens, the cradle of Western civilization, is a city where the ancient meets the modern. Explore the Acropolis, museums, and lively street markets.</p>
-            </div>
-        </div>
-
-
-    @* <a class="btn btn-primary" href="@Url.Action("Destinations", "Home")">Our Destinations</a>
-    <a class="btn btn-primary" href="@Url.Action("About", "Home")">About Us</a> *@
-
-    <div class="btn btn-primary">About Us</div>
-</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.slider');
+        var instances = M.Slider.init(elems, {
+            indicators: true, 
+            height: 600,      
+            interval: 5000,  
+            duration: 500  
+        });
+    });
+</script>

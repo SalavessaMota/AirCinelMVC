@@ -61,6 +61,9 @@
 </table>
 
 
+<a href="~/Home/index" class="btn btn-primary btn-lg mt-3">Return Home</a>
+
+
 <div id="alertModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -74,7 +77,8 @@
                 <p>You need a customer account to buy tickets.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnOk">Register new account</button>
+                <button type="button" class="btn btn-primary" id="btnLogin">Login</button>
+                <button type="button" class="btn btn-primary" id="btnRegister">Register</button>
                 <button type="button" class="btn btn-secondary" id="btnReturn">Return</button>
             </div>
         </div>
@@ -89,7 +93,11 @@
             $('#alertModal').modal('show');
         }
 
-        $('#btnOk').click(function () {
+        $('#btnLogin').click(function () {
+            window.location.href = '@Url.Action("Login", "Account")';
+        });
+
+        $('#btnRegister').click(function () {
             window.location.href = '@Url.Action("Register", "Account")';
         });
 

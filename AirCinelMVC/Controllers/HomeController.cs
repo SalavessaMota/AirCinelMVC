@@ -19,6 +19,16 @@ namespace AirCinelMVC.Controllers
 			return View();
 		}
 
+		public IActionResult Destinations()
+        {
+            return View();
+        }
+
+		public IActionResult AboutUs()
+        {
+            return View();
+        }
+
 		public IActionResult Privacy()
 		{
 			return View();

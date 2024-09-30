@@ -1,10 +1,43 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+
+.navbar {
+    position: relative;
+    z-index: 1000;
+    background-color: white;
+    height: 70px;
+    box-shadow: 0 4px 2px -2px gray;
+}
+
+.navbar-collapse {
+    background-color: white;
+}
+
+.navbar-toggler {
+    background-color: white;
+}
+
+.navbar-nav .nav-item .nav-link {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+    padding: 0;
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-nav .dropdown-menu {
+    margin-top: 0; 
 }
 
 /* Provide sufficient contrast against white background */
@@ -86,3 +119,15 @@ video#bgVideo {
     align-content: center;
 }
 
+/*SLIDER*/
+.slider .btn {
+    margin-top: 20px;
+    position: relative;
+    width: 100vw;
+    z-index: 1;
+}
+
+/*Text shadow*/
+.text-shadow {
+    text-shadow: 2px 2px 4px #000000;
+}
