@@ -52,13 +52,24 @@ namespace AirCinelMVC.Controllers
         }
 
 
-        public async Task<IActionResult> UpcomingFlights()
+        public IActionResult UpcomingFlights()
         {
             var futureFlights = _flightRepository.GetAllFlightsWithAirplaneAndAirports()
                 .Where(f => f.DepartureTime >= DateTime.Now)
                 .OrderBy(f => f.DepartureTime);
             return View(futureFlights);
         }
+
+        public async Task<IActionResult> UserUpcomingFlights()
+        {
+            var currentUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var futureFlights = _flightRepository.GetFlightsByUserId(currentUser.Id)
+                .Where(f => f.DepartureTime >= DateTime.Now)
+                .OrderBy(f => f.DepartureTime)
+                .ToList();
+            return View(futureFlights);
+        }
+
 
         // GET: Flights/Details/5
         public async Task<IActionResult> Details(int? id)

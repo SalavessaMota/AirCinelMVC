@@ -44,6 +44,9 @@ namespace AirCinelMVC.Data
         {
             return _context.Flights
                 .Include(f => f.Tickets)
+                .Include(f => f.Airplane)
+                .Include(f => f.DepartureAirport)
+                .Include(f => f.ArrivalAirport)
                 .Where(f => f.Tickets.Any(t => t.UserId == userId))
                 .ToList();
         }
