@@ -87,7 +87,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Your registration was successful!</p>
+                <p>The instructions to allow your user registration have been sent to your email.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="btnOk">Ok</button>
@@ -95,6 +95,12 @@
         </div>
     </div>
 </div>
+
+@* <div class="text-success">
+    <p>
+        @ViewBag.Message
+    </p>
+</div> *@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
@@ -112,25 +118,38 @@
 
             $("#CountryId").change(function () {
                 $("#CityId").empty();
+                $("#CityId").append('<option value="0">(Select a city...)</option>'); // Adiciona uma opção padrão
+
                 $.ajax({
                     url: '@Url.Action("GetCitiesAsync", "Account")',
                     type: 'POST',
                     dataType: 'json',
                     data: { countryId: $("#CountryId").val() },
-                    success: function (cities) {
-                        $("#CityId").append('<option value="0">(Select a city...)</option>');
-                        $.each(cities, function (i, city) {
-                            $("#CityId").append('<option value="'
-                                + city.id + '">'
-                                + city.name + '</option>');
-                        });
+                    success: function (response) {
+                        console.log("Cities response: ", response);
+
+                        // Verifica se o objeto contém a propriedade $values
+                        if (response && response.$values && response.$values.length > 0) {
+                            $.each(response.$values, function (i, city) {
+                                // Adiciona as cidades à combobox, verificando as propriedades
+                                if (city.id && city.name) {
+                                    $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
+                                } else {
+                                    console.warn("City data is incomplete or undefined: ", city);
+                                }
+                            });
+                        } else {
+                            console.warn("No cities found in the response.");
+                        }
                     },
-                    error: function (ex) {
-                        alert('Failed to retrieve cities.' + ex);
+                    error: function (xhr, status, error) {
+                        console.error("Error in AJAX request: ", error);
                     }
                 });
+
                 return false;
             });
         });
     </script>
 }
+

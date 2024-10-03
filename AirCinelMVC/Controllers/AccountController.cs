@@ -18,17 +18,20 @@ namespace AirCinelMVC.Controllers
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
+        private readonly IMailHelper _mailHelper;
         private readonly IConfiguration _configuration;
         private readonly ICountryRepository _countryRepository;
         private readonly IBlobHelper _blobHelper;
 
         public AccountController(
             IUserHelper userHelper,
+            IMailHelper mailHelper,
             IConfiguration configuration,
             ICountryRepository countryRepository,
             IBlobHelper blobHelper)
         {
             _userHelper = userHelper;
+            _mailHelper = mailHelper;
             _configuration = configuration;
             _countryRepository = countryRepository;
             _blobHelper = blobHelper;
@@ -114,20 +117,24 @@ namespace AirCinelMVC.Controllers
                     ModelState.AddModelError(string.Empty, "The user couldn't be created.");
                     return View(model);
                 }
-
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-                var loginViewModel = new LoginViewModel
-                {
-                    Password = model.Password,
-                    RememberMe = false,
-                    Username = model.Username
-                };
 
-                var result2 = await _userHelper.LoginAsync(loginViewModel);
-                if (result2.Succeeded)
+                string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
                 {
-                    ViewBag.Message = "Registration successful!";
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendEmail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                    $"To allow the user, " +
+                    $"please click on this link:<p><a href = \"{tokenLink}\">Confirm Email</a></p>");
+
+
+                if (response.IsSuccess)
+                {
+                    ViewBag.Message = "The instructions to allow your user registration have been sent to your email.";
                     return View(model);
                 }
 
@@ -292,6 +299,29 @@ namespace AirCinelMVC.Controllers
             return BadRequest();
         }
 
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return NotFound();
+            }
+
+            return View();
+        } 
+
+
         public IActionResult NotAuthorized()
         {
             return View();
@@ -302,11 +332,7 @@ namespace AirCinelMVC.Controllers
         public async Task<JsonResult> GetCitiesAsync(int countryId)
         {
             var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
-            return Json(country.Cities.OrderBy(c => c.Name).Select(c => new
-            {
-                Id = c.Id,
-                Name = c.Name
-            }));
+            return Json(country.Cities.OrderBy(c => c.Name));
         }
     }
 }

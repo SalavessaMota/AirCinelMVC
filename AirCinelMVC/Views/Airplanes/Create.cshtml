@@ -42,31 +42,34 @@
         $(document).ready(function () {
             // Quando o utilizador muda o ManufacturerId
             $("#ManufacturerId").change(function () {
-                $("#ModelId").empty(); // Limpa o dropdown de modelos
+                var manufacturerId = $("#ManufacturerId").val();
+                console.log("Manufacturer selected: " + manufacturerId);
 
-                // Chama AJAX para obter os modelos do fabricante selecionado
+                $("#ModelId").empty(); // Limpa a combobox de modelos
+                $("#ModelId").append('<option value="0">(Select a model...)</option>'); // Adiciona uma opção padrão
+
                 $.ajax({
                     url: '@Url.Action("GetModelsAsync", "Airplanes")',
                     type: 'POST',
                     dataType: 'json',
-                    data: { manufacturerId: $("#ManufacturerId").val() },
-                    success: function (models) {
-                        // Adiciona a opção default ao ModelId
-                        $("#ModelId").append('<option value="0">(Select a model...)</option>');
-                        // Preenche o dropdown com os modelos retornados
-                        $.each(models, function (i, model) {
-                            $("#ModelId").append('<option value="' + model.id + '">' + model.name + '</option>');
-                        });
+                    data: { manufacturerId: manufacturerId },
+                    success: function (response) {
+                        console.log("Response received: ", response);
 
-                        // Preenche o campo Manufacturer com o nome selecionado
-                        var manufacturerName = $("#ManufacturerId option:selected").text();
-                        $("#Manufacturer").val(manufacturerName); // Atualiza o campo hidden ou readonly
+                        // Verifica se o objeto contém a propriedade $values
+                        if (response && response.$values && response.$values.length > 0) {
+                            $.each(response.$values, function (i, model) {
+                                // Adiciona os modelos à combobox, verificando as propriedades
+                                $("#ModelId").append('<option value="' + model.id + '">' + model.name + '</option>');
+                            });
+                        } else {
+                            console.warn("No models found in the response.");
+                        }
                     },
-                    error: function (ex) {
-                        alert('Failed to retrieve models.' + ex);
+                    error: function (xhr, status, error) {
+                        console.error("Error in AJAX request: ", error);
                     }
                 });
-                return false;
             });
 
             // Quando o utilizador seleciona um modelo
