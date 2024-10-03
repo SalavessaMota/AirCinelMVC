@@ -128,10 +128,12 @@
                     success: function (response) {
                         console.log("Cities response: ", response);
 
-                        // Verifica se o objeto contém a propriedade $values
-                        if (response && response.$values && response.$values.length > 0) {
-                            $.each(response.$values, function (i, city) {
-                                // Adiciona as cidades à combobox, verificando as propriedades
+                        // Acessa o campo $values para extrair as cidades
+                        var cities = response.$values || [];
+
+                        if (cities.length > 0) {
+                            $.each(cities, function (i, city) {
+                                // Verifica se o objeto `city` tem `id` e `name`
                                 if (city.id && city.name) {
                                     $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
                                 } else {
@@ -152,4 +154,6 @@
         });
     </script>
 }
+
+
 
