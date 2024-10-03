@@ -10,6 +10,7 @@ using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 using AirCinelMVC.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Vereyon.Web;
 
 namespace AirCinelMVC.Controllers
 {
@@ -20,17 +21,20 @@ namespace AirCinelMVC.Controllers
         private readonly ICountryRepository _countryRepository;
         private readonly IBlobHelper _blobHelper;
         private readonly IConverterHelper _converterHelper;
+        private readonly IFlashMessage _flashMessage;
 
         public AirportsController(
             IAirportRepository airportRepository, 
             ICountryRepository countryRepository,
             IBlobHelper blobHelper,
-            IConverterHelper converterHelper)
+            IConverterHelper converterHelper,
+            IFlashMessage flashMessage)
         {
             _airportRepository = airportRepository;
             _countryRepository = countryRepository;
             _blobHelper = blobHelper;
             _converterHelper = converterHelper;
+            _flashMessage = flashMessage;
         }
 
         // GET: Airports
@@ -78,18 +82,26 @@ namespace AirCinelMVC.Controllers
         public async Task<IActionResult> Create(CreateNewAirportViewModel createNewAirportViewModel)
         {
             if (ModelState.IsValid)
-            {        
-                Guid imageId = Guid.Empty;
-
-                if (createNewAirportViewModel.ImageFile != null && createNewAirportViewModel.ImageFile.Length > 0)
+            {
+                try
                 {
-                    imageId = await _blobHelper.UploadBlobAsync(createNewAirportViewModel.ImageFile, "flags");
+                    Guid imageId = Guid.Empty;
+
+                    if (createNewAirportViewModel.ImageFile != null && createNewAirportViewModel.ImageFile.Length > 0)
+                    {
+                        imageId = await _blobHelper.UploadBlobAsync(createNewAirportViewModel.ImageFile, "flags");
+                    }
+
+                    var newAirport = _converterHelper.ToAirport(createNewAirportViewModel, imageId, true);
+
+                    await _airportRepository.CreateAsync(newAirport);
+                    return RedirectToAction(nameof(Index));
                 }
-
-                var newAirport = _converterHelper.ToAirport(createNewAirportViewModel, imageId, true);
-
-                await _airportRepository.CreateAsync(newAirport);
-                return RedirectToAction(nameof(Index));
+                catch (Exception)
+                {
+                    _flashMessage.Danger("This airport already exists");
+                }
+                
             }
 
             return View(createNewAirportViewModel);

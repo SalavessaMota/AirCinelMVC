@@ -10,6 +10,7 @@ using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using AirCinelMVC.Helpers;
+using Vereyon.Web;
 
 namespace AirCinelMVC.Controllers
 {
@@ -17,12 +18,15 @@ namespace AirCinelMVC.Controllers
     public class CountriesController : Controller
     {
         private readonly ICountryRepository _countryRepository;
+        private readonly IFlashMessage _flashMessage;
 
         public CountriesController(
-            ICountryRepository countryRepository
+            ICountryRepository countryRepository,
+            IFlashMessage flashMessage
             )
         {
             _countryRepository = countryRepository;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> DeleteCity(int? id)
@@ -157,7 +161,7 @@ namespace AirCinelMVC.Controllers
                 }
                 catch (Exception)
                 {
-                    
+                    _flashMessage.Danger("This country already exists");
                 }
 
                 return View(country);
