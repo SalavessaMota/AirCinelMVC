@@ -33,5 +33,7 @@ namespace AirCinelMVC.Helpers
         Task<List<string>> GetRolesAsync(User user);
 
         Task<IdentityResult> RemoveRolesAsync(User user, IEnumerable<string> roles);
+
+        Task<SignInResult> ValidatePasswordAsync(User user, string password);
     }
 }

@@ -90,5 +90,10 @@ namespace AirCinelMVC.Helpers
         {
             return await _userManager.RemoveFromRolesAsync(user, roles);
         }
+
+        public async Task<SignInResult> ValidatePasswordAsync(User user, string password)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(user, password, false);
+        }
     }
 }

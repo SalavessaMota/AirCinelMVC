@@ -60,9 +60,11 @@ namespace AirCinelMVC.Controllers
             return View(futureFlights);
         }
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserUpcomingFlights()
         {
             var currentUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
             var futureFlights = _flightRepository.GetFlightsByUserId(currentUser.Id)
                 .Where(f => f.DepartureTime >= DateTime.Now)
                 .OrderBy(f => f.DepartureTime)
