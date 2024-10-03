@@ -1,69 +1,80 @@
 ﻿@model IEnumerable<AirCinelMVC.Data.Entities.Flight>
 
 @{
-    ViewData["Title"] = "UpcomingFlights";
+    ViewData["Title"] = "Upcoming Flights";
 }
 
-<h2>Upcoming Flights</h2>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Upcoming Flights</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-striped" id="FlightsTable">
+                    <thead>
+                        <tr>
+                            <th>Flight Number</th>
+                            <th><i class="fas fa-plane-departure"></i> Origin</th>
+                            <th>Departure Time</th>
+                            <th><i class="fas fa-plane-arrival"></i> Destination</th>
+                            <th>Arrival Time</th>
+                            <th><i class="fas fa-plane"></i> Airplane</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FlightNumber</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
+                                    {
+                                        <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                                    }
+                                    @item.DepartureAirport.Name
+                                </td>
+                                <td>@item.DepartureTime</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
+                                    {
+                                        <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                                    }
+                                    @item.ArrivalAirport.Name
+                                </td>
+                                <td>@item.ArrivalTime</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
+                                    {
+                                        <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
+                                    }
+                                    @item.Airplane.Manufacturer @item.Airplane.Model
+                                </td>
+                                <td>
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
+                                    {
+                                        <a class="btn btn-primary" asp-action="PurchaseTicket" asp-route-flightId="@item.Id">
+                                            <i class="fas fa-ticket-alt"></i> Buy Ticket
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-primary" onclick="showModal()">
+                                            <i class="fas fa-ticket-alt"></i> Buy Ticket
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Flight Number</th>
-            <th><i class="fas fa-plane-departure"></i>  Origin</th>
-            <th></th>
-            <th><i class="fas fa-plane-arrival"></i>  Destination</th>
-            <th></th>
-            <th><i class="fas fa-plane"></i>  Airplane</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.FlightNumber</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
-                    {
-                        <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
-                    }
-                    @item.DepartureAirport.Name
-                </td>
-                <td>@item.DepartureTime</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
-                    {
-                        <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
-                    }
-                    @item.ArrivalAirport.Name
-                </td>
-                <td>@item.ArrivalTime</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
-                    {
-                        <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
-                    }
-                    @item.Airplane.Manufacturer @item.Airplane.Model
-                </td>
-
-                <td>
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
-                    {
-                        <a class="btn btn-primary" asp-action="PurchaseTicket" asp-route-flightId="@item.Id"><i class="fas fa-ticket-alt"></i>  Buy Ticket</a>
-                    }
-                    else
-                    {
-                        <button type="button" class="btn btn-primary" onclick="showModal()"><i class="fas fa-ticket-alt"></i>  Buy Ticket</button>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-<a href="~/Home/index" class="btn btn-primary btn-lg mt-3"><i class="fas fa-home"></i>  Return Home</a>
-
+<a href="~/Home/index" class="btn btn-primary btn-lg mt-3"><i class="fas fa-home"></i> Return Home</a>
 
 <div id="alertModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
@@ -80,7 +91,7 @@
             <div class="modal-footer">
                 @if (!User.Identity.IsAuthenticated || !User.IsInRole("Customer"))
                 {
-                <button type="button" class="btn btn-primary" id="btnLogin">Login</button>
+                    <button type="button" class="btn btn-primary" id="btnLogin">Login</button>
                 }
                 <button type="button" class="btn btn-primary" id="btnRegister">Register</button>
                 <button type="button" class="btn btn-secondary" id="btnReturn">Return</button>
@@ -107,6 +118,15 @@
 
         $('#btnReturn').click(function () {
             $('#alertModal').modal('hide');
+        });
+    </script>
+
+    <!-- Adiciona DataTables para a funcionalidade de pesquisa e paginação -->
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#FlightsTable').DataTable();
         });
     </script>
 }

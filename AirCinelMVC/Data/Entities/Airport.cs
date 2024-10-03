@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace AirCinelMVC.Data.Entities
@@ -14,6 +15,8 @@ namespace AirCinelMVC.Data.Entities
         public string Name { get; set; }
 
         public int CityId { get; set; }
+
+        [JsonIgnore]
         public City City { get; set; }
 
         [Display(Name = "Country Flag")]

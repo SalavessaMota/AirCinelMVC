@@ -50,7 +50,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-success">Back to List</a>
 </div>
 
 @section Scripts {
@@ -70,29 +70,30 @@
                     type: 'POST',
                     dataType: 'json',
                     data: { countryId: countryId },
-                    success: function (cities) {
+                    success: function (response) {
+                        // Check if response has $values or directly contains cities
+                        var cities = response.$values || response;
+
                         $("#CityId").append('<option value="0">(Select a city...)</option>');
                         $.each(cities, function (i, city) {
-                            $("#CityId").append('<option value="'
-                                + city.id + '">'
-                                + city.name + '</option>');
+                            $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
                         });
 
-                        // Pre-select the city if there is one
+                        // Pre-select the city if one is provided
                         if (selectedCity) {
                             $("#CityId").val(selectedCity);
                         }
                     },
-                    error: function (ex) {
-                        alert('Failed to retrieve cities.' + ex);
+                    error: function (xhr, status, error) {
+                        alert('Failed to retrieve cities. Error: ' + error);
                     }
                 });
             }
 
-            // Load cities when the page is loaded and a country is pre-selected
+            // Load cities when the page is loaded if a country is pre-selected
             if (selectedCountry && selectedCountry !== "0") {
                 $("#CountryId").val(selectedCountry); // Pre-select the country
-                loadCities(selectedCountry, selectedCity); // Load cities for that country
+                loadCities(selectedCountry, selectedCity); // Load cities for the selected country
             }
 
             // Load cities when the user changes the selected country
@@ -102,6 +103,7 @@
                     loadCities(countryId, null); // Load cities for the new country, but don't pre-select any city
                 } else {
                     $("#CityId").empty(); // Clear the city dropdown if no country is selected
+                    $("#CityId").append('<option value="0">(Select a city...)</option>');
                 }
             });
         });
