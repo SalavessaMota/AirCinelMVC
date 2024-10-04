@@ -14,6 +14,8 @@ using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf;
 using System.IO;
 using Syncfusion.Drawing;
+using Syncfusion.Pdf.Barcode;
+using System.Net.Http;
 
 namespace AirCinelMVC.Controllers
 {
@@ -403,7 +405,6 @@ namespace AirCinelMVC.Controllers
 
         public async Task<IActionResult> PrintTicket(int id)
         {
-
             var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirports(id);
 
             if (ticket == null)
@@ -411,34 +412,110 @@ namespace AirCinelMVC.Controllers
                 return NotFound();
             }
 
-
             PdfDocument document = new PdfDocument();
             PdfPage page = document.Pages.Add();
-
-
-            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 12);
             PdfGraphics graphics = page.Graphics;
 
+            PdfFont titleFont = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
+            PdfFont subtitleFont = new PdfStandardFont(PdfFontFamily.Helvetica, 16, PdfFontStyle.Bold);
+            PdfFont normalFont = new PdfStandardFont(PdfFontFamily.Helvetica, 12);
+            PdfBrush brush = PdfBrushes.Black;
 
-            graphics.DrawString("AirCinel Boarding Pass", new PdfStandardFont(PdfFontFamily.Helvetica, 20), PdfBrushes.Black, new PointF(0, 0));
-            graphics.DrawString($"Flight Number: {ticket.Flight.FlightNumber}", font, PdfBrushes.Black, new PointF(0, 40));
-            graphics.DrawString($"Departure: {ticket.Flight.DepartureAirport.Name}", font, PdfBrushes.Black, new PointF(0, 60));
-            graphics.DrawString($"Arrival: {ticket.Flight.ArrivalAirport.Name}", font, PdfBrushes.Black, new PointF(0, 80));
-            graphics.DrawString($"Seat Number: {ticket.SeatNumber}", font, PdfBrushes.Black, new PointF(0, 100));
-            graphics.DrawString($"Departure Time: {ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")}", font, PdfBrushes.Black, new PointF(0, 120));
-            graphics.DrawString($"Arrival Time: {ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm")}", font, PdfBrushes.Black, new PointF(0, 140));
+            string logoUrl = "https://aircinelmvc.blob.core.windows.net/resources/logoAirCinel.jpg";
 
+            using (var client = new HttpClient())
+            {
+                var imageBytes = await client.GetByteArrayAsync(logoUrl);
+                using (var logoStream = new MemoryStream(imageBytes))
+                {
+                    PdfBitmap logoImage = new PdfBitmap(logoStream);
+                    graphics.DrawImage(logoImage, new RectangleF(50, 10, 300, 50));
+                }
+            }
+
+            graphics.DrawString("AirCinel Boarding Pass", titleFont, brush, new PointF(10, 70));
+
+            PdfPen pen = new PdfPen(PdfBrushes.Gray, 0.5f);
+            graphics.DrawLine(pen, new PointF(0, 100), new PointF(page.GetClientSize().Width, 100));
+
+            float currentY = 110;
+            float padding = 20;
+
+            graphics.DrawString("Departure Airport:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString(ticket.Flight.DepartureAirport.Name, normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Arrival Airport:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString(ticket.Flight.ArrivalAirport.Name, normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Gate:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString("C3", normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Terminal:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString("W", normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Seat Number:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString(ticket.SeatNumber, normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Class:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString("E", normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Departure Time:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString(ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm"), normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Arrival Time:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString(ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm"), normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Passenger:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString(ticket.User.FullName, normalFont, brush, new PointF(10, currentY));
+
+            currentY += padding;
+            graphics.DrawString("Date:", subtitleFont, brush, new PointF(10, currentY));
+            currentY += padding;
+            graphics.DrawString(DateTime.Now.ToString("dd/MM/yyyy HH:mm"), normalFont, brush, new PointF(10, currentY));
+
+
+            string qrCodeText = $"Flight Number: {ticket.Flight.FlightNumber}\n" +
+                                $"Departure: {ticket.Flight.DepartureAirport.Name}\n" +
+                                $"Arrival: {ticket.Flight.ArrivalAirport.Name}\n" +
+                                $"Seat Number: {ticket.SeatNumber}\n" +
+                                $"Departure Time: {ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")}\n" +
+                                $"Arrival Time: {ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm")}\n" +
+                                $"Passenger: {ticket.User.FullName}";
+
+            PdfQRBarcode qrCode = new PdfQRBarcode();
+            qrCode.Text = qrCodeText;
+            qrCode.XDimension = 3;
+
+            qrCode.Draw(page, new PointF(10, currentY + padding));
 
             MemoryStream stream = new MemoryStream();
             document.Save(stream);
             stream.Position = 0;
 
-
             document.Close(true);
-
 
             return File(stream, "application/pdf", "BoardingPass.pdf");
         }
+
+
+
 
 
         private List<int> GetAvailableSeats(Flight flight)
