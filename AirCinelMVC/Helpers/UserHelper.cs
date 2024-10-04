@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirCinelMVC.Helpers
 {
@@ -26,6 +27,19 @@ namespace AirCinelMVC.Helpers
         {
             return _userManager.Users;
         }
+
+        public IEnumerable<User> GetAllUsersWithCity()
+        {
+            return _userManager.Users.Include(u => u.City);
+        }
+
+
+        public async Task<IdentityResult> DeleteUserAsync(User user)
+        {
+            return await _userManager.DeleteAsync(user);
+        }
+
+
 
         public IEnumerable<IdentityRole> GetAllRoles()
         {

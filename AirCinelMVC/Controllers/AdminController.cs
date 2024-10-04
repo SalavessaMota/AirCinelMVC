@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 [Authorize(Roles = "Admin")]
 public class AdminController : Controller
@@ -28,13 +29,17 @@ public class AdminController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        var users = _userHelper.GetAllUsersWithCity();
+
+        return View(users);
     }
 
 
-    public IActionResult ManageUsers()
+    public IActionResult ManageUsersRoles()
     {
         var users = _userHelper.GetAllUsers();
+        var loggedUser = _userHelper.GetUserByEmailAsync(User.Identity.Name).Result;
+        users = users.Where(u => u.Id != loggedUser.Id);
         return View(users);
     }
 
@@ -108,7 +113,7 @@ public class AdminController : Controller
             return View(model);
         }
 
-        return RedirectToAction("ManageUsers");
+        return RedirectToAction("ManageUsersRoles");
     }
 
 
@@ -159,12 +164,126 @@ public class AdminController : Controller
                     return View(model);
                 }
 
-                return RedirectToAction("ManageUsers", "Admin");
+                return RedirectToAction("ManageUsersRoles", "Admin");
             }
         }
 
         return View(model);
     }
+
+
+    //TODO: Juntar create customer e employee
+
+
+    public async Task<IActionResult> EditUser(string id)
+    {
+        var user = await _userHelper.GetUserByIdAsync(id);
+        var model = new ChangeUserViewModel();
+        if (user != null)
+        {
+            model.FirstName = user.FirstName;
+            model.LastName = user.LastName;
+            model.Address = user.Address;
+            model.PhoneNumber = user.PhoneNumber;
+
+            var city = await _countryRepository.GetCityAsync(user.CityId);
+            if (city != null)
+            {
+                var country = await _countryRepository.GetCountryAsync(city);
+                if (country != null)
+                {
+                    model.CountryId = country.Id;
+                    model.CityId = city.Id;
+
+                    // Populando as listas de países e cidades
+                    model.Countries = _countryRepository.GetComboCountries();
+                    model.Cities = _countryRepository.GetComboCities(country.Id);
+                }
+            }
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditUser(ChangeUserViewModel model, string id)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userHelper.GetUserByIdAsync(id);
+            if (user != null)
+            {
+                var city = await _countryRepository.GetCityAsync(model.CityId);
+
+                // Atualiza os dados do usuário
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Address = model.Address;
+                user.PhoneNumber = model.PhoneNumber;
+                user.CityId = model.CityId;
+                user.City = city;
+
+                // Verifica se há uma nova imagem para upload
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                    user.ImageId = imageId;
+                }
+
+                var response = await _userHelper.UpdateUserAsync(user);
+                if (response.Succeeded)
+                {
+                    ViewBag.UserMessage = "User updated!";
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault()?.Description);
+                }
+            }
+        }
+
+        // Recarrega as listas de países e cidades
+        model.Countries = _countryRepository.GetComboCountries();
+        if (model.CountryId != 0)
+        {
+            model.Cities = _countryRepository.GetComboCities(model.CountryId);
+        }
+
+        return View(model);
+    }
+
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return new NotFoundViewResult("UserNotFound");
+        }
+
+        var user = await _userHelper.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            return new NotFoundViewResult("UserNotFound");
+        }
+
+        try
+        {
+            await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
+            await _userHelper.DeleteUserAsync(user);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+            {
+                ViewBag.ErrorTitle = $"This User is probably being used!";
+                ViewBag.ErrorMessage = $"This User can't be deleted because he has tickets bought.</br></br>";
+            }
+
+            return View("Error");
+        }
+    }
+
+
 
     public IActionResult UserNotFound()
     {

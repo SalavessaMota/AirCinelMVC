@@ -66,13 +66,10 @@
     </div>
 
     <div class="form-group">
-        <input type="submit" value="Register New User" class="btn btn-primary" />
+        <input type="submit" value="Register New Employee" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-success"><i class="fas fa-list"></i> Back to List</a>
     </div>
 </form>
-
-<div>
-    <a asp-action="ManageUsers">Back to List</a>
-</div>
 
 <div class="text-success">
     <p>
@@ -81,35 +78,54 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script type="text/javascript">
         $(document).ready(function () {
+            var successMessage = '@ViewBag.Message';
+            if (successMessage !== "") {
+                $('#successModal').modal('show');
+            }
+
+            $('#btnOk').click(function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+
             $("#CountryId").change(function () {
                 $("#CityId").empty();
+                $("#CityId").append('<option value="0">(Select a city...)</option>'); // Adiciona uma opção padrão
+
                 $.ajax({
-                    url: '@Url.Action("GetCitiesAsync", "Admin")',
+                    url: '@Url.Action("GetCitiesAsync", "Account")',
                     type: 'POST',
                     dataType: 'json',
                     data: { countryId: $("#CountryId").val() },
-                    success: function (cities) {
-                        debugger;
-                        $("#CityId").append('<option value="0">(Select a city...)</option>');
-                        $.each(cities, function (i, city) {
-                            $("#CityId").append('<option value="'
-                                + city.id + '">'
-                                + city.name + '</option>');
-                        });
+                    success: function (response) {
+                        console.log("Cities response: ", response);
+
+                        // Acessa o campo $values para extrair as cidades
+                        var cities = response.$values || [];
+
+                        if (cities.length > 0) {
+                            $.each(cities, function (i, city) {
+                                // Verifica se o objeto `city` tem `id` e `name`
+                                if (city.id && city.name) {
+                                    $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
+                                } else {
+                                    console.warn("City data is incomplete or undefined: ", city);
+                                }
+                            });
+                        } else {
+                            console.warn("No cities found in the response.");
+                        }
                     },
-                    error: function (ex) {
-                        debugger;
-                        alert('Failed to retrieve cities.' + ex);
+                    error: function (xhr, status, error) {
+                        console.error("Error in AJAX request: ", error);
                     }
                 });
+
                 return false;
-            })
+            });
         });
     </script>
 }

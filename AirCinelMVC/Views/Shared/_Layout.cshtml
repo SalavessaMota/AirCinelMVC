@@ -12,7 +12,7 @@
 <body>
     @inject UserManager<AirCinelMVC.Data.Entities.User> UserManager
 
-    <header class="mb-5">
+    <header class="mb-3">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                 <img src="https://aircinelmvc.blob.core.windows.net/resources/logoAirCinel.jpg" alt="LogoAirCinel" width="auto" height="40" />
@@ -43,7 +43,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs mr-1" aria-hidden="true"></i>Admin</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ManageUsers"><i class="fas fa-user-cog"></i>  Admin Panel</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index"><i class="fas fa-user-cog"></i>  Admin Panel</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Airplanes" asp-action="Index"><i class="fas fa-plane"></i>  Airplanes</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action="Index"><i class="fas fa-globe-europe"></i>  Countries/Cities</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Airports" asp-action="Index"><img src="https://aircinelmvc.blob.core.windows.net/resources/airport.ico" class="ml-0" height="20px"/> Airports</a></li>

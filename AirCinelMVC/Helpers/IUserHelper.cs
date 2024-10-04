@@ -10,6 +10,10 @@ namespace AirCinelMVC.Helpers
     {
         IEnumerable<User> GetAllUsers();
 
+        IEnumerable<User> GetAllUsersWithCity();
+
+        Task<IdentityResult> DeleteUserAsync(User user);
+
         IEnumerable<IdentityRole> GetAllRoles();
 
         Task<User> GetUserByEmailAsync(string email);
