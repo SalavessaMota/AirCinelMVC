@@ -78,6 +78,18 @@ namespace AirCinelMVC.Controllers
             return View(futureFlights);
         }
 
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UserFlightHistory()
+        {
+            var currentUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            var futureFlights = _flightRepository.GetFlightsByUserId(currentUser.Id)
+                .Where(f => f.DepartureTime < DateTime.Now)
+                .OrderBy(f => f.DepartureTime)
+                .ToList();
+            return View(futureFlights);
+        }
+
 
         // GET: Flights/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -515,7 +527,19 @@ namespace AirCinelMVC.Controllers
         }
 
 
+        public async Task<IActionResult> UserTickets()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var tickets = await _flightRepository.GetTicketsByUserIdAsync(user.Id);
+
+            return View(tickets);
+        }
 
 
         private List<int> GetAvailableSeats(Flight flight)
