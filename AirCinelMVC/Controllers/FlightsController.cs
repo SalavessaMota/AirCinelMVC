@@ -379,8 +379,26 @@ namespace AirCinelMVC.Controllers
             flight.Tickets.Add(ticket);
             await _flightRepository.UpdateAsync(flight);
 
-            return RedirectToAction("Details", new { id = model.FlightId });
+
+
+            return RedirectToAction("TicketDetails", new { id = ticket.Id });
         }
+
+        public async Task<IActionResult> TicketDetails(int id)
+        {
+            var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirports(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return View(ticket);
+        }
+
+
+
+
 
         private List<int> GetAvailableSeats(Flight flight)
         {

@@ -26,6 +26,12 @@ public class AdminController : Controller
     }
 
 
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+
     public IActionResult ManageUsers()
     {
         var users = _userHelper.GetAllUsers();

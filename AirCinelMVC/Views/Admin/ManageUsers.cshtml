@@ -15,25 +15,25 @@
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.UserName</td>
-                <td>@user.FullName</td>
-                <td>
-                    <a asp-action="EditUserRoles" asp-route-userEmail="@user.Email" class="btn btn-primary">Edit Roles</a>
-                </td>
-            </tr>
-        }
-    </tbody>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td>@user.FullName</td>
+                                <td>
+                                    <a asp-action="EditUserRoles" asp-route-userEmail="@user.Email" class="btn btn-primary">Edit Roles</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
             </div>
         </div>

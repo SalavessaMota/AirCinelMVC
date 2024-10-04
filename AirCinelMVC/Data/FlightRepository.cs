@@ -65,5 +65,17 @@ namespace AirCinelMVC.Data
         {
             return _context.Flights.Any(f => f.Id == id);
         }
+
+
+        public async Task<Ticket> GetTicketWithUserFlightAirplaneAndAirports(int id)
+        {
+            return await _context.Tickets
+                .Include(t => t.Flight)
+                .ThenInclude(f => f.Airplane)
+                .Include(t => t.Flight.DepartureAirport)
+                .Include(t => t.Flight.ArrivalAirport)
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
     }
 }

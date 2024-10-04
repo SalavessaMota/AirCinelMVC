@@ -18,5 +18,7 @@ namespace AirCinelMVC.Data
         public Task<Flight> GetFlightWithAirplaneAirportsAndTickets(int id);
 
         public bool ExistFlight(int id);
+
+        public Task<Ticket> GetTicketWithUserFlightAirplaneAndAirports(int id);
     }
 }
