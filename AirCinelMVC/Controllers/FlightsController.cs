@@ -10,6 +10,10 @@ using AirCinelMVC.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
+using Syncfusion.Pdf.Graphics;
+using Syncfusion.Pdf;
+using System.IO;
+using Syncfusion.Drawing;
 
 namespace AirCinelMVC.Controllers
 {
@@ -397,7 +401,44 @@ namespace AirCinelMVC.Controllers
         }
 
 
+        public async Task<IActionResult> PrintTicket(int id)
+        {
 
+            var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirports(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.Pages.Add();
+
+
+            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 12);
+            PdfGraphics graphics = page.Graphics;
+
+
+            graphics.DrawString("AirCinel Boarding Pass", new PdfStandardFont(PdfFontFamily.Helvetica, 20), PdfBrushes.Black, new PointF(0, 0));
+            graphics.DrawString($"Flight Number: {ticket.Flight.FlightNumber}", font, PdfBrushes.Black, new PointF(0, 40));
+            graphics.DrawString($"Departure: {ticket.Flight.DepartureAirport.Name}", font, PdfBrushes.Black, new PointF(0, 60));
+            graphics.DrawString($"Arrival: {ticket.Flight.ArrivalAirport.Name}", font, PdfBrushes.Black, new PointF(0, 80));
+            graphics.DrawString($"Seat Number: {ticket.SeatNumber}", font, PdfBrushes.Black, new PointF(0, 100));
+            graphics.DrawString($"Departure Time: {ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")}", font, PdfBrushes.Black, new PointF(0, 120));
+            graphics.DrawString($"Arrival Time: {ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm")}", font, PdfBrushes.Black, new PointF(0, 140));
+
+
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+
+
+            document.Close(true);
+
+
+            return File(stream, "application/pdf", "BoardingPass.pdf");
+        }
 
 
         private List<int> GetAvailableSeats(Flight flight)

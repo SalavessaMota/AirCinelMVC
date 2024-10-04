@@ -20,6 +20,7 @@ using Azure.Core.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Vereyon.Web;
+using Syncfusion.Licensing;
 
 namespace AirCinelMVC
 {
@@ -35,6 +36,8 @@ namespace AirCinelMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWH9edHRSR2VYVkN+V0Q=");
+
             services.AddIdentity<User, IdentityRole>(cfg =>
             {
                 cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
