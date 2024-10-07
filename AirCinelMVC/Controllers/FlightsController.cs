@@ -39,13 +39,9 @@ namespace AirCinelMVC.Controllers
         }
 
         // GET: Flights
-        
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Admin"))
-            {
-                return RedirectToAction("NotAuthorized", "Account");
-            }
             return View(_flightRepository.GetAllFlightsWithAirplaneAndAirports().OrderBy(f => f.DepartureTime));
         }
 
@@ -363,7 +359,7 @@ namespace AirCinelMVC.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PurchaseTicket(PurchaseTicketViewModel model)
         {

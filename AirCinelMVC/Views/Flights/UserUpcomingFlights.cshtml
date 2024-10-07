@@ -33,7 +33,7 @@
                     }
                     @item.DepartureAirport.Name
                 </td>
-                <td>@item.DepartureTime</td>
+                                <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
                     {
@@ -41,7 +41,7 @@
                     }
                     @item.ArrivalAirport.Name
                 </td>
-                <td>@item.ArrivalTime</td>
+                                <td>@item.ArrivalTime.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
                     {

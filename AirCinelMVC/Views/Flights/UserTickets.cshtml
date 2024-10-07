@@ -25,6 +25,7 @@
                             <th><i class="fas fa-plane-arrival"></i> Destination</th>
                             <th>Arrival Time</th>
                             <th><i class="fas fa-plane"></i> Airplane</th>
+                            <th>Seat Number</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -35,11 +36,15 @@
                                 <td>@ticket.Flight.FlightNumber</td>
                                 <td>@ticket.Flight.DepartureAirport.Name</td>
                                 <td>
-                                    (@ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+                                    @ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")
                                 </td>
                                 <td>@ticket.Flight.ArrivalAirport.Name</td>
                                 <td>
-                                    (@ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm"))
+                                    @ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+                                <td>
+                                    @ticket.Flight.Airplane.Manufacturer @ticket.Flight.Airplane.Model
+                                </td>
                                 <td>@ticket.SeatNumber</td>
                                 <td>
                                     <a href="~/Flights/PrintTicket/@ticket.Id" class="btn btn-primary">

@@ -85,6 +85,7 @@ namespace AirCinelMVC.Data
                                  .Include(t => t.Flight)
                                  .Include(t => t.Flight.DepartureAirport)
                                  .Include(t => t.Flight.ArrivalAirport)
+                                 .Include(t => t.Flight.Airplane)
                                  .Where(t => t.UserId == userId)
                                  .ToListAsync();
         }

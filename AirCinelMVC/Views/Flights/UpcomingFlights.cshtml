@@ -11,7 +11,7 @@
                 <h3 class="card-title">Upcoming Flights</h3>
             </div>
             <div class="card-body">
-                <table class="table table-hover table-striped" id="FlightsTable">
+                <table class="table table-hover table-striped" id="MyTable">
                     <thead>
                         <tr>
                             <th>Flight Number</th>
@@ -35,7 +35,7 @@
                                     }
                                     @item.DepartureAirport.Name
                                 </td>
-                                <td>@item.DepartureTime</td>
+                                <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
                                     {
@@ -43,7 +43,7 @@
                                     }
                                     @item.ArrivalAirport.Name
                                 </td>
-                                <td>@item.ArrivalTime</td>
+                                <td>@item.ArrivalTime.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
                                     {
