@@ -119,7 +119,6 @@ namespace AirCinelMVC.Controllers
                 }
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-
                 string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action("ConfirmEmail", "Account", new
                 {
@@ -127,14 +126,20 @@ namespace AirCinelMVC.Controllers
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
-                    $"To allow the user, " +
-                    $"please click on this link:<p><a href = \"{tokenLink}\">Confirm Email</a></p>");
-
+                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
+                                                        $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
+                                                        $"<p>Thank you for choosing AirCinel, your trusted airline for premium travel experiences.</p>" +
+                                                        $"<p>We're excited to have you onboard. To complete your registration, please confirm your email address by clicking the link below:</p>" +
+                                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+                                                        $"<p>If you didn’t create this account, please disregard this email.</p>" +
+                                                        $"<br>" +
+                                                        $"<p>Safe travels,</p>" +
+                                                        $"<p>The AirCinel Team</p>" +
+                                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "The instructions to allow your user registration have been sent to your email.";
+                    ViewBag.Message = "The instructions to allow your account registration have been sent to your email.";
                     return View(model);
                 }
 
@@ -321,12 +326,10 @@ namespace AirCinelMVC.Controllers
             return View();
         }
 
-
         public IActionResult RecoverPassword()
         {
             return View();
         }
-
 
         [HttpPost]
         public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
@@ -347,9 +350,15 @@ namespace AirCinelMVC.Controllers
                     "Account",
                     new { token = myToken }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Email, "AirCinel Password Reset", $"<h1>AirCinel Password Reset</h1>" +
-                $"To reset the password click in this link:</br></br>" +
-                $"<a href = \"{link}\">Reset Password</a>");
+                Response response = _mailHelper.SendEmail(model.Email, "AirCinel - Password Reset",
+                                                        $"<h1 style=\"color:#1E90FF;\">AirCinel Password Reset</h1>" +
+                                                        $"<p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>" +
+                                                        $"<p><a href = \"{link}\" style=\"color:#FFA500; font-weight:bold;\">Reset Password</a></p>" +
+                                                        $"<p>If you did not request a password reset, please ignore this email. Your account is still secure.</p>" +
+                                                        $"<br>" +
+                                                        $"<p>Best regards,</p>" +
+                                                        $"<p>The AirCinel Team</p>" +
+                                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
 
                 if (response.IsSuccess)
                 {
@@ -357,7 +366,6 @@ namespace AirCinelMVC.Controllers
                 }
 
                 return this.View();
-
             }
 
             return this.View(model);
@@ -367,7 +375,6 @@ namespace AirCinelMVC.Controllers
         {
             return View();
         }
-
 
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -389,7 +396,6 @@ namespace AirCinelMVC.Controllers
             this.ViewBag.Message = "User not found.";
             return View(model);
         }
-
 
         public IActionResult NotAuthorized()
         {

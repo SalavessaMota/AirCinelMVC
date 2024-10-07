@@ -158,6 +158,10 @@ public class AdminController : Controller
 
                 var result = await _userHelper.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Employee");
+
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
+
                 if (result != IdentityResult.Success)
                 {
                     ModelState.AddModelError(string.Empty, "The employee couldn't be created.");
@@ -212,6 +216,11 @@ public class AdminController : Controller
 
                 var result = await _userHelper.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
+
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
+
+
                 if (result != IdentityResult.Success)
                 {
                     ModelState.AddModelError(string.Empty, "The customer couldn't be created.");
