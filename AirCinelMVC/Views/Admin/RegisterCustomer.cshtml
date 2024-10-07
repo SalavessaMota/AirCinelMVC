@@ -1,6 +1,10 @@
 ﻿@model AirCinelMVC.Models.RegisterNewUserViewModel
 
-<h2>Register New Employee</h2>
+@{
+    ViewData["Title"] = "RegisterCustomer";
+}
+
+<h1>Register New Customer</h1>
 
 <form method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly"></div>
@@ -66,7 +70,7 @@
     </div>
 
     <div class="form-group">
-        <input type="submit" value="Register New Employee" class="btn btn-primary" />
+        <input type="submit" value="Register New Customer" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-success"><i class="fas fa-list"></i> Back to List</a>
     </div>
 </form>

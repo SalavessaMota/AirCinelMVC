@@ -120,7 +120,7 @@ public class AdminController : Controller
 
     public IActionResult RegisterEmployee()
     {
-        var model = new RegisterEmployeeViewModel
+        var model = new RegisterNewUserViewModel
         {
             Countries = _countryRepository.GetComboCountries(),
             Cities = _countryRepository.GetComboCities(1)
@@ -129,7 +129,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterEmployee(RegisterEmployeeViewModel model)
+    public async Task<IActionResult> RegisterEmployee(RegisterNewUserViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -164,15 +164,66 @@ public class AdminController : Controller
                     return View(model);
                 }
 
-                return RedirectToAction("ManageUsersRoles", "Admin");
+                return RedirectToAction("Index", "Admin");
             }
         }
 
         return View(model);
     }
 
+    public IActionResult RegisterCustomer()
+    {
 
-    //TODO: Juntar create customer e employee
+       var model = new RegisterNewUserViewModel
+        {
+            Countries = _countryRepository.GetComboCountries(),
+            Cities = _countryRepository.GetComboCities(1)
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RegisterCustomer(RegisterNewUserViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(model.Username);
+            if (user == null)
+            {
+                var city = await _countryRepository.GetCityAsync(model.CityId);
+
+                user = new User
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Username,
+                    UserName = model.Username,
+                    Address = model.Address,
+                    PhoneNumber = model.PhoneNumber,
+                    CityId = model.CityId
+                };
+
+
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                    user.ImageId = imageId;
+                }
+
+                var result = await _userHelper.AddUserAsync(user, model.Password);
+                await _userHelper.AddUserToRoleAsync(user, "Customer");
+                if (result != IdentityResult.Success)
+                {
+                    ModelState.AddModelError(string.Empty, "The customer couldn't be created.");
+                    return View(model);
+                }
+
+                return RedirectToAction("Index", "Admin");
+            }
+        }
+
+        return View(model);
+    }
 
 
     public async Task<IActionResult> EditUser(string id)
@@ -251,6 +302,31 @@ public class AdminController : Controller
 
         return View(model);
     }
+
+
+    public async Task<IActionResult> Details(string id)
+    {
+        if (id == null)
+        {
+            return new NotFoundViewResult("UserNotFound");
+        }
+
+        var user = await _userHelper.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            return new NotFoundViewResult("UserNotFound");
+        }
+
+        var city = await _countryRepository.GetCityAsync(user.CityId);
+        if (city == null)
+        {
+            return new NotFoundViewResult("UserNotFound");
+        }
+        user.City = city;
+
+        return View(user);
+    }
+
 
     public async Task<IActionResult> DeleteUser(string id)
     {
