@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<AirCinelMVC.Data.Entities.Ticket>
 @{
-    ViewData["Title"] = "UserTickets";
+    ViewData["Title"] = "AllTickets";
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
@@ -24,6 +24,7 @@
                             <th>Arrival Time</th>
                             <th><i class="fas fa-plane"></i> Airplane</th>
                             <th>Seat Number</th>
+                            <th>User</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -44,6 +45,7 @@
                                     @ticket.Flight.Airplane.Manufacturer @ticket.Flight.Airplane.Model
                                 </td>
                                 <td>@ticket.SeatNumber</td>
+                                <td>@ticket.User.FullName</td>
                                 <td>
                                     <a href="~/Flights/PrintTicket/@ticket.Id" class="btn btn-primary">
                                         <i class="fas fa-print"></i> Print
@@ -74,3 +76,4 @@
         });
     </script>
 }
+

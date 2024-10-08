@@ -18,12 +18,5 @@ namespace AirCinelMVC.Data
         {
             return _context.Airports;
         }
-
-        public async Task<Airport> GetAirportByNameAsync(string name)
-        {
-            return await _context.Airports
-                .Where(a => a.Name == name)
-                .FirstOrDefaultAsync();
-        }
     }
 }

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace AirCinelMVC.Controllers
@@ -528,6 +529,14 @@ namespace AirCinelMVC.Controllers
             }
 
             var tickets = await _flightRepository.GetTicketsByUserIdAsync(user.Id);
+
+            return View(tickets);
+        }
+
+        [Authorize(Roles = "Employee")]
+        public async Task<IActionResult> AllTickets()
+        {
+            var tickets = await _flightRepository.GetAllTicketsWithAllInfo();
 
             return View(tickets);
         }

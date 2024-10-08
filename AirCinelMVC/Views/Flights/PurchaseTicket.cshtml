@@ -1,5 +1,7 @@
-﻿@model PurchaseTicketViewModel
-
+﻿@model AirCinelMVC.Models.PurchaseTicketViewModel
+@{
+    ViewData["Title"] = "PurchaseTicket";
+}
 <div class="text-center">
     <h2>Select a seat for Flight @Model.FlightId</h2>
 </div>
@@ -93,6 +95,3 @@
         visibility: hidden;
     }
 </style>
-
-
-

@@ -21,16 +21,6 @@ namespace AirCinelMVC.Data
             return _context.Airplanes;
         }
 
-        public IQueryable<Manufacturer> GetAllManufacturers()
-        {
-            return _context.Manufacturers;
-        }
-
-        public IQueryable<Model> GetAllModels()
-        {
-            return _context.Models;
-        }
-
         public async Task<Manufacturer> GetManufacturerWithModelsAsync(int id)
         {
             return await _context.Manufacturers

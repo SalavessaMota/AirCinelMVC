@@ -10,10 +10,6 @@ namespace AirCinelMVC.Data
     {
         public IQueryable<Airplane> GetAllAirplanes();
 
-        public IQueryable<Manufacturer> GetAllManufacturers();
-
-        public IQueryable<Model> GetAllModels();
-
         public IEnumerable<SelectListItem> GetComboManufacturers();
 
         public IEnumerable<SelectListItem> GetComboModels(int manufacturerId);
