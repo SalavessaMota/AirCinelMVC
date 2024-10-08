@@ -76,6 +76,7 @@ namespace AirCinelMVC
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<ISeatHelper, SeatHelper>();
 
             services.AddScoped<IAirplaneRepository, AirplaneRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
