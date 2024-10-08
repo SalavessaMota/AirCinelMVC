@@ -19,12 +19,33 @@ namespace AirCinelMVC.Helpers
 
         public string ConvertSeatNumber(int seatNumber, string airplaneModel)
         {
-            int seatsPerRow = GetSeatsPerRowByModel(airplaneModel);
-            int row = (seatNumber - 1) / seatsPerRow + 1;
-            int seatPositionInRow = (seatNumber - 1) % seatsPerRow;
-            char seatLetter = (char)('A' + seatPositionInRow);
-            return $"{row}{seatLetter}";
+            int seatsPerRow = GetSeatsAndCorridorsPerRowByModel(airplaneModel);
+            int[,] seatMap = GenerateSeatMap(airplaneModel, seatNumber);
+
+            int seatCount = 0;
+            for (int row = 0; row < seatMap.GetLength(0); row++)
+            {
+                int letterIndex = 0;
+                for (int col = 0; col < seatMap.GetLength(1); col++)
+                {
+                    if (seatMap[row, col] == 1)
+                    {
+                        seatCount++;
+                        char seatLetter = (char)('A' + letterIndex); 
+
+                        if (seatCount == seatNumber)
+                        {
+                            return $"{row + 1}{seatLetter}";
+                        }
+
+                        letterIndex++;
+                    }
+                }
+            }
+
+            return string.Empty;
         }
+
 
         public int ConvertSeatStringToNumber(string seatString, string airplaneModel)
         {
@@ -32,32 +53,91 @@ namespace AirCinelMVC.Helpers
             char seatLetter = seatString.Last();
 
             int row = int.Parse(rowPart);
-            int seatsPerRow = GetSeatsPerRowByModel(airplaneModel);
+            int seatsPerRow = GetSeatsAndCorridorsPerRowByModel(airplaneModel);
             int seatPositionInRow = seatLetter - 'A';
 
             return (row - 1) * seatsPerRow + seatPositionInRow + 1;
         }
 
-        public int GetSeatsPerRowByModel(string model)
+        public int GetSeatsAndCorridorsPerRowByModel(string model)
         {
             return model switch
             {
-                "A319" => 6,
-                "A320" => 6,
-                "A330" => 8,
-                "A350" => 9,
-                "A380" => 10,
-                "737" => 6,
-                "747" => 10,
-                "757" => 6,
-                "767" => 7,
-                "777" => 9,
-                "E170" => 4,
-                "E175" => 4,
-                "E190" => 4,
-                "E195" => 4,
-                _ => 6
+                "A319" => 7,  
+                "A320" => 7,  
+                "A330" => 10, 
+                "A350" => 10, 
+                "A380" => 12, 
+                "737" => 7,   
+                "747" => 12,  
+                "757" => 7,   
+                "767" => 9,   
+                "777" => 10,  
+                "E170" => 5,  
+                "E175" => 5,  
+                "E190" => 5,  
+                "E195" => 5,  
+                _ => 7        
             };
+        }
+
+        public int[,] GenerateSeatMap(string airplaneModel, int capacity)
+        {
+            int seatsPerRow = GetSeatsAndCorridorsPerRowByModel(airplaneModel);
+            int totalRows = capacity / seatsPerRow;
+
+            int[,] seatMap = new int[totalRows, seatsPerRow];
+
+            for (int row = 0; row < totalRows; row++)
+            {
+                for (int col = 0; col < seatsPerRow; col++)
+                {
+                    seatMap[row, col] = 1;
+                }
+            }
+
+            List<int> corridorPositions = GetCorridorPositions(seatsPerRow);
+            foreach (int corridorPosition in corridorPositions)
+            {
+                for (int row = 0; row < totalRows; row++)
+                {
+                    seatMap[row, corridorPosition] = 0;
+                }
+            }
+
+            return seatMap;
+        }
+
+        public List<int> GetCorridorPositions(int seatsPerRow)
+        {
+            List<int> corridorPositions = new List<int>();
+
+            if (seatsPerRow < 8)
+            {
+                corridorPositions.Add(seatsPerRow / 2);
+            }
+            else if (seatsPerRow == 9)
+            {
+                corridorPositions.Add(2);
+                corridorPositions.Add(6);
+            }
+            else if (seatsPerRow == 10)
+            {
+                corridorPositions.Add(2);
+                corridorPositions.Add(7);
+            }
+            else if (seatsPerRow == 11)
+            {
+                corridorPositions.Add(3);
+                corridorPositions.Add(7);
+            }
+            else if (seatsPerRow == 12)
+            {
+                corridorPositions.Add(3);
+                corridorPositions.Add(8);
+            }
+
+            return corridorPositions;
         }
     }
 }

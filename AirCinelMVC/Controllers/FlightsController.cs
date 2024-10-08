@@ -343,16 +343,20 @@ namespace AirCinelMVC.Controllers
                 return NotFound();
             }
 
-            var availableSeats = _seatHelper.GetAvailableSeats(flight);
+            var seatMap = _seatHelper.GenerateSeatMap(flight.Airplane.Model, flight.Airplane.Capacity);
+
+            var occupiedSeats = flight.Tickets.Select(t => t.SeatNumber).ToList();
 
             var model = new PurchaseTicketViewModel
             {
                 FlightId = flight.Id,
-                AvailableSeats = availableSeats.Select(seat => _seatHelper.ConvertSeatNumber(seat, flight.Airplane.Model)).ToList()
+                SeatMap = seatMap,
+                OccupiedSeats = occupiedSeats 
             };
 
             return View(model);
         }
+
 
         [HttpPost]
         [Authorize(Roles = "Customer")]

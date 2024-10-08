@@ -1,24 +1,98 @@
 ﻿@model PurchaseTicketViewModel
 
-<h2>Select a seat for Flight @Model.FlightId</h2>
+<div class="text-center">
+    <h2>Select a seat for Flight @Model.FlightId</h2>
+</div>
 
 <form asp-action="PurchaseTicket" method="post">
     <input type="hidden" asp-for="FlightId" />
+    <p class="text-center">(Front of the Airplane)</p>
+    <div class="seat-map">
+        @for (int row = 0; row < @Model.SeatMap.GetLength(0); row++)
+        {
+            <div class="seat-row">
+                @{
+                    int seatLetterIndex = 0;
+                }
+                @for (int col = 0; col < @Model.SeatMap.GetLength(1); col++)
+                {
+                    if (@Model.SeatMap[row, col] == 1)
+                    {
+                        string seatNumber = $"{row + 1}{(char)('A' + seatLetterIndex)}";
+                        bool isOccupied = @Model.OccupiedSeats.Contains(seatNumber);
 
-    <div class="form-group">
-        <label for="seat">Available Seats:</label>
-        <select asp-for="SelectedSeat" class="form-control">
-            @foreach (var seat in Model.AvailableSeats)
-            {
-                <option value="@seat">@seat</option>
-            }
-        </select>
+                        <label class="seat-label @(isOccupied ? "occupied" : "available")">
+                            <input type="radio" name="SelectedSeat" value="@seatNumber" @(isOccupied ? "disabled" : "") />
+                            @seatNumber
+                        </label>
+
+                        seatLetterIndex++;
+                    }
+                    else
+                    {
+                        <span class="corridor"></span>
+                    }
+                }
+            </div>
+        }
     </div>
-    <button type="submit" class="btn btn-primary" onclick="window.location.href='@Url.Content("~/Flights/TicketDetails")'"><i class="far fa-check-square"></i>  Confirm Seat Selection</button>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Confirm Seat Selection</button>
+        <a href="~/Home/index" class="btn btn-primary"><i class="fas fa-home"></i> Return Home</a>
+    </div>
 </form>
 
-<div class="text-center">
-    <button type="button" class="btn btn-primary" onclick="window.location.href='@Url.Content("~/Home/Index")'">
-        <i class="fas fa-home"></i> Return Home
-    </button>
-</div>
+<style>
+    .seat-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .seat-row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .seat-label {
+        margin: 0 5px;
+        padding: 10px;
+        width: 45px;
+        height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #198754;
+        color: white;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 14px;
+        position: relative;
+    }
+
+        .seat-label.occupied {
+            background-color: red;
+            color: white;
+        }
+
+        .seat-label input[type="radio"] {
+            top: 5px;
+            right: 7px;
+            z-index: 10;
+        }
+
+    .corridor {
+        width: 45px;
+        background-color: #f0f0f0;
+        height: 25px;
+        margin-left: 10px;
+        margin-right: 10px;
+        visibility: hidden;
+    }
+</style>
+
+
+

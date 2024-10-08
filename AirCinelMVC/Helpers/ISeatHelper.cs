@@ -11,7 +11,10 @@ namespace AirCinelMVC.Helpers
 
         public int ConvertSeatStringToNumber(string seatString, string airplaneModel);
 
-        public int GetSeatsPerRowByModel(string model);
+        public int GetSeatsAndCorridorsPerRowByModel(string model);
 
+        public int[,] GenerateSeatMap(string airplaneModel, int capacity);
+
+        public List<int> GetCorridorPositions(int seatsPerRow);
     }
 }
