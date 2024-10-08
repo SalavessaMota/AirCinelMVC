@@ -65,13 +65,13 @@
                                 </td>
 
                                 <td>
-                                    @if (!item.Roles.Any(r => r.RoleName == "Admin"))
-                                    {
-                                        <a asp-action="EditUserRoles" asp-route-id="@item.UserId" class="btn btn-primary">Change Role</a>
-                                    }
                                     <a asp-action="EditUser" asp-route-id="@item.UserId" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                    <a asp-action="DeleteUser" data-id="@item.UserId" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                    @if (!item.Roles.Any(r => r.RoleName == "Admin"))
+                                    {
+                                        <a asp-action="DeleteUser" data-id="@item.UserId" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                        <a asp-action="EditUserRoles" asp-route-id="@item.UserId" class="btn btn-primary">Change Role</a>
+                                    }
                                 </td>
                             </tr>
                         }
