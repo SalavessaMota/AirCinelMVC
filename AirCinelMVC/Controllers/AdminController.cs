@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 [Authorize(Roles = "Admin")]
 public class AdminController : Controller
@@ -30,23 +31,33 @@ public class AdminController : Controller
     public IActionResult Index()
     {
         var users = _userHelper.GetAllUsersWithCity();
-
-        return View(users);
-    }
-
-
-    public IActionResult ManageUsersRoles()
-    {
-        var users = _userHelper.GetAllUsers();
         var loggedUser = _userHelper.GetUserByEmailAsync(User.Identity.Name).Result;
-        users = users.Where(u => u.Id != loggedUser.Id);
-        return View(users);
+        //users = users.Where(u => u.Id != loggedUser.Id);
+
+        var model = new List<EditUserRolesViewModel>();
+        foreach (var user in users)
+        {
+            var roles = _userHelper.GetRolesAsync(user).Result;
+
+            model.Add(new EditUserRolesViewModel
+            {
+                UserId = user.Id,
+                Username = user.FullName,
+                Email = user.Email,
+                Roles = roles.Select(r => new UserRoleViewModel { RoleName = r }).ToList(),
+                SelectedRole = roles.FirstOrDefault(),
+                Address = user.Address,
+                CityName = user.City?.Name,
+                ImageFullPath = user.ImageFullPath
+            });
+        }
+        return View(model);
     }
 
 
-    public async Task<IActionResult> EditUserRoles(string userEmail)
+    public async Task<IActionResult> EditUserRoles(string id)
     {
-        var user = await _userHelper.GetUserByEmailAsync(userEmail);
+        var user = await _userHelper.GetUserByIdAsync(id);
         if (user == null)
         {
             return new NotFoundViewResult("UserNotFound");
@@ -113,7 +124,7 @@ public class AdminController : Controller
             return View(model);
         }
 
-        return RedirectToAction("ManageUsersRoles");
+        return RedirectToAction("Index");
     }
 
 

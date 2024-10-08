@@ -1,13 +1,14 @@
-﻿@model IEnumerable<AirCinelMVC.Data.Entities.User>
+﻿@model IEnumerable<AirCinelMVC.Models.EditUserRolesViewModel>
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Users";
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
 <br />
 
-<div class="row">
+<div class="row mt-1">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -18,7 +19,7 @@
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(model => model.FullName)
+                                @Html.DisplayNameFor(model => model.FirstOrDefault().Username)
                             </th>
                             <th>
                                 Avatar
@@ -29,7 +30,9 @@
                             <th>
                                 City
                             </th>
-
+                            <th>
+                                Role
+                            </th>
                             <th>
                             </th>
                         </tr>
@@ -39,29 +42,36 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FullName)
+                                    @item.Username
                                 </td>
 
                                 <td>
                                     @if (!string.IsNullOrEmpty(item.ImageFullPath))
                                     {
-                                        <img src="@Url.Content(item.ImageFullPath)" alt="@item.FullName" style="width: 50px; height: auto; max-width:100%;" />
+                                        <img src="@Url.Content(item.ImageFullPath)" alt="@item.Username" style="width: 50px; height: auto; max-width:100%;" />
                                     }
                                 </td>
 
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Address)
+                                    @item.Address
                                 </td>
 
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.City.Name)
+                                    @item.CityName
                                 </td>
 
                                 <td>
-                                    <a asp-action="EditUser" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                    <a asp-action="DeleteUser" data-id="@item.Id" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                    @string.Join(", ", item.Roles.Select(r => r.RoleName))
+                                </td>
 
+                                <td>
+                                    @if (!item.Roles.Any(r => r.RoleName == "Admin"))
+                                    {
+                                        <a asp-action="EditUserRoles" asp-route-id="@item.UserId" class="btn btn-primary">Change Role</a>
+                                    }
+                                    <a asp-action="EditUser" asp-route-id="@item.UserId" class="btn btn-warning"><i class="far fa-edit"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
+                                    <a asp-action="DeleteUser" data-id="@item.UserId" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
                         }
@@ -72,9 +82,8 @@
     </div>
 </div>
 
-
 <div class="text-center">
-    <a href="~/Admin/ManageUsersRoles" class="btn btn-primary btn-lg mt-3">Manage Users Roles</a>
+    <!-- Removemos o botão "Manage Users Roles" conforme solicitado -->
     <a href="~/Admin/RegisterEmployee" class="btn btn-primary btn-lg mt-3">Register New Employee</a>
     <a href="~/Admin/RegisterCustomer" class="btn btn-primary btn-lg mt-3">Register New Customer</a>
     <a href="~/Home/index" class="btn btn-primary btn-lg mt-3"><i class="fas fa-home"></i> Return Home</a>
@@ -98,27 +107,22 @@
     </div>
 </div>
 
-
-
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script type="text/javascript">
         $(document).ready(function () {
             var id = 0;
-            // Captura o id do usuário ao clicar no botão "Delete"
             $('a.btnDelete').click(function () {
-                id = $(this).data('id');  // Usa o data-id para obter o id
+                id = $(this).data('id');
                 $("#deleteDialog").modal('show');
                 return false;
             });
 
-            // Quando o botão "No" for clicado
             $("#btnNoDelete").click(function () {
                 $("#deleteDialog").modal('hide');
                 return false;
             });
 
-            // Quando o botão "Yes" for clicado
             $("#btnYesDelete").click(function () {
                 window.location.href = '/Admin/DeleteUser/' + id;
             });

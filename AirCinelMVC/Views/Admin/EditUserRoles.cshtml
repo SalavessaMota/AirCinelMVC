@@ -1,31 +1,43 @@
 ﻿@model EditUserRolesViewModel
 
-<form asp-action="EditUserRoles" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="UserId" />
-    <input type="hidden" asp-for="Email" />
-    <input type="hidden" asp-for="Username" />
 
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" readonly />
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="EditUserRoles" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="Username" />
+
+                <div class="form-group">
+                    <label asp-for="Username"></label>
+                    <input asp-for="Username" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    @Html.ValidationSummary()
+                    @for (var i = 0; i < Model.Roles.Count; i++)
+                    {
+                        <div class="form-check">
+                            <input asp-for="SelectedRole" type="radio" value="@Model.Roles[i].RoleName" class="form-check-input" />
+                            <label class="form-check-label">@Model.Roles[i].RoleName</label>
+                        </div>
+                    }
+                    <span id="roleValidationMessage" class="text-danger"></span>
+                </div>
+
+                <div class="form-group text-center">
+                    <input type="submit" value="Save Changes" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-success"><i class="fas fa-list"></i> Back to List</a>
+                </div>
+
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        @Html.ValidationSummary()
-        @for (var i = 0; i < Model.Roles.Count; i++)
-        {
-            <div class="form-check">
-                <input asp-for="SelectedRole" type="radio" value="@Model.Roles[i].RoleName" class="form-check-input" />
-                <label class="form-check-label">@Model.Roles[i].RoleName</label>
-            </div>
-        }
-        <span id="roleValidationMessage" class="text-danger"></span>
-        <input type="submit" value="Save Changes" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-success"><i class="fas fa-list"></i> Back to List</a>
-    </div>
 
-</form>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
