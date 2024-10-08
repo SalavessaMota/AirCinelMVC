@@ -178,6 +178,7 @@ namespace AirCinelMVC.Controllers
             try
             {
                 await _airportRepository.DeleteAsync(airport);
+                await _blobHelper.DeleteBlobAsync("flags", airport.ImageId.ToString());
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)

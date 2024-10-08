@@ -45,6 +45,10 @@
                 var manufacturerId = $("#ManufacturerId").val();
                 console.log("Manufacturer selected: " + manufacturerId);
 
+                // Atualiza o campo oculto Manufacturer com o nome do fabricante selecionado
+                var manufacturerName = $("#ManufacturerId option:selected").text();
+                $("#Manufacturer").val(manufacturerName); // Preenche o campo Manufacturer com o nome do fabricante
+
                 $("#ModelId").empty(); // Limpa a combobox de modelos
                 $("#ModelId").append('<option value="0">(Select a model...)</option>'); // Adiciona uma opção padrão
 
@@ -79,4 +83,5 @@
             });
         });
     </script>
+
 }

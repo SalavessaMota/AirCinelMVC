@@ -355,6 +355,7 @@ public class AdminController : Controller
         {
             await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
             await _userHelper.DeleteUserAsync(user);
+            await _blobHelper.DeleteBlobAsync("users", user.ImageId.ToString());
             return RedirectToAction(nameof(Index));
         }
         catch (DbUpdateException ex)
