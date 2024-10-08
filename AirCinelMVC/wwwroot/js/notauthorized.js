@@ -18,7 +18,6 @@ navigator.sayswho = (function () {
 // print your dirty secrets on the box
 $('.box .version').html(navigator.sayswho);
 
-
 // high end monitor software
 var text = ['403', 'Forbidden'];
 var counter = 0;
@@ -28,8 +27,6 @@ function scanning() {
     elem.html('Forbidden');
     var inst = setInterval(change, 1000);
 }
-
-
 
 function change() {
     elem.html(text[counter]);

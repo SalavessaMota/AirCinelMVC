@@ -43,6 +43,12 @@
                             <th>
                                 <i class="fas fa-plane"></i>  @Html.DisplayNameFor(model => model.Airplane)
                             </th>
+                            @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                            {
+                                <th>
+                                    Airplane Id
+                                </th>
+                            }
                             <th></th>
                         </tr>
                     </thead>
@@ -78,10 +84,12 @@
                                             <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
                                     }
                                     @item.Airplane.Manufacturer @item.Airplane.Model
+                                </td>
+                                <td>
                                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
                                     {
-                                                <span>- ID @item.Airplane.Id</span>
-                                     }                
+                                        @item.Airplane.Id
+                                    }
                                 </td>
                                 <td>
                                             @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))

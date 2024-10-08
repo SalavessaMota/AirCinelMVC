@@ -1,11 +1,10 @@
 ﻿using AirCinelMVC.Data.Entities;
-using AirCinelMVC.Data;
+using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AirCinelMVC.Models;
 
 namespace AirCinelMVC.Data
 {
@@ -61,7 +60,6 @@ namespace AirCinelMVC.Data
                 .FirstOrDefaultAsync();
         }
 
-
         public async Task<int> UpdateCityAsync(City city)
         {
             var country = await _context.Countries
@@ -80,7 +78,6 @@ namespace AirCinelMVC.Data
         {
             return await _context.Cities.FindAsync(id);
         }
-
 
         public async Task<Country> GetCountryAsync(City city)
         {

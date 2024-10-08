@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AirCinelMVC.Data.Entities
@@ -14,9 +13,7 @@ namespace AirCinelMVC.Data.Entities
 
         public ICollection<Airplane> Airplanes { get; set; }
 
-
         [Display(Name = "Number of Airplanes")]
         public int NumberOfAirplanes => Airplanes == null ? 0 : Airplanes.Count;
-
     }
 }

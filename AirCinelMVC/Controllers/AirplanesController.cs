@@ -8,9 +8,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-
-
-
 namespace AirCinelMVC.Controllers
 {
     [Authorize(Roles = "Admin")]
@@ -48,8 +45,8 @@ namespace AirCinelMVC.Controllers
             var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
-				return new NotFoundViewResult("AirplaneNotFound");
-			}
+                return new NotFoundViewResult("AirplaneNotFound");
+            }
 
             return View(airplane);
         }
@@ -72,7 +69,7 @@ namespace AirCinelMVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AirplaneViewModel airplaneViewModel)
-        {            
+        {
             if (ModelState.IsValid)
             {
                 Guid imageId = Guid.Empty;
@@ -99,14 +96,14 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-				return new NotFoundViewResult("AirplaneNotFound");
-			}
+                return new NotFoundViewResult("AirplaneNotFound");
+            }
 
             var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
-				return new NotFoundViewResult("AirplaneNotFound");
-			}
+                return new NotFoundViewResult("AirplaneNotFound");
+            }
 
             var airplaneViewModel = _converterHelper.ToAirplaneViewModel(airplane);
 
@@ -144,8 +141,8 @@ namespace AirCinelMVC.Controllers
                 {
                     if (!await _airplaneRepository.ExistAsync(airplaneViewModel.Id))
                     {
-						return new NotFoundViewResult("AirplaneNotFound");
-					}
+                        return new NotFoundViewResult("AirplaneNotFound");
+                    }
                     else
                     {
                         throw;
@@ -161,14 +158,14 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-				return new NotFoundViewResult("AirplaneNotFound");
-			}
+                return new NotFoundViewResult("AirplaneNotFound");
+            }
 
             var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
             if (airplane == null)
             {
-				return new NotFoundViewResult("AirplaneNotFound");
-			}
+                return new NotFoundViewResult("AirplaneNotFound");
+            }
 
             try
             {
@@ -186,7 +183,7 @@ namespace AirCinelMVC.Controllers
                 }
 
                 return View("Error");
-            }           
+            }
         }
 
         public IActionResult AirplaneNotFound()
@@ -199,7 +196,7 @@ namespace AirCinelMVC.Controllers
         public async Task<JsonResult> GetModelsAsync(int manufacturerId)
         {
             var manufacturer = await _airplaneRepository.GetManufacturerWithModelsAsync(manufacturerId);
-            return Json(manufacturer.Models.OrderBy(m => m.Name));  
+            return Json(manufacturer.Models.OrderBy(m => m.Name));
         }
-	}
+    }
 }

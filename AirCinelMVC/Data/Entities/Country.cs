@@ -17,7 +17,6 @@ namespace AirCinelMVC.Data.Entities
 
         public ICollection<City> Cities { get; set; }
 
-
         [Display(Name = "Number of cities")]
         public int NumberCities => Cities == null ? 0 : Cities.Count;
     }

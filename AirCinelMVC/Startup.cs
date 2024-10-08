@@ -1,26 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Azure;
-using Azure.Storage.Queues;
-using Azure.Storage.Blobs;
-using Azure.Core.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using Syncfusion.Licensing;
 using System.Text;
 using Vereyon.Web;
-using Syncfusion.Licensing;
 
 namespace AirCinelMVC
 {

@@ -11,18 +11,16 @@ namespace AirCinelMVC.Models
         [Display(Name = "Image")]
         public IFormFile ImageFile { get; set; }
 
-
         [Display(Name = "Model")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a model.")]
         public int ModelId { get; set; }
+
         public IEnumerable<SelectListItem> Models { get; set; }
-
-
 
         [Display(Name = "Manufacturer")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a manufacturer.")]
         public int ManufacturerId { get; set; }
-        public IEnumerable<SelectListItem> Manufacturers { get; set; }
 
+        public IEnumerable<SelectListItem> Manufacturers { get; set; }
     }
 }

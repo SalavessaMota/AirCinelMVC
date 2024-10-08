@@ -1,6 +1,5 @@
 ﻿using AirCinelMVC.Data.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,15 +13,11 @@ namespace AirCinelMVC.Models
 
         public IEnumerable<SelectListItem> Cities { get; set; }
 
-
-
         [Display(Name = "Departure Country")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a country.")]
         public int CountryId { get; set; }
 
         public IEnumerable<SelectListItem> Countries { get; set; }
-
-
 
         [Display(Name = "Departure Airport")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a departure airport.")]
@@ -30,16 +25,10 @@ namespace AirCinelMVC.Models
 
         public IEnumerable<SelectListItem> DepartureAirports { get; set; }
 
-
-
         [Display(Name = "Arrival Airport")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select an arrival airport.")]
         public int ArrivalAirportId { get; set; }
 
         public IEnumerable<SelectListItem> ArrivalAirports { get; set; }
-
-
-
-
     }
 }

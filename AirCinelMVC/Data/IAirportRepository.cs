@@ -7,9 +7,7 @@ namespace AirCinelMVC.Data
     public interface IAirportRepository : IGenericRepository<Airport>
     {
         public IQueryable<Airport> GetAllAirports();
+
         public Task<Airport> GetAirportByNameAsync(string name);
-
-
     }
-
 }

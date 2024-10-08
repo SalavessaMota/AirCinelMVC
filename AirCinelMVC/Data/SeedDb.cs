@@ -38,7 +38,6 @@ namespace AirCinelMVC.Data
                     Models = modelsAirbus
                 });
 
-
                 var modelsBoeing = new List<Model>();
                 modelsBoeing.Add(new Model { Name = "737" });
                 modelsBoeing.Add(new Model { Name = "747" });
@@ -52,7 +51,6 @@ namespace AirCinelMVC.Data
                     Models = modelsBoeing
                 });
 
-
                 var modelsEmbraer = new List<Model>();
                 modelsEmbraer.Add(new Model { Name = "E170" });
                 modelsEmbraer.Add(new Model { Name = "E175" });
@@ -65,13 +63,12 @@ namespace AirCinelMVC.Data
                     Models = modelsEmbraer
                 });
 
-
                 await _context.SaveChangesAsync();
             }
-            
+
             if (!_context.Airplanes.Any())
             {
-                AddAirplane("A319","Airbus", 156);
+                AddAirplane("A319", "Airbus", 156);
                 AddAirplane("A320", "Airbus", 186);
                 AddAirplane("A330", "Airbus", 440);
                 AddAirplane("A350", "Airbus", 440);
@@ -88,7 +85,7 @@ namespace AirCinelMVC.Data
 
                 await _context.SaveChangesAsync();
             }
-            
+
             if (!_context.Countries.Any())
             {
                 // Portugal
@@ -264,4 +261,3 @@ namespace AirCinelMVC.Data
         }
     }
 }
-

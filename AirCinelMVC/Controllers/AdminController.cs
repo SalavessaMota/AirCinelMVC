@@ -2,13 +2,13 @@
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 [Authorize(Roles = "Admin")]
 public class AdminController : Controller
@@ -27,17 +27,17 @@ public class AdminController : Controller
         _countryRepository = countryRepository;
     }
 
-
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var users = _userHelper.GetAllUsersWithCity();
-        var loggedUser = _userHelper.GetUserByEmailAsync(User.Identity.Name).Result;
-        //users = users.Where(u => u.Id != loggedUser.Id);
+        var users = await _userHelper.GetAllUsersWithCity().ToListAsync();
+
+        var loggedUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
         var model = new List<EditUserRolesViewModel>();
+
         foreach (var user in users)
         {
-            var roles = _userHelper.GetRolesAsync(user).Result;
+            var roles = await _userHelper.GetRolesAsync(user);
 
             model.Add(new EditUserRolesViewModel
             {
@@ -51,9 +51,9 @@ public class AdminController : Controller
                 ImageFullPath = user.ImageFullPath
             });
         }
+
         return View(model);
     }
-
 
     public async Task<IActionResult> EditUserRoles(string id)
     {
@@ -80,7 +80,6 @@ public class AdminController : Controller
 
         return View(model);
     }
-
 
     [HttpPost]
     public async Task<IActionResult> EditUserRoles(EditUserRolesViewModel model)
@@ -127,8 +126,6 @@ public class AdminController : Controller
         return RedirectToAction("Index");
     }
 
-
-
     public IActionResult RegisterEmployee()
     {
         var model = new RegisterNewUserViewModel
@@ -160,7 +157,6 @@ public class AdminController : Controller
                     CityId = model.CityId
                 };
 
-                
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
                     var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
@@ -188,8 +184,7 @@ public class AdminController : Controller
 
     public IActionResult RegisterCustomer()
     {
-
-       var model = new RegisterNewUserViewModel
+        var model = new RegisterNewUserViewModel
         {
             Countries = _countryRepository.GetComboCountries(),
             Cities = _countryRepository.GetComboCities(1)
@@ -218,7 +213,6 @@ public class AdminController : Controller
                     CityId = model.CityId
                 };
 
-
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
                     var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
@@ -230,7 +224,6 @@ public class AdminController : Controller
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 await _userHelper.ConfirmEmailAsync(user, token);
-
 
                 if (result != IdentityResult.Success)
                 {
@@ -244,7 +237,6 @@ public class AdminController : Controller
 
         return View(model);
     }
-
 
     public async Task<IActionResult> EditUser(string id)
     {
@@ -323,7 +315,6 @@ public class AdminController : Controller
         return View(model);
     }
 
-
     public async Task<IActionResult> Details(string id)
     {
         if (id == null)
@@ -346,7 +337,6 @@ public class AdminController : Controller
 
         return View(user);
     }
-
 
     public async Task<IActionResult> DeleteUser(string id)
     {
@@ -379,13 +369,10 @@ public class AdminController : Controller
         }
     }
 
-
-
     public IActionResult UserNotFound()
     {
         return View();
     }
-
 
     [HttpPost]
     [Route("Admin/GetCitiesAsync")]

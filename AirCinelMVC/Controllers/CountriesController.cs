@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AirCinelMVC.Data;
+﻿using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
+using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Authorization;
-using AirCinelMVC.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using Vereyon.Web;
 
 namespace AirCinelMVC.Controllers
@@ -49,7 +46,7 @@ namespace AirCinelMVC.Controllers
             }
             catch (DbUpdateException ex)
             {
-                if(ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
                 {
                     ViewBag.ErrorTitle = $"The City {city.Name} is probably being used!!";
                     ViewBag.ErrorMessage = $"{city.Name}  can't be deleted because it is being used.</br></br>";
@@ -57,7 +54,6 @@ namespace AirCinelMVC.Controllers
 
                 return View("Error");
             }
-
         }
 
         public async Task<IActionResult> EditCity(int? id)
@@ -75,7 +71,6 @@ namespace AirCinelMVC.Controllers
 
             return View(city);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> EditCity(City city)
@@ -146,7 +141,6 @@ namespace AirCinelMVC.Controllers
         {
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

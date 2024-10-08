@@ -1,16 +1,15 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using AirCinelMVC.Data.Entities;
+﻿using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AirCinelMVC.Helpers
 {
     public interface IUserHelper
     {
-        IEnumerable<User> GetAllUsers();
-
-        IEnumerable<User> GetAllUsersWithCity();
+        IQueryable<User> GetAllUsersWithCity();
 
         Task<IdentityResult> DeleteUserAsync(User user);
 
@@ -49,6 +48,5 @@ namespace AirCinelMVC.Helpers
         Task<string> GeneratePasswordResetTokenAsync(User user);
 
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
-
     }
 }

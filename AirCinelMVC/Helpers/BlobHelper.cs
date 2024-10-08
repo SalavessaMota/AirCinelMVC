@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using AirCinelMVC.Helpers;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace AirCinelMVC.Helpers
 {

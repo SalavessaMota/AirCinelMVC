@@ -1,6 +1,5 @@
 ﻿using AirCinelMVC.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,7 +65,6 @@ namespace AirCinelMVC.Data
             return _context.Flights.Any(f => f.Id == id);
         }
 
-
         public async Task<Ticket> GetTicketWithUserFlightAirplaneAndAirports(int id)
         {
             return await _context.Tickets
@@ -78,7 +76,6 @@ namespace AirCinelMVC.Data
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-
         public async Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId)
         {
             return await _context.Tickets
@@ -89,6 +86,5 @@ namespace AirCinelMVC.Data
                                  .Where(t => t.UserId == userId)
                                  .ToListAsync();
         }
-
     }
 }

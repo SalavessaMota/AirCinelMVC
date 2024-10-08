@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using AirCinelMVC.Data.Entities;
+﻿using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AirCinelMVC.Helpers
 {
@@ -23,23 +24,15 @@ namespace AirCinelMVC.Helpers
             _roleManager = roleManager;
         }
 
-        public IEnumerable<User> GetAllUsers()
-        {
-            return _userManager.Users;
-        }
-
-        public IEnumerable<User> GetAllUsersWithCity()
+        public IQueryable<User> GetAllUsersWithCity()
         {
             return _userManager.Users.Include(u => u.City);
         }
-
 
         public async Task<IdentityResult> DeleteUserAsync(User user)
         {
             return await _userManager.DeleteAsync(user);
         }
-
-
 
         public IEnumerable<IdentityRole> GetAllRoles()
         {
@@ -122,7 +115,7 @@ namespace AirCinelMVC.Helpers
 
         public async Task<User> GetUserByIdAsync(string userId)
         {
-            return await _userManager.FindByIdAsync(userId);            
+            return await _userManager.FindByIdAsync(userId);
         }
 
         public async Task<string> GeneratePasswordResetTokenAsync(User user)

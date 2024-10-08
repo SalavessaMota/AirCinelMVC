@@ -1,7 +1,6 @@
-﻿using AirCinelMVC.Models;
-using Microsoft.AspNetCore.Http;
-using System.IO;
+﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace AirCinelMVC.Helpers

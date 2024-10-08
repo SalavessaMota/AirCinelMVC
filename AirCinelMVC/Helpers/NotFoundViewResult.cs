@@ -3,12 +3,12 @@ using System.Net;
 
 namespace AirCinelMVC.Helpers
 {
-	public class NotFoundViewResult : ViewResult
-	{
-		public NotFoundViewResult(string viewName)
-		{
-			ViewName = viewName;
-			StatusCode = (int)HttpStatusCode.NotFound;
-		}
-	}
+    public class NotFoundViewResult : ViewResult
+    {
+        public NotFoundViewResult(string viewName)
+        {
+            ViewName = viewName;
+            StatusCode = (int)HttpStatusCode.NotFound;
+        }
+    }
 }

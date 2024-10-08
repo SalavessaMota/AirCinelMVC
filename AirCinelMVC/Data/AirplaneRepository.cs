@@ -1,10 +1,8 @@
 ﻿using AirCinelMVC.Data.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 
 namespace AirCinelMVC.Data
@@ -33,8 +31,6 @@ namespace AirCinelMVC.Data
             return _context.Models;
         }
 
-        
-
         public async Task<Manufacturer> GetManufacturerWithModelsAsync(int id)
         {
             return await _context.Manufacturers
@@ -59,7 +55,6 @@ namespace AirCinelMVC.Data
 
             return list;
         }
-
 
         public IEnumerable<SelectListItem> GetComboModels(int manufacturerId)
         {

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AirCinelMVC.Data;
+using AirCinelMVC.Helpers;
+using AirCinelMVC.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AirCinelMVC.Data;
-using AirCinelMVC.Data.Entities;
-using AirCinelMVC.Models;
-using AirCinelMVC.Helpers;
-using Microsoft.AspNetCore.Authorization;
 using Vereyon.Web;
 
 namespace AirCinelMVC.Controllers
@@ -24,7 +21,7 @@ namespace AirCinelMVC.Controllers
         private readonly IFlashMessage _flashMessage;
 
         public AirportsController(
-            IAirportRepository airportRepository, 
+            IAirportRepository airportRepository,
             ICountryRepository countryRepository,
             IBlobHelper blobHelper,
             IConverterHelper converterHelper,
@@ -56,8 +53,6 @@ namespace AirCinelMVC.Controllers
             {
                 return new NotFoundViewResult("AirportNotFound");
             }
-
-
 
             return View(airport);
         }
@@ -101,7 +96,6 @@ namespace AirCinelMVC.Controllers
                 {
                     _flashMessage.Danger("This airport already exists");
                 }
-                
             }
 
             return View(createNewAirportViewModel);
@@ -120,8 +114,6 @@ namespace AirCinelMVC.Controllers
             {
                 return new NotFoundViewResult("AirportNotFound");
             }
-
-
 
             var createNewAirportViewModel = _converterHelper.ToCreateNewAirportViewModel(airport);
 
@@ -172,7 +164,7 @@ namespace AirCinelMVC.Controllers
         // GET: Airports/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return new NotFoundViewResult("AirportNotFound");
             }
@@ -212,10 +204,11 @@ namespace AirCinelMVC.Controllers
         public async Task<JsonResult> GetCitiesAsync(int countryId)
         {
             var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
-            
+
             var cities = country.Cities
                 .OrderBy(c => c.Name)
-                .Select(c => new {
+                .Select(c => new
+                {
                     Id = c.Id,
                     Name = c.Name
                 }).ToList();

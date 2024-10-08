@@ -27,8 +27,8 @@ body {
     position: absolute;
     top: 10px;
     left: 0;
-    transform: skewY(-4deg);*/
-    -webkit-transform: skewY(-4deg);
+    transform: skewY(-4deg);
+    */ -webkit-transform: skewY(-4deg);
 }
 
 .circles {

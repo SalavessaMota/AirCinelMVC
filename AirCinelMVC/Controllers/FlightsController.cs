@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AirCinelMVC.Data;
+using AirCinelMVC.Data.Entities;
+using AirCinelMVC.Helpers;
+using AirCinelMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AirCinelMVC.Data;
-using AirCinelMVC.Data.Entities;
-using Microsoft.AspNetCore.Authorization;
-using AirCinelMVC.Helpers;
-using AirCinelMVC.Models;
-using Syncfusion.Pdf.Graphics;
-using Syncfusion.Pdf;
-using System.IO;
 using Syncfusion.Drawing;
+using Syncfusion.Pdf;
 using Syncfusion.Pdf.Barcode;
+using Syncfusion.Pdf.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace AirCinelMVC.Controllers
 {
@@ -53,7 +53,6 @@ namespace AirCinelMVC.Controllers
             return View(pastFlights);
         }
 
-
         public IActionResult UpcomingFlights()
         {
             var futureFlights = _flightRepository.GetAllFlightsWithAirplaneAndAirports()
@@ -85,7 +84,6 @@ namespace AirCinelMVC.Controllers
                 .ToList();
             return View(futureFlights);
         }
-
 
         // GET: Flights/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -178,8 +176,6 @@ namespace AirCinelMVC.Controllers
 
             return View(flight);
         }
-
-
 
         // GET: Flights/Edit/5
         [Authorize(Roles = "Employee")]
@@ -328,12 +324,10 @@ namespace AirCinelMVC.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
-
         public IActionResult FlightNotFound()
         {
             return View();
         }
-
 
         [HttpGet]
         [Authorize(Roles = "Customer")]
@@ -348,7 +342,6 @@ namespace AirCinelMVC.Controllers
 
             var availableSeats = GetAvailableSeats(flight);
 
-            
             var model = new PurchaseTicketViewModel
             {
                 FlightId = flight.Id,
@@ -393,8 +386,6 @@ namespace AirCinelMVC.Controllers
             flight.Tickets.Add(ticket);
             await _flightRepository.UpdateAsync(flight);
 
-
-
             return RedirectToAction("TicketDetails", new { id = ticket.Id });
         }
 
@@ -409,7 +400,6 @@ namespace AirCinelMVC.Controllers
 
             return View(ticket);
         }
-
 
         public async Task<IActionResult> PrintTicket(int id)
         {
@@ -498,7 +488,6 @@ namespace AirCinelMVC.Controllers
             currentY += padding;
             graphics.DrawString(DateTime.Now.ToString("dd/MM/yyyy HH:mm"), normalFont, brush, new PointF(10, currentY));
 
-
             string qrCodeText = $"Flight Number: {ticket.Flight.FlightNumber}\n" +
                                 $"Departure: {ticket.Flight.DepartureAirport.Name}\n" +
                                 $"Arrival: {ticket.Flight.ArrivalAirport.Name}\n" +
@@ -522,7 +511,6 @@ namespace AirCinelMVC.Controllers
             return File(stream, "application/pdf", "BoardingPass.pdf");
         }
 
-
         public async Task<IActionResult> UserTickets()
         {
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
@@ -536,7 +524,6 @@ namespace AirCinelMVC.Controllers
 
             return View(tickets);
         }
-
 
         private List<int> GetAvailableSeats(Flight flight)
         {
@@ -557,23 +544,21 @@ namespace AirCinelMVC.Controllers
             return $"{row}{seatLetter}";
         }
 
-
         private int ConvertSeatStringToNumber(string seatString, string airplaneModel)
         {
             string rowPart = new string(seatString.TakeWhile(char.IsDigit).ToArray());
             char seatLetter = seatString.Last();
 
             int row = int.Parse(rowPart);
-            
+
             int seatsPerRow = GetSeatsPerRowByModel(airplaneModel);
-            
+
             int seatPositionInRow = seatLetter - 'A';
 
             int seatNumber = (row - 1) * seatsPerRow + seatPositionInRow + 1;
 
             return seatNumber;
         }
-
 
         private int GetSeatsPerRowByModel(string model)
         {
@@ -596,7 +581,5 @@ namespace AirCinelMVC.Controllers
                 _ => 6
             };
         }
-
-
     }
 }

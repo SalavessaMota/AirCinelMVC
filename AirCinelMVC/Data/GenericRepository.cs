@@ -1,6 +1,5 @@
 ﻿using AirCinelMVC.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,7 +33,7 @@ namespace AirCinelMVC.Data
 
         public async Task<bool> ExistAsync(int id)
         {
-            return await _context.Set<T>().AnyAsync(e => e.Id == id);            
+            return await _context.Set<T>().AnyAsync(e => e.Id == id);
         }
 
         public IQueryable<T> GetAll()

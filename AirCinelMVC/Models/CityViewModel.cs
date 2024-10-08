@@ -6,9 +6,7 @@ namespace AirCinelMVC.Models
     {
         public int CountryId { get; set; }
 
-
         public int CityId { get; set; }
-
 
         [Required]
         [Display(Name = "City")]

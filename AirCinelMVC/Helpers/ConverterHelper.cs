@@ -1,7 +1,7 @@
-﻿using System;
-using AirCinelMVC.Data;
+﻿using AirCinelMVC.Data;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
+using System;
 
 namespace AirCinelMVC.Helpers
 {
@@ -46,7 +46,6 @@ namespace AirCinelMVC.Helpers
                 ModelId = _airplaneRepository.GetModelIdByName(airplane.Model)
             };
         }
-
 
         public Airport ToAirport(CreateNewAirportViewModel model, Guid imageId, bool isNew)
         {
