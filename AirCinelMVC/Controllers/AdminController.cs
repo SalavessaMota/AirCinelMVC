@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,15 +16,18 @@ public class AdminController : Controller
 {
     private readonly IUserHelper _userHelper;
     private readonly IBlobHelper _blobHelper;
+    private readonly IMailHelper _mailHelper;
     private readonly ICountryRepository _countryRepository;
 
     public AdminController(
         IUserHelper userHelper,
         IBlobHelper blobHelper,
+        IMailHelper mailHelper,
         ICountryRepository countryRepository)
     {
         _userHelper = userHelper;
         _blobHelper = blobHelper;
+        _mailHelper = mailHelper;
         _countryRepository = countryRepository;
     }
 
@@ -166,12 +170,27 @@ public class AdminController : Controller
                 var result = await _userHelper.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Employee");
 
-                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                await _userHelper.ConfirmEmailAsync(user, token);
-
-                if (result != IdentityResult.Success)
+                var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
                 {
-                    ModelState.AddModelError(string.Empty, "The employee couldn't be created.");
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
+                                        $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
+                                        $"<p>Your account has been created by an administrator on behalf of AirCinel, your trusted airline for premium travel experiences.</p>" +
+                                        $"<p>To complete the setup of your account, please confirm your email address by clicking the link below:</p>" +
+                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
+                                        $"<br>" +
+                                        $"<p>Safe travels,</p>" +
+                                        $"<p>The AirCinel Team</p>" +
+                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+
+                if (response.IsSuccess)
+                {
+                    ViewBag.Message = "The account has been created, and the user has been sent an email to confirm their registration.";
                     return View(model);
                 }
 
@@ -222,12 +241,27 @@ public class AdminController : Controller
                 var result = await _userHelper.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                await _userHelper.ConfirmEmailAsync(user, token);
-
-                if (result != IdentityResult.Success)
+                var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
                 {
-                    ModelState.AddModelError(string.Empty, "The customer couldn't be created.");
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
+                                        $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
+                                        $"<p>Your account has been created by an administrator on behalf of AirCinel, your trusted airline for premium travel experiences.</p>" +
+                                        $"<p>To complete the setup of your account, please confirm your email address by clicking the link below:</p>" +
+                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
+                                        $"<br>" +
+                                        $"<p>Safe travels,</p>" +
+                                        $"<p>The AirCinel Team</p>" +
+                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+
+                if (response.IsSuccess)
+                {
+                    ViewBag.Message = "The account has been created, and the user has been sent an email to confirm their registration.";
                     return View(model);
                 }
 
