@@ -382,7 +382,7 @@ namespace AirCinelMVC.Controllers
                 var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
                 if (result.Succeeded)
                 {
-                    this.ViewBag.Message = "Password reset successful.";
+                    this.ViewBag.Message = "Password set successfully, you can now login.";
                     return View();
                 }
 

@@ -5,16 +5,16 @@ namespace AirCinelMVC.Helpers
 {
     public interface ISeatHelper
     {
-        public List<int> GetAvailableSeats(Flight flight);
+        List<int> GetAvailableSeats(Flight flight);
 
-        public string ConvertSeatNumber(int seatNumber, string airplaneModel);
+        string ConvertSeatNumber(int seatNumber, string airplaneModel);
 
-        public int ConvertSeatStringToNumber(string seatString, string airplaneModel);
+        int ConvertSeatStringToNumber(string seatString, string airplaneModel);
 
-        public int GetSeatsAndCorridorsPerRowByModel(string model);
+        int GetSeatsAndCorridorsPerRowByModel(string model);
 
-        public int[,] GenerateSeatMap(string airplaneModel, int capacity);
+        int[,] GenerateSeatMap(string airplaneModel, int capacity);
 
-        public List<int> GetCorridorPositions(int seatsPerRow);
+        List<int> GetCorridorPositions(int seatsPerRow);
     }
 }

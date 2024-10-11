@@ -168,18 +168,21 @@ public class AdminController : Controller
                 var result = await _userHelper.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Employee");
 
-                var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
+
+                var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+                string tokenLink = Url.Action("ResetPassword", "Account", new
                 {
-                    userid = user.Id,
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
+                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Set your Password",
                                         $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
                                         $"<p>Your account has been created by an administrator on behalf of AirCinel, your trusted airline for premium travel experiences.</p>" +
-                                        $"<p>To complete the setup of your account, please confirm your email address by clicking the link below:</p>" +
-                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+                                        $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
+                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
                                         $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
                                         $"<br>" +
                                         $"<p>Safe travels,</p>" +
@@ -188,7 +191,7 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "The account has been created, and the user has been sent an email to confirm their registration.";
+                    ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
                     return View(model);
                 }
 
@@ -198,6 +201,7 @@ public class AdminController : Controller
 
         return View(model);
     }
+
 
     public async Task<IActionResult> RegisterCustomer()
     {
@@ -239,18 +243,20 @@ public class AdminController : Controller
                 var result = await _userHelper.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-                var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
+
+                var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+                string tokenLink = Url.Action("ResetPassword", "Account", new
                 {
-                    userid = user.Id,
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
+                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Set your Password",
                                         $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
                                         $"<p>Your account has been created by an administrator on behalf of AirCinel, your trusted airline for premium travel experiences.</p>" +
-                                        $"<p>To complete the setup of your account, please confirm your email address by clicking the link below:</p>" +
-                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+                                        $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
+                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
                                         $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
                                         $"<br>" +
                                         $"<p>Safe travels,</p>" +
@@ -259,7 +265,7 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "The account has been created, and the user has been sent an email to confirm their registration.";
+                    ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
                     return View(model);
                 }
 
@@ -269,6 +275,7 @@ public class AdminController : Controller
 
         return View(model);
     }
+
 
     public async Task<IActionResult> EditUser(string id)
     {
@@ -385,8 +392,8 @@ public class AdminController : Controller
 
         try
         {
-            await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
             await _userHelper.DeleteUserAsync(user);
+            await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
             await _blobHelper.DeleteBlobAsync("users", user.ImageId.ToString());
             return RedirectToAction(nameof(Index));
         }
