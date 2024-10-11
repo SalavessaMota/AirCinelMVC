@@ -3,10 +3,8 @@ using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,12 +128,12 @@ public class AdminController : Controller
         return RedirectToAction("Index");
     }
 
-    public IActionResult RegisterEmployee()
+    public async Task<IActionResult> RegisterEmployee()
     {
         var model = new RegisterNewUserViewModel
         {
             Countries = _countryRepository.GetComboCountries(),
-            Cities = _countryRepository.GetComboCities(1)
+            Cities = await _countryRepository.GetComboCitiesAsync(1)
         };
         return View(model);
     }
@@ -201,12 +199,12 @@ public class AdminController : Controller
         return View(model);
     }
 
-    public IActionResult RegisterCustomer()
+    public async Task<IActionResult> RegisterCustomer()
     {
         var model = new RegisterNewUserViewModel
         {
             Countries = _countryRepository.GetComboCountries(),
-            Cities = _countryRepository.GetComboCities(1)
+            Cities = await _countryRepository.GetComboCitiesAsync(1)
         };
         return View(model);
     }
@@ -294,7 +292,7 @@ public class AdminController : Controller
 
                     // Populando as listas de países e cidades
                     model.Countries = _countryRepository.GetComboCountries();
-                    model.Cities = _countryRepository.GetComboCities(country.Id);
+                    model.Cities = await _countryRepository.GetComboCitiesAsync(country.Id);
                 }
             }
         }
@@ -343,7 +341,7 @@ public class AdminController : Controller
         model.Countries = _countryRepository.GetComboCountries();
         if (model.CountryId != 0)
         {
-            model.Cities = _countryRepository.GetComboCities(model.CountryId);
+            model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
         }
 
         return View(model);

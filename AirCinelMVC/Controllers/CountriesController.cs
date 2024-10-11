@@ -30,13 +30,13 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             var city = await _countryRepository.GetCityAsync(id.Value);
             if (city == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             try
@@ -60,13 +60,13 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             var city = await _countryRepository.GetCityAsync(id.Value);
             if (city == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             return View(city);
@@ -91,13 +91,13 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             var country = await _countryRepository.GetByIdAsync(id.Value);
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             var model = new CityViewModel { CountryId = country.Id };
@@ -125,13 +125,13 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var country = await _countryRepository.GetCountryWithCitiesAsync(id.Value);
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             return View(country);
@@ -168,13 +168,13 @@ namespace AirCinelMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var country = await _countryRepository.GetByIdAsync(id.Value);
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
             return View(country);
         }

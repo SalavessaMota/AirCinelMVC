@@ -15,6 +15,11 @@ namespace AirCinelMVC.Data
             _context = context;
         }
 
+        public IQueryable<Flight> GetAllFlights()
+        {
+            return _context.Flights;
+        }
+
         public IQueryable<Flight> GetAllFlightsWithAirplaneAndAirports()
         {
             return _context.Flights
@@ -23,7 +28,7 @@ namespace AirCinelMVC.Data
                 .Include(f => f.ArrivalAirport);
         }
 
-        public async Task<Flight> GetFlightWithAirplaneAndAirports(int id)
+        public async Task<Flight> GetFlightWithAirplaneAndAirportsAsync(int id)
         {
             return await _context.Flights
                 .Include(f => f.Airplane)
@@ -43,7 +48,7 @@ namespace AirCinelMVC.Data
                 .ToList();
         }
 
-        public async Task<Flight> GetFlightWithAirplaneAirportsAndTickets(int id)
+        public async Task<Flight> GetFlightWithAirplaneAirportsAndTicketsAsync(int id)
         {
             return await _context.Flights
                 .Include(f => f.Airplane)
@@ -53,7 +58,7 @@ namespace AirCinelMVC.Data
                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        public async Task<Ticket> GetTicketWithUserFlightAirplaneAndAirports(int id)
+        public async Task<Ticket> GetTicketWithUserFlightAirplaneAndAirportsAsync(int id)
         {
             return await _context.Tickets
                 .Include(t => t.Flight)
@@ -75,15 +80,15 @@ namespace AirCinelMVC.Data
                                  .ToListAsync();
         }
 
-        public async Task<IEnumerable<Ticket>> GetAllTicketsWithAllInfo()
+        public async Task<IEnumerable<Ticket>> GetAllTicketsWithAllInfoAsync()
         {
-               return await _context.Tickets
-                .Include(t => t.Flight)
-                .ThenInclude(f => f.Airplane)
-                .Include(t => t.Flight.DepartureAirport)
-                .Include(t => t.Flight.ArrivalAirport)
-                .Include(t => t.User)
-                .ToListAsync();
-        } 
+            return await _context.Tickets
+             .Include(t => t.Flight)
+             .ThenInclude(f => f.Airplane)
+             .Include(t => t.Flight.DepartureAirport)
+             .Include(t => t.Flight.ArrivalAirport)
+             .Include(t => t.User)
+             .ToListAsync();
+        }
     }
 }

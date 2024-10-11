@@ -58,12 +58,12 @@ namespace AirCinelMVC.Controllers
         }
 
         // GET: Airports/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new CreateNewAirportViewModel
             {
                 Countries = _countryRepository.GetComboCountries(),
-                Cities = _countryRepository.GetComboCities(0)
+                Cities = await _countryRepository.GetComboCitiesAsync(0)
             };
 
             return View(model);
@@ -118,7 +118,7 @@ namespace AirCinelMVC.Controllers
             var createNewAirportViewModel = _converterHelper.ToCreateNewAirportViewModel(airport);
 
             createNewAirportViewModel.Countries = _countryRepository.GetComboCountries();
-            createNewAirportViewModel.Cities = _countryRepository.GetComboCities(createNewAirportViewModel.CountryId);
+            createNewAirportViewModel.Cities = await _countryRepository.GetComboCitiesAsync(createNewAirportViewModel.CountryId);
 
             return View(createNewAirportViewModel);
         }

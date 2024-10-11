@@ -1,5 +1,4 @@
 ﻿using AirCinelMVC.Data.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,7 +30,7 @@ namespace AirCinelMVC.Helpers
                     if (seatMap[row, col] == 1)
                     {
                         seatCount++;
-                        char seatLetter = (char)('A' + letterIndex); 
+                        char seatLetter = (char)('A' + letterIndex);
 
                         if (seatCount == seatNumber)
                         {
@@ -45,7 +44,6 @@ namespace AirCinelMVC.Helpers
 
             return string.Empty;
         }
-
 
         public int ConvertSeatStringToNumber(string seatString, string airplaneModel)
         {
@@ -63,21 +61,21 @@ namespace AirCinelMVC.Helpers
         {
             return model switch
             {
-                "A319" => 7,  
-                "A320" => 7,  
-                "A330" => 10, 
-                "A350" => 10, 
-                "A380" => 12, 
-                "737" => 7,   
-                "747" => 12,  
-                "757" => 7,   
-                "767" => 9,   
-                "777" => 10,  
-                "E170" => 5,  
-                "E175" => 5,  
-                "E190" => 5,  
-                "E195" => 5,  
-                _ => 7        
+                "A319" => 7,
+                "A320" => 7,
+                "A330" => 10,
+                "A350" => 10,
+                "A380" => 12,
+                "737" => 7,
+                "747" => 12,
+                "757" => 7,
+                "767" => 9,
+                "777" => 10,
+                "E170" => 5,
+                "E175" => 5,
+                "E190" => 5,
+                "E195" => 5,
+                _ => 7
             };
         }
 

@@ -103,10 +103,10 @@ namespace AirCinelMVC.Data
             return list;
         }
 
-        public IEnumerable<SelectListItem> GetComboCities(int countryId)
+        public async Task<IEnumerable<SelectListItem>> GetComboCitiesAsync(int countryId)
         {
-            var country = _context.Countries.Include(c => c.Cities)
-                          .FirstOrDefault(c => c.Id == countryId);
+            var country = await _context.Countries.Include(c => c.Cities)
+                                  .FirstOrDefaultAsync(c => c.Id == countryId);
             var list = new List<SelectListItem>();
             if (country != null)
             {
@@ -125,5 +125,6 @@ namespace AirCinelMVC.Data
 
             return list;
         }
+
     }
 }

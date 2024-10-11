@@ -9,5 +9,4 @@ namespace AirCinelMVC.Models
         public string SelectedSeat { get; set; }
         public List<string> OccupiedSeats { get; set; }
     }
-
 }

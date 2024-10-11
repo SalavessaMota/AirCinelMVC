@@ -46,17 +46,20 @@ namespace AirCinelMVC.Data
             return list;
         }
 
-        public IEnumerable<SelectListItem> GetComboModels(int manufacturerId)
+        public async Task<IEnumerable<SelectListItem>> GetComboModelsAsync(int manufacturerId)
         {
-            var manufacturer = _context.Manufacturers.Find(manufacturerId);
+            var manufacturer = await _context.Manufacturers.FindAsync(manufacturerId);
             var list = new List<SelectListItem>();
+
             if (manufacturer != null)
             {
                 list = manufacturer.Models.Select(m => new SelectListItem
                 {
                     Text = m.Name,
                     Value = m.Id.ToString()
-                }).OrderBy(l => l.Text).ToList();
+                })
+                .OrderBy(l => l.Text)
+                .ToList();
 
                 list.Insert(0, new SelectListItem
                 {
@@ -67,6 +70,7 @@ namespace AirCinelMVC.Data
 
             return list;
         }
+
 
         public string GetModelNameById(int modelId)
         {

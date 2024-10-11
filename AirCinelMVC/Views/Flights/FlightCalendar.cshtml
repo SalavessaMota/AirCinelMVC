@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewData["Title"] = "FlightCalendar";
+}
+
+@* <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet" />
+ *@
+
+<div class="text-center">
+
+    <h1>Flight Calendar</h1>
+
+    <div class="container-fluid" id="calendar" style="background-color: white;"></div>
+
+
+    <div class="modal fade" id="flightModal" tabindex="-1" role="dialog" aria-labelledby="flightModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="flightModalLabel">Flight Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Flight Number:</strong> <span id="flightNumber"></span></p>
+                    <p><strong>Departure:</strong> <span id="flightDeparture"></span></p>
+                    <p><strong>From:</strong> <span id="flightFrom"></span></p>
+                    <p><strong>Arrival:</strong> <span id="flightArrival"></span></p>
+                    <p><strong>To:</strong> <span id="flightTo"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                editable: false,
+                selectable: true,
+                displayEventTime: false,
+                events: function (fetchInfo, successCallback, failureCallback) {
+                    fetch('/Flights/GetFlights')
+                        .then(response => response.json())
+                        .then(data => {
+                            // Extraindo os valores de $values do JSON
+                            const events = data.$values.map(flight => {
+                                const startTime = flight.start.substring(11, 16); // Extrai a hora de início
+                                const endTime = flight.end.substring(11, 16);     // Extrai a hora de fim
+
+                                return {
+                                    id: flight.id,
+                                    title: `Flight ${flight.id}: ${startTime} - ${endTime}`,
+                                    start: flight.start,
+                                    end: flight.end,
+                                    from: flight.from,
+                                    to: flight.to
+                                };
+                            });
+                            // Passando os eventos para o calendário
+                            successCallback(events);
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar eventos:', error);
+                            failureCallback(error);
+                        });
+                },
+                eventClick: function (info) {
+                    const start = new Date(info.event.start);
+                    const end = new Date(info.event.end);
+
+                    // Formatar as datas como "dd/mm/yyyy hh:mm"
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+                    const formattedStart = start.toLocaleDateString('en-GB', options).replace(',', '');
+                    const formattedEnd = end.toLocaleDateString('en-GB', options).replace(',', '');
+
+                    // Preencher a modal com os dados do voo
+                    document.getElementById('flightNumber').textContent = info.event.id; // Preencher o número do voo
+                    document.getElementById('flightDeparture').textContent = formattedStart;
+                    document.getElementById('flightArrival').textContent = formattedEnd;
+                    document.getElementById('flightFrom').textContent = info.event.extendedProps.from;
+                    document.getElementById('flightTo').textContent = info.event.extendedProps.to;
+
+                    // Exibir a modal
+                    $('#flightModal').modal('show');
+                }
+            });
+
+            calendar.render();
+        });
+
+
+    </script>
+}
+
+

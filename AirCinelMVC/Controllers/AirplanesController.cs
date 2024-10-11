@@ -52,12 +52,12 @@ namespace AirCinelMVC.Controllers
         }
 
         // GET: Airplanes/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new AirplaneViewModel
             {
                 Manufacturers = _airplaneRepository.GetComboManufacturers(),
-                Models = _airplaneRepository.GetComboModels(0)
+                Models = await _airplaneRepository.GetComboModelsAsync(0)
             };
 
             return View(model);
@@ -108,7 +108,7 @@ namespace AirCinelMVC.Controllers
             var airplaneViewModel = _converterHelper.ToAirplaneViewModel(airplane);
 
             airplaneViewModel.Manufacturers = _airplaneRepository.GetComboManufacturers();
-            airplaneViewModel.Models = _airplaneRepository.GetComboModels(airplaneViewModel.ManufacturerId);
+            airplaneViewModel.Models = await _airplaneRepository.GetComboModelsAsync(airplaneViewModel.ManufacturerId);
 
             return View(airplaneViewModel);
         }

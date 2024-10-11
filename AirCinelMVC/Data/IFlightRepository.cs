@@ -7,18 +7,20 @@ namespace AirCinelMVC.Data
 {
     public interface IFlightRepository : IGenericRepository<Flight>
     {
-        public IQueryable<Flight> GetAllFlightsWithAirplaneAndAirports();
+        IQueryable<Flight> GetAllFlights();
 
-        public Task<Flight> GetFlightWithAirplaneAndAirports(int id);
+        IQueryable<Flight> GetAllFlightsWithAirplaneAndAirports();
 
-        public IEnumerable<Flight> GetFlightsByUserId(string userId);
+        Task<Flight> GetFlightWithAirplaneAndAirportsAsync(int id);
 
-        public Task<Flight> GetFlightWithAirplaneAirportsAndTickets(int id);
+        IEnumerable<Flight> GetFlightsByUserId(string userId);
 
-        public Task<Ticket> GetTicketWithUserFlightAirplaneAndAirports(int id);
+        Task<Flight> GetFlightWithAirplaneAirportsAndTicketsAsync(int id);
 
-        public Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId);
+        Task<Ticket> GetTicketWithUserFlightAirplaneAndAirportsAsync(int id);
 
-        public Task<IEnumerable<Ticket>> GetAllTicketsWithAllInfo();
+        Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId);
+
+        Task<IEnumerable<Ticket>> GetAllTicketsWithAllInfoAsync();
     }
 }

@@ -23,7 +23,7 @@ namespace AirCinelMVC.Data
 
         IEnumerable<SelectListItem> GetComboCountries();
 
-        IEnumerable<SelectListItem> GetComboCities(int countryId);
+        Task<IEnumerable<SelectListItem>> GetComboCitiesAsync(int countryId);
 
         Task<Country> GetCountryAsync(City city);
     }

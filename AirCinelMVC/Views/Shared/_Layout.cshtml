@@ -66,6 +66,7 @@
                                 @if (this.User.IsInRole("Employee") || !this.User.IsInRole("Customer"))
                                 {
                                     <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightHistory">Flights History</a></li>
+                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightCalendar">Calendar</a></li>
                                 }
 
                                 @if (this.User.IsInRole("Customer"))
@@ -148,6 +149,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -69,12 +69,12 @@ namespace AirCinelMVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
             var model = new RegisterNewUserViewModel
             {
                 Countries = _countryRepository.GetComboCountries(),
-                Cities = _countryRepository.GetComboCities(0)
+                Cities = await _countryRepository.GetComboCitiesAsync(0)           
             };
 
             return View(model);
@@ -172,7 +172,7 @@ namespace AirCinelMVC.Controllers
 
                         // Populando as listas de países e cidades
                         model.Countries = _countryRepository.GetComboCountries();
-                        model.Cities = _countryRepository.GetComboCities(country.Id);
+                        model.Cities = await _countryRepository.GetComboCitiesAsync(country.Id);
                     }
                 }
             }
@@ -191,7 +191,6 @@ namespace AirCinelMVC.Controllers
                 {
                     var city = await _countryRepository.GetCityAsync(model.CityId);
 
-                    // Atualiza os dados do usuário
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
                     user.Address = model.Address;
@@ -199,7 +198,6 @@ namespace AirCinelMVC.Controllers
                     user.CityId = model.CityId;
                     user.City = city;
 
-                    // Verifica se há uma nova imagem para upload
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
                         var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
@@ -218,11 +216,10 @@ namespace AirCinelMVC.Controllers
                 }
             }
 
-            // Recarrega as listas de países e cidades
             model.Countries = _countryRepository.GetComboCountries();
             if (model.CountryId != 0)
             {
-                model.Cities = _countryRepository.GetComboCities(model.CountryId);
+                model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
             }
 
             return View(model);

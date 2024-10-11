@@ -1,14 +1,15 @@
 ﻿@model AirCinelMVC.Models.PurchaseTicketViewModel
 @{
     ViewData["Title"] = "PurchaseTicket";
+    bool isFirstAvailableSeatSelected = false;
 }
 <div class="text-center">
-    <h2>Select a seat for Flight @Model.FlightId</h2>
+    <h1>Select a seat for Flight @Model.FlightId</h1>
 </div>
 
 <form asp-action="PurchaseTicket" method="post">
     <input type="hidden" asp-for="FlightId" />
-    <p class="text-center">(Front of the Airplane)</p>
+    <h6 class="text-center">(Front of the Airplane)</h6>
     <div class="seat-map">
         @for (int row = 0; row < @Model.SeatMap.GetLength(0); row++)
         {
@@ -24,9 +25,15 @@
                         bool isOccupied = @Model.OccupiedSeats.Contains(seatNumber);
 
                         <label class="seat-label @(isOccupied ? "occupied" : "available")">
-                            <input type="radio" name="SelectedSeat" value="@seatNumber" @(isOccupied ? "disabled" : "") />
+                            <input type="radio" name="SelectedSeat" value="@seatNumber" 
+                                @(isOccupied ? "disabled" : (isFirstAvailableSeatSelected ? "" : "checked")) />
                             @seatNumber
                         </label>
+
+                        if (!isFirstAvailableSeatSelected && !isOccupied)
+                        {
+                            isFirstAvailableSeatSelected = true;
+                        }
 
                         seatLetterIndex++;
                     }

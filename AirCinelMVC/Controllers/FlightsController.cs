@@ -11,11 +11,9 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Barcode;
 using Syncfusion.Pdf.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace AirCinelMVC.Controllers
@@ -101,7 +99,7 @@ namespace AirCinelMVC.Controllers
                 return new NotFoundViewResult("FlightNotFound");
             }
 
-            var flight = await _flightRepository.GetFlightWithAirplaneAndAirports(id.Value);
+            var flight = await _flightRepository.GetFlightWithAirplaneAndAirportsAsync(id.Value);
             if (flight == null)
             {
                 return new NotFoundViewResult("FlightNotFound");
@@ -337,7 +335,7 @@ namespace AirCinelMVC.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> PurchaseTicket(int flightId)
         {
-            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTickets(flightId);
+            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTicketsAsync(flightId);
 
             if (flight == null)
             {
@@ -352,19 +350,18 @@ namespace AirCinelMVC.Controllers
             {
                 FlightId = flight.Id,
                 SeatMap = seatMap,
-                OccupiedSeats = occupiedSeats 
+                OccupiedSeats = occupiedSeats
             };
 
             return View(model);
         }
-
 
         [HttpPost]
         [Authorize(Roles = "Customer")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PurchaseTicket(PurchaseTicketViewModel model)
         {
-            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTickets(model.FlightId);
+            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTicketsAsync(model.FlightId);
 
             if (flight == null)
             {
@@ -394,12 +391,24 @@ namespace AirCinelMVC.Controllers
             flight.Tickets.Add(ticket);
             await _flightRepository.UpdateAsync(flight);
 
-            return RedirectToAction("TicketDetails", new { id = ticket.Id });
+            return RedirectToAction("NewTicketDetails", new { id = ticket.Id });
+        }
+
+        public async Task<IActionResult> NewTicketDetails(int id)
+        {
+            var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirportsAsync(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return View(ticket);
         }
 
         public async Task<IActionResult> TicketDetails(int id)
         {
-            var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirports(id);
+            var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirportsAsync(id);
 
             if (ticket == null)
             {
@@ -411,7 +420,7 @@ namespace AirCinelMVC.Controllers
 
         public async Task<IActionResult> PrintTicket(int id)
         {
-            var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirports(id);
+            var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirportsAsync(id);
 
             if (ticket == null)
             {
@@ -536,9 +545,34 @@ namespace AirCinelMVC.Controllers
         [Authorize(Roles = "Employee")]
         public async Task<IActionResult> AllTickets()
         {
-            var tickets = await _flightRepository.GetAllTicketsWithAllInfo();
+            var tickets = await _flightRepository.GetAllTicketsWithAllInfoAsync();
 
             return View(tickets);
         }
+
+        [Authorize(Roles = "Employee")]
+        public IActionResult FlightCalendar()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Employee")]
+        public JsonResult GetFlights()
+        {
+            var flights = _flightRepository.GetAllFlights()
+                .Select(f => new
+                {
+                    id = f.Id,
+                    title = f.Airplane.Manufacturer + " - " + f.Airplane.Model,
+                    start = f.DepartureTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    end = f.ArrivalTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    from = f.DepartureAirport.Name,
+                    to = f.ArrivalAirport.Name
+                })
+                .ToList();
+
+            return new JsonResult(flights);
+        }
+
     }
 }

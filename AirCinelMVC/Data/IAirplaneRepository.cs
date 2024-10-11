@@ -8,20 +8,20 @@ namespace AirCinelMVC.Data
 {
     public interface IAirplaneRepository : IGenericRepository<Airplane>
     {
-        public IQueryable<Airplane> GetAllAirplanes();
+        IQueryable<Airplane> GetAllAirplanes();
 
-        public IEnumerable<SelectListItem> GetComboManufacturers();
+        IEnumerable<SelectListItem> GetComboManufacturers();
 
-        public IEnumerable<SelectListItem> GetComboModels(int manufacturerId);
+        Task<IEnumerable<SelectListItem>> GetComboModelsAsync(int manufacturerId);
 
         string GetManufacturerNameById(int manufacturerId);
 
-        public Task<Manufacturer> GetManufacturerWithModelsAsync(int id);
+        Task<Manufacturer> GetManufacturerWithModelsAsync(int id);
 
-        public string GetModelNameById(int modelId);
+        string GetModelNameById(int modelId);
 
-        public int GetManufacturerIdByName(string name);
+        int GetManufacturerIdByName(string name);
 
-        public int GetModelIdByName(string name);
+        int GetModelIdByName(string name);
     }
 }

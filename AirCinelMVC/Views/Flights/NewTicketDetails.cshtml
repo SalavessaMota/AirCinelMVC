@@ -1,10 +1,17 @@
 ﻿@model AirCinelMVC.Data.Entities.Ticket
 @using Microsoft.AspNetCore.Identity
 @{
-    ViewData["Title"] = "TicketDetails";
+    ViewData["Title"] = "NewTicketDetails";
 }
 
 <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
+
+<h1 class="text-center">Thank You for Your Purchase!</h1>
+
+<p class="text-center lead">
+    Your journey with AirCinel has just begun. Below are the details of your upcoming flight.
+    We are thrilled to have you on board and look forward to serving you during your flight.
+</p>
 
 <div class="text-center">
     <div class="d-flex justify-content-center">
@@ -168,5 +175,5 @@
 
 <div class="text-center">
     <a href="~/Flights/PrintTicket/@Model.Id" class="btn btn-secondary btn-lg mt-3"><i class="fas fa-print"></i> Print Boarding Pass</a>
-    <a href="~/Flights/UserTickets" class="btn btn-primary btn-lg mt-3"><i class="fas fa-home"></i>  Return to ticket list</a>
+    <a href="~/Home/index" class="btn btn-primary btn-lg mt-3"><i class="fas fa-home"></i>  Return Home</a>
 </div>
