@@ -21,6 +21,7 @@ namespace AirCinelMVC.Controllers
         private readonly IMailHelper _mailHelper;
         private readonly IConfiguration _configuration;
         private readonly ICountryRepository _countryRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IBlobHelper _blobHelper;
 
         public AccountController(
@@ -28,12 +29,14 @@ namespace AirCinelMVC.Controllers
             IMailHelper mailHelper,
             IConfiguration configuration,
             ICountryRepository countryRepository,
+            IUserRepository userRepository,
             IBlobHelper blobHelper)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _configuration = configuration;
             _countryRepository = countryRepository;
+            _userRepository = userRepository;
             _blobHelper = blobHelper;
         }
 
@@ -85,7 +88,7 @@ namespace AirCinelMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+                var user = await _userRepository.GetUserByEmailAsync(model.Username);
                 if (user != null)
                 {
                     ModelState.AddModelError(string.Empty, "The email is already registered.");
@@ -111,7 +114,7 @@ namespace AirCinelMVC.Controllers
                     user.ImageId = imageId;
                 }
 
-                var result = await _userHelper.AddUserAsync(user, model.Password);
+                var result = await _userRepository.AddUserAsync(user, model.Password);
                 if (result != IdentityResult.Success)
                 {
                     ModelState.AddModelError(string.Empty, "The user couldn't be created.");
@@ -152,7 +155,7 @@ namespace AirCinelMVC.Controllers
         // GET
         public async Task<IActionResult> ChangeUser()
         {
-            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var user = await _userRepository.GetUserByEmailAsync(this.User.Identity.Name);
             var model = new ChangeUserViewModel();
             if (user != null)
             {
@@ -186,7 +189,7 @@ namespace AirCinelMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                var user = await _userRepository.GetUserByEmailAsync(this.User.Identity.Name);
                 if (user != null)
                 {
                     var city = await _countryRepository.GetCityAsync(model.CityId);
@@ -204,7 +207,7 @@ namespace AirCinelMVC.Controllers
                         user.ImageId = imageId;
                     }
 
-                    var response = await _userHelper.UpdateUserAsync(user);
+                    var response = await _userRepository.UpdateUserAsync(user);
                     if (response.Succeeded)
                     {
                         ViewBag.UserMessage = "User updated!";
@@ -235,7 +238,7 @@ namespace AirCinelMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                var user = await _userRepository.GetUserByEmailAsync(this.User.Identity.Name);
                 if (user != null)
                 {
                     var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
@@ -262,7 +265,7 @@ namespace AirCinelMVC.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+                var user = await _userRepository.GetUserByEmailAsync(model.Username);
                 if (user != null)
                 {
                     var result = await _userHelper.ValidatePasswordAsync(
@@ -308,7 +311,7 @@ namespace AirCinelMVC.Controllers
                 return NotFound();
             }
 
-            var user = await _userHelper.GetUserByIdAsync(userId);
+            var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
                 return NotFound();
@@ -333,7 +336,7 @@ namespace AirCinelMVC.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(model.Email);
+                var user = await _userRepository.GetUserByEmailAsync(model.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "The email doesn't correspont to a registered user.");
@@ -376,7 +379,7 @@ namespace AirCinelMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            var user = await _userHelper.GetUserByEmailAsync(model.UserName);
+            var user = await _userRepository.GetUserByEmailAsync(model.UserName);
             if (user != null)
             {
                 var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);

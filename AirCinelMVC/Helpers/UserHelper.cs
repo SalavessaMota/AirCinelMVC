@@ -24,25 +24,25 @@ namespace AirCinelMVC.Helpers
             _roleManager = roleManager;
         }
 
-        public IQueryable<User> GetAllUsersWithCity()
-        {
-            return _userManager.Users.Include(u => u.City);
-        }
+        //public IQueryable<User> GetAllUsersWithCity()
+        //{
+        //    return _userManager.Users.Include(u => u.City);
+        //}
 
-        public async Task<IdentityResult> DeleteUserAsync(User user)
-        {
-            return await _userManager.DeleteAsync(user);
-        }
+        //public async Task<IdentityResult> DeleteUserAsync(User user)
+        //{
+        //    return await _userManager.DeleteAsync(user);
+        //}
 
         public IEnumerable<IdentityRole> GetAllRoles()
         {
             return _roleManager.Roles;
         }
 
-        public async Task<IdentityResult> AddUserAsync(User user, string password)
-        {
-            return await _userManager.CreateAsync(user, password);
-        }
+        //public async Task<IdentityResult> AddUserAsync(User user, string password)
+        //{
+        //    return await _userManager.CreateAsync(user, password);
+        //}
 
         public async Task<IdentityResult> AddUserToRoleAsync(User user, string role)
         {
@@ -63,10 +63,10 @@ namespace AirCinelMVC.Helpers
             }
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
-        {
-            return await _userManager.FindByEmailAsync(email);
-        }
+        //public async Task<User> GetUserByEmailAsync(string email)
+        //{
+        //    return await _userManager.FindByEmailAsync(email);
+        //}
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
@@ -83,10 +83,10 @@ namespace AirCinelMVC.Helpers
             return _signInManager.SignOutAsync();
         }
 
-        public async Task<IdentityResult> UpdateUserAsync(User user)
-        {
-            return await _userManager.UpdateAsync(user);
-        }
+        //public async Task<IdentityResult> UpdateUserAsync(User user)
+        //{
+        //    return await _userManager.UpdateAsync(user);
+        //}
 
         public async Task<List<string>> GetRolesAsync(User user)
         {
@@ -113,10 +113,10 @@ namespace AirCinelMVC.Helpers
             return await _userManager.ConfirmEmailAsync(user, token);
         }
 
-        public async Task<User> GetUserByIdAsync(string userId)
-        {
-            return await _userManager.FindByIdAsync(userId);
-        }
+        //public async Task<User> GetUserByIdAsync(string userId)
+        //{
+        //    return await _userManager.FindByIdAsync(userId);
+        //}
 
         public async Task<string> GeneratePasswordResetTokenAsync(User user)
         {

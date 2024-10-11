@@ -16,24 +16,27 @@ public class AdminController : Controller
     private readonly IBlobHelper _blobHelper;
     private readonly IMailHelper _mailHelper;
     private readonly ICountryRepository _countryRepository;
+    private readonly IUserRepository _userRepository;
 
     public AdminController(
         IUserHelper userHelper,
         IBlobHelper blobHelper,
         IMailHelper mailHelper,
-        ICountryRepository countryRepository)
+        ICountryRepository countryRepository,
+        IUserRepository userRepository)
     {
         _userHelper = userHelper;
         _blobHelper = blobHelper;
         _mailHelper = mailHelper;
         _countryRepository = countryRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<IActionResult> Index()
     {
-        var users = await _userHelper.GetAllUsersWithCity().ToListAsync();
+        var users = await _userRepository.GetAllUsersWithCity().ToListAsync();
 
-        var loggedUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+        var loggedUser = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
 
         var model = new List<EditUserRolesViewModel>();
 
@@ -59,7 +62,7 @@ public class AdminController : Controller
 
     public async Task<IActionResult> EditUserRoles(string id)
     {
-        var user = await _userHelper.GetUserByIdAsync(id);
+        var user = await _userRepository.GetUserByIdAsync(id);
         if (user == null)
         {
             return new NotFoundViewResult("UserNotFound");
@@ -86,7 +89,7 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> EditUserRoles(EditUserRolesViewModel model)
     {
-        var user = await _userHelper.GetUserByEmailAsync(model.Email);
+        var user = await _userRepository.GetUserByIdAsync(model.UserId);
         if (user == null)
         {
             return new NotFoundViewResult("UserNotFound");
@@ -143,7 +146,7 @@ public class AdminController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = await _userHelper.GetUserByEmailAsync(model.Username);
+            var user = await _userRepository.GetUserByEmailAsync(model.Username);
             if (user == null)
             {
                 var city = await _countryRepository.GetCityAsync(model.CityId);
@@ -165,7 +168,7 @@ public class AdminController : Controller
                     user.ImageId = imageId;
                 }
 
-                var result = await _userHelper.AddUserAsync(user, model.Password);
+                var result = await _userRepository.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Employee");
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
@@ -218,7 +221,7 @@ public class AdminController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = await _userHelper.GetUserByEmailAsync(model.Username);
+            var user = await _userRepository.GetUserByEmailAsync(model.Username);
             if (user == null)
             {
                 var city = await _countryRepository.GetCityAsync(model.CityId);
@@ -240,7 +243,7 @@ public class AdminController : Controller
                     user.ImageId = imageId;
                 }
 
-                var result = await _userHelper.AddUserAsync(user, model.Password);
+                var result = await _userRepository.AddUserAsync(user, model.Password);
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
@@ -279,7 +282,7 @@ public class AdminController : Controller
 
     public async Task<IActionResult> EditUser(string id)
     {
-        var user = await _userHelper.GetUserByIdAsync(id);
+        var user = await _userRepository.GetUserByIdAsync(id);
         var model = new ChangeUserViewModel();
         if (user != null)
         {
@@ -312,7 +315,7 @@ public class AdminController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = await _userHelper.GetUserByIdAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id);
             if (user != null)
             {
                 var city = await _countryRepository.GetCityAsync(model.CityId);
@@ -332,7 +335,7 @@ public class AdminController : Controller
                     user.ImageId = imageId;
                 }
 
-                var response = await _userHelper.UpdateUserAsync(user);
+                var response = await _userRepository.UpdateUserAsync(user);
                 if (response.Succeeded)
                 {
                     ViewBag.UserMessage = "User updated!";
@@ -361,7 +364,7 @@ public class AdminController : Controller
             return new NotFoundViewResult("UserNotFound");
         }
 
-        var user = await _userHelper.GetUserByIdAsync(id);
+        var user = await _userRepository.GetUserByIdAsync(id);
         if (user == null)
         {
             return new NotFoundViewResult("UserNotFound");
@@ -384,7 +387,7 @@ public class AdminController : Controller
             return new NotFoundViewResult("UserNotFound");
         }
 
-        var user = await _userHelper.GetUserByIdAsync(id);
+        var user = await _userRepository.GetUserByIdAsync(id);
         if (user == null)
         {
             return new NotFoundViewResult("UserNotFound");
@@ -392,7 +395,7 @@ public class AdminController : Controller
 
         try
         {
-            await _userHelper.DeleteUserAsync(user);
+            await _userRepository.DeleteUserAsync(user);
             await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
             await _blobHelper.DeleteBlobAsync("users", user.ImageId.ToString());
             return RedirectToAction(nameof(Index));

@@ -23,6 +23,7 @@ namespace AirCinelMVC.Controllers
         private readonly IFlightRepository _flightRepository;
         private readonly IAirplaneRepository _airplaneRepository;
         private readonly IAirportRepository _airportRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IUserHelper _userHelper;
         private readonly ISeatHelper _seatHelper;
 
@@ -30,12 +31,14 @@ namespace AirCinelMVC.Controllers
             IFlightRepository flightRepository,
             IAirplaneRepository airplaneRepository,
             IAirportRepository airportRepository,
+            IUserRepository userRepository,
             IUserHelper userHelper,
             ISeatHelper seatHelper)
         {
             _flightRepository = flightRepository;
             _airplaneRepository = airplaneRepository;
             _airportRepository = airportRepository;
+            _userRepository = userRepository;
             _userHelper = userHelper;
             _seatHelper = seatHelper;
         }
@@ -66,7 +69,7 @@ namespace AirCinelMVC.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserUpcomingFlights()
         {
-            var currentUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var currentUser = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
 
             var futureFlights = _flightRepository.GetFlightsByUserId(currentUser.Id)
                 .Where(f => f.DepartureTime >= DateTime.Now)
@@ -78,7 +81,7 @@ namespace AirCinelMVC.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserFlightHistory()
         {
-            var currentUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var currentUser = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
 
             var futureFlights = _flightRepository.GetFlightsByUserId(currentUser.Id)
                 .Where(f => f.DepartureTime < DateTime.Now)
@@ -380,7 +383,7 @@ namespace AirCinelMVC.Controllers
                 return View(model);
             }
 
-            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
             var ticket = new Ticket
             {
                 FlightId = model.FlightId,
@@ -530,7 +533,7 @@ namespace AirCinelMVC.Controllers
 
         public async Task<IActionResult> UserTickets()
         {
-            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
 
             if (user == null)
             {

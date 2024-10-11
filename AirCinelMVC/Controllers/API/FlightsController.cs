@@ -15,13 +15,16 @@ namespace AirCinelMVC.Controllers.API
     public class FlightsController : Controller
     {
         private readonly IFlightRepository _flightRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IUserHelper _userHelper;
 
         public FlightsController(
             IFlightRepository flightRepository,
+            IUserRepository userRepository,
             IUserHelper userHelper)
         {
             _flightRepository = flightRepository;
+            _userRepository = userRepository;
             _userHelper = userHelper;
         }
 
@@ -29,7 +32,7 @@ namespace AirCinelMVC.Controllers.API
         public IActionResult GetFlights()
         {
             var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = _userHelper.GetUserByEmailAsync(userEmail).Result;
+            var user = _userRepository.GetUserByEmailAsync(userEmail).Result;
 
             if (user == null)
             {

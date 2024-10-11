@@ -11,11 +11,13 @@ namespace AirCinelMVC.Data
     public class SeedDb
     {
         private readonly DataContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly IUserHelper _userHelper;
 
-        public SeedDb(DataContext context, IUserHelper userHelper)
+        public SeedDb(DataContext context, IUserRepository userRepository,IUserHelper userHelper)
         {
             _context = context;
+            _userRepository = userRepository;
             _userHelper = userHelper;
         }
 
@@ -215,7 +217,7 @@ namespace AirCinelMVC.Data
             await _userHelper.CheckRoleAsync("Employee");
             await _userHelper.CheckRoleAsync("Customer");
 
-            var user = await _userHelper.GetUserByEmailAsync("nunosalavessa@hotmail.com");
+            var user = await _userRepository.GetUserByEmailAsync("nunosalavessa@hotmail.com");
             if (user == null)
             {
                 user = new User
@@ -230,7 +232,8 @@ namespace AirCinelMVC.Data
                     City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
                 };
 
-                var result = await _userHelper.AddUserAsync(user, "123123");
+                //var result = await _userHelper.AddUserAsync(user, "123123");
+                var result = await _userRepository.AddUserAsync(user, "123123");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");

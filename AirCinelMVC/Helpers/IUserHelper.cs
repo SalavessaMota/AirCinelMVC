@@ -9,21 +9,21 @@ namespace AirCinelMVC.Helpers
 {
     public interface IUserHelper
     {
-        IQueryable<User> GetAllUsersWithCity();
+        //IQueryable<User> GetAllUsersWithCity();
 
-        Task<IdentityResult> DeleteUserAsync(User user);
+        //Task<IdentityResult> DeleteUserAsync(User user);
 
         IEnumerable<IdentityRole> GetAllRoles();
 
-        Task<User> GetUserByEmailAsync(string email);
+        //Task<User> GetUserByEmailAsync(string email);
 
-        Task<IdentityResult> AddUserAsync(User user, string password);
+        //Task<IdentityResult> AddUserAsync(User user, string password);
 
         Task<SignInResult> LoginAsync(LoginViewModel model);
 
         Task LogoutAsync();
 
-        Task<IdentityResult> UpdateUserAsync(User user);
+        //Task<IdentityResult> UpdateUserAsync(User user);
 
         Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
 
@@ -43,7 +43,7 @@ namespace AirCinelMVC.Helpers
 
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
 
-        Task<User> GetUserByIdAsync(string userId);
+        //Task<User> GetUserByIdAsync(string userId);
 
         Task<string> GeneratePasswordResetTokenAsync(User user);
 
