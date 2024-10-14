@@ -402,6 +402,7 @@ namespace AirCinelMVC.Controllers
             return RedirectToAction("NewTicketDetails", new { id = ticket.Id });
         }
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> NewTicketDetails(int id)
         {
             var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirportsAsync(id);
@@ -414,6 +415,7 @@ namespace AirCinelMVC.Controllers
             return View(ticket);
         }
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> TicketDetails(int id)
         {
             var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirportsAsync(id);
@@ -426,6 +428,7 @@ namespace AirCinelMVC.Controllers
             return View(ticket);
         }
 
+        [Authorize(Roles = "Employee,Customer")]
         public async Task<IActionResult> PrintTicket(int id)
         {
             var ticket = await _flightRepository.GetTicketWithUserFlightAirplaneAndAirportsAsync(id);
@@ -536,6 +539,7 @@ namespace AirCinelMVC.Controllers
             return File(stream, "application/pdf", "BoardingPass.pdf");
         }
 
+        [Authorize(Roles = "Customer")] 
         public async Task<IActionResult> UserTickets()
         {
             var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
