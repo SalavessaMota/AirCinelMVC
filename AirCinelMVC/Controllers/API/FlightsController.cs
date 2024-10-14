@@ -1,4 +1,5 @@
 ﻿using AirCinelMVC.Data;
+using AirCinelMVC.Data.Entities.Dtos;
 using AirCinelMVC.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -45,7 +46,47 @@ namespace AirCinelMVC.Controllers.API
                 .OrderBy(f => f.DepartureTime)
                 .ToList();
 
-            return Ok(futureFlights);
+            var flightDtos = futureFlights.Select(flight => new FlightDto
+            {
+                Id = flight.Id,
+                FlightNumber = flight.FlightNumber,
+                DepartureTime = flight.DepartureTime,
+                ArrivalTime = flight.ArrivalTime,
+                Airplane = new AirplaneDto
+                {
+                    Id = flight.Airplane.Id,
+                    Model = flight.Airplane.Model,
+                    Manufacturer = flight.Airplane.Manufacturer,
+                    Capacity = flight.Airplane.Capacity,
+                    ImageFullPath = flight.Airplane.ImageFullPath
+                },
+                DepartureAirport = new AirportDto
+                {
+                    Id = flight.DepartureAirport.Id,
+                    Name = flight.DepartureAirport.Name,
+                    ImageFullPath = flight.DepartureAirport.ImageFullPath
+                },
+                ArrivalAirport = new AirportDto
+                {
+                    Id = flight.ArrivalAirport.Id,
+                    Name = flight.ArrivalAirport.Name,
+                    ImageFullPath = flight.ArrivalAirport.ImageFullPath
+                },
+                Tickets = flight.Tickets.Select(ticket => new TicketDto
+                {
+                    Id = ticket.Id,
+                    SeatNumber = ticket.SeatNumber,
+                    User = new UserDto
+                    {
+                        FirstName = ticket.User.FirstName,
+                        LastName = ticket.User.LastName,
+                        Email = ticket.User.Email,
+                        ImageFullPath = ticket.User.ImageFullPath
+                    }
+                }).ToList()
+            }).ToList();
+
+            return Ok(flightDtos);
         }
     }
 }
