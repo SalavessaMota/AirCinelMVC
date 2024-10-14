@@ -9,43 +9,44 @@
 
 <form asp-action="PurchaseTicket" method="post">
     <input type="hidden" asp-for="FlightId" />
-    <h6 class="text-center">(Front of the Airplane)</h6>
-    <div class="seat-map">
-        @for (int row = 0; row < @Model.SeatMap.GetLength(0); row++)
-        {
-            <div class="seat-row">
-                @{
-                    int seatLetterIndex = 0;
-                }
-                @for (int col = 0; col < @Model.SeatMap.GetLength(1); col++)
-                {
-                    if (@Model.SeatMap[row, col] == 1)
+    <div class="seat-map-container">
+        <div class="seat-map text-center" style="background-color: white;">
+            <h6 class="text-center">(Front of the Airplane)</h6>
+            @for (int row = 0; row < @Model.SeatMap.GetLength(0); row++)
+            {
+                <div class="seat-row">
+                    @{
+                        int seatLetterIndex = 0;
+                    }
+                    @for (int col = 0; col < @Model.SeatMap.GetLength(1); col++)
                     {
-                        string seatNumber = $"{row + 1}{(char)('A' + seatLetterIndex)}";
-                        bool isOccupied = @Model.OccupiedSeats.Contains(seatNumber);
-
-                        <label class="seat-label @(isOccupied ? "occupied" : "available")">
-                            <input type="radio" name="SelectedSeat" value="@seatNumber" 
-                                @(isOccupied ? "disabled" : (isFirstAvailableSeatSelected ? "" : "checked")) />
-                            @seatNumber
-                        </label>
-
-                        if (!isFirstAvailableSeatSelected && !isOccupied)
+                        if (@Model.SeatMap[row, col] == 1)
                         {
-                            isFirstAvailableSeatSelected = true;
+                            string seatNumber = $"{row + 1}{(char)('A' + seatLetterIndex)}";
+                            bool isOccupied = @Model.OccupiedSeats.Contains(seatNumber);
+
+                            <label class="seat-label @(isOccupied ? "occupied" : "available")">
+                                <input type="radio" name="SelectedSeat" value="@seatNumber" 
+                                    @(isOccupied ? "disabled" : (isFirstAvailableSeatSelected ? "" : "checked")) />
+                                @seatNumber
+                            </label>
+
+                            if (!isFirstAvailableSeatSelected && !isOccupied)
+                            {
+                                isFirstAvailableSeatSelected = true;
+                            }
+
+                            seatLetterIndex++;
                         }
-
-                        seatLetterIndex++;
+                        else
+                        {
+                            <span class="corridor"></span>
+                        }
                     }
-                    else
-                    {
-                        <span class="corridor"></span>
-                    }
-                }
-            </div>
-        }
+                </div>
+            }
+        </div>
     </div>
-
     <div class="text-center mt-4">
         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Confirm Seat Selection</button>
         <a href="~/Home/index" class="btn btn-primary"><i class="fas fa-home"></i> Return Home</a>
@@ -53,10 +54,16 @@
 </form>
 
 <style>
+    .seat-map-container {
+        text-align: center;
+    }
+
     .seat-map {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: inline-block;
+        background-color: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
     }
 

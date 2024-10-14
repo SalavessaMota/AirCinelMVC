@@ -60,8 +60,8 @@
                                 const endTime = flight.end.substring(11, 16);     // Extrai a hora de fim
 
                                 return {
-                                    id: flight.id,
-                                    title: `Flight ${flight.id}: ${startTime} - ${endTime}`,
+                                    number: flight.number,
+                                    title: `${flight.number}: ${startTime} - ${endTime}`,
                                     start: flight.start,
                                     end: flight.end,
                                     from: flight.from,
@@ -86,7 +86,7 @@
                     const formattedEnd = end.toLocaleDateString('en-GB', options).replace(',', '');
 
                     // Preencher a modal com os dados do voo
-                    document.getElementById('flightNumber').textContent = info.event.id; // Preencher o número do voo
+                    document.getElementById('flightNumber').textContent = info.event.extendedProps.number;
                     document.getElementById('flightDeparture').textContent = formattedStart;
                     document.getElementById('flightArrival').textContent = formattedEnd;
                     document.getElementById('flightFrom').textContent = info.event.extendedProps.from;

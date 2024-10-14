@@ -565,7 +565,7 @@ namespace AirCinelMVC.Controllers
             var flights = _flightRepository.GetAllFlights()
                 .Select(f => new
                 {
-                    id = f.Id,
+                    number = f.FlightNumber,
                     title = f.Airplane.Manufacturer + " - " + f.Airplane.Model,
                     start = f.DepartureTime.ToString("yyyy-MM-ddTHH:mm:ss"),
                     end = f.ArrivalTime.ToString("yyyy-MM-ddTHH:mm:ss"),

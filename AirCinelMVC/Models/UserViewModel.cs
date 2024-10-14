@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AirCinelMVC.Models
 {
-    public class ChangeUserViewModel
+    public class UserViewModel
     {
         [Display(Name = "Profile Picture")]
         public IFormFile ImageFile { get; set; }

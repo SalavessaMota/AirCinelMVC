@@ -55,27 +55,36 @@
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-plane-departure mr-1"></i>Flights
+                                @if(this.User.IsInRole("Customer"))
+                                {
+                                    <i class="fas fa-plane-departure mr-1"></i><text>Your Flights</text>
+                                }
+                                @if(this.User.IsInRole("Employee"))
+                                {
+                                    <i class="fas fa-plane-departure mr-1"></i><text>Flights</text>
+                                }
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 @if (this.User.IsInRole("Employee"))
                                 {
-                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Manage Flights</a></li>
+                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index"><i class="fas fa-tasks"></i> Manage Flights</a></li>
                                 }
 
                                 @if (this.User.IsInRole("Employee") || !this.User.IsInRole("Customer"))
                                 {
-                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightHistory">Flights History</a></li>
-                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightCalendar">Calendar</a></li>
+                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightHistory"><i class="fas fa-history"></i> Flights History</a></li>
+                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="FlightCalendar"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
                                 }
 
                                 @if (this.User.IsInRole("Customer"))
                                 {
-                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UserFlightHistory">Your Flight History</a></li>
-                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UserUpcomingFlights">Your Next Flights</a></li>
+                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UserFlightHistory"><i class="fas fa-history"></i>  Flight History</a></li>
+                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UserUpcomingFlights">Next Flights</a></li>
                                 }
                             </ul>
                         </li>
+
+
                     }
                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
                     {

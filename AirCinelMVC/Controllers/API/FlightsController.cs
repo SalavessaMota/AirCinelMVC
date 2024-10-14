@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace AirCinelMVC.Controllers.API
 {
@@ -29,10 +30,10 @@ namespace AirCinelMVC.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult GetFlights()
+        public async Task<IActionResult> GetFlights()
         {
             var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = _userRepository.GetUserByEmailAsync(userEmail).Result;
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
 
             if (user == null)
             {

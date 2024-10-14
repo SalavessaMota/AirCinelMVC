@@ -133,7 +133,7 @@ public class AdminController : Controller
 
     public async Task<IActionResult> RegisterEmployee()
     {
-        var model = new RegisterNewUserViewModel
+        var model = new AdminRegisterNewUserViewModel
         {
             Countries = _countryRepository.GetComboCountries(),
             Cities = await _countryRepository.GetComboCitiesAsync(1)
@@ -142,7 +142,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterEmployee(RegisterNewUserViewModel model)
+    public async Task<IActionResult> RegisterEmployee(AdminRegisterNewUserViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -168,7 +168,7 @@ public class AdminController : Controller
                     user.ImageId = imageId;
                 }
 
-                var result = await _userRepository.AddUserAsync(user, model.Password);
+                var result = await _userRepository.AddUserAsync(user, "123123");
                 await _userHelper.AddUserToRoleAsync(user, "Employee");
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
@@ -208,7 +208,7 @@ public class AdminController : Controller
 
     public async Task<IActionResult> RegisterCustomer()
     {
-        var model = new RegisterNewUserViewModel
+        var model = new AdminRegisterNewUserViewModel
         {
             Countries = _countryRepository.GetComboCountries(),
             Cities = await _countryRepository.GetComboCitiesAsync(1)
@@ -217,7 +217,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterCustomer(RegisterNewUserViewModel model)
+    public async Task<IActionResult> RegisterCustomer(AdminRegisterNewUserViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -243,7 +243,7 @@ public class AdminController : Controller
                     user.ImageId = imageId;
                 }
 
-                var result = await _userRepository.AddUserAsync(user, model.Password);
+                var result = await _userRepository.AddUserAsync(user, "123123");
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
@@ -283,7 +283,7 @@ public class AdminController : Controller
     public async Task<IActionResult> EditUser(string id)
     {
         var user = await _userRepository.GetUserByIdAsync(id);
-        var model = new ChangeUserViewModel();
+        var model = new UserViewModel();
         if (user != null)
         {
             model.FirstName = user.FirstName;
@@ -311,7 +311,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditUser(ChangeUserViewModel model, string id)
+    public async Task<IActionResult> EditUser(UserViewModel model, string id)
     {
         if (ModelState.IsValid)
         {

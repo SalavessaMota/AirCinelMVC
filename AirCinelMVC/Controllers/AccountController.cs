@@ -156,7 +156,7 @@ namespace AirCinelMVC.Controllers
         public async Task<IActionResult> ChangeUser()
         {
             var user = await _userRepository.GetUserByEmailAsync(this.User.Identity.Name);
-            var model = new ChangeUserViewModel();
+            var model = new UserViewModel();
             if (user != null)
             {
                 model.FirstName = user.FirstName;
@@ -185,7 +185,7 @@ namespace AirCinelMVC.Controllers
 
         // POST
         [HttpPost]
-        public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
+        public async Task<IActionResult> ChangeUser(UserViewModel model)
         {
             if (ModelState.IsValid)
             {
