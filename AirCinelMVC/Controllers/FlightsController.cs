@@ -576,6 +576,5 @@ namespace AirCinelMVC.Controllers
 
             return new JsonResult(flights);
         }
-
     }
 }

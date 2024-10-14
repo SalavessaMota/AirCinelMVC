@@ -42,7 +42,6 @@ namespace AirCinelMVC.Data
             return await _userManager.FindByIdAsync(userId);
         }
 
-        
         public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);

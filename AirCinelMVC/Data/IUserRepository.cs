@@ -20,6 +20,5 @@ namespace AirCinelMVC.Data
         Task<IdentityResult> UpdateUserAsync(User user);
 
         Task<IdentityResult> DeleteUserAsync(User user);
-
     }
 }

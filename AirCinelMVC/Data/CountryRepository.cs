@@ -125,6 +125,5 @@ namespace AirCinelMVC.Data
 
             return list;
         }
-
     }
 }

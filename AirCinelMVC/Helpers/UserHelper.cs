@@ -1,9 +1,7 @@
 ﻿using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirCinelMVC.Helpers

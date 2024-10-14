@@ -205,7 +205,6 @@ public class AdminController : Controller
         return View(model);
     }
 
-
     public async Task<IActionResult> RegisterCustomer()
     {
         var model = new AdminRegisterNewUserViewModel
@@ -278,7 +277,6 @@ public class AdminController : Controller
 
         return View(model);
     }
-
 
     public async Task<IActionResult> EditUser(string id)
     {

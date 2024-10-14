@@ -71,7 +71,6 @@ namespace AirCinelMVC.Data
             return list;
         }
 
-
         public string GetModelNameById(int modelId)
         {
             return _context.Models.Find(modelId).Name;

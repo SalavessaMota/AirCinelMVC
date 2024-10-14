@@ -55,7 +55,7 @@
                         .then(response => response.json())
                         .then(data => {
                             // Extraindo os valores de $values do JSON
-                            const events = data.$values.map(flight => {
+                            const events = data.map(flight => {
                                 const startTime = flight.start.substring(11, 16); // Extrai a hora de início
                                 const endTime = flight.end.substring(11, 16);     // Extrai a hora de fim
 

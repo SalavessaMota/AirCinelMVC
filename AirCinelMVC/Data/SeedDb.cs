@@ -14,7 +14,7 @@ namespace AirCinelMVC.Data
         private readonly IUserRepository _userRepository;
         private readonly IUserHelper _userHelper;
 
-        public SeedDb(DataContext context, IUserRepository userRepository,IUserHelper userHelper)
+        public SeedDb(DataContext context, IUserRepository userRepository, IUserHelper userHelper)
         {
             _context = context;
             _userRepository = userRepository;

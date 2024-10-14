@@ -77,7 +77,7 @@ namespace AirCinelMVC.Controllers
             var model = new RegisterNewUserViewModel
             {
                 Countries = _countryRepository.GetComboCountries(),
-                Cities = await _countryRepository.GetComboCitiesAsync(0)           
+                Cities = await _countryRepository.GetComboCitiesAsync(0)
             };
 
             return View(model);
