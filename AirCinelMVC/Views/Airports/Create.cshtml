@@ -38,15 +38,11 @@
                     type: 'POST',
                     dataType: 'json',
                     data: { countryId: $("#CountryId").val() },
-                    success: function (response) {
+                    success: function (cities) {
                         $("#CityId").append('<option value="0">(Select a city...)</option>');
-
-                        // Verifica se o objeto tem a estrutura correta
-                        var cities = response.$values || response;
 
                         if (cities && cities.length > 0) {
                             $.each(cities, function (i, city) {
-                                // Verifica se o objeto city tem `id` e `name`
                                 if (city.id && city.name) {
                                     $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
                                 } else {
@@ -67,3 +63,4 @@
         });
     </script>
 }
+

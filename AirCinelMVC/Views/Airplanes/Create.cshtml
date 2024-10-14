@@ -40,17 +40,15 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // Quando o utilizador muda o ManufacturerId
             $("#ManufacturerId").change(function () {
                 var manufacturerId = $("#ManufacturerId").val();
                 console.log("Manufacturer selected: " + manufacturerId);
 
-                // Atualiza o campo oculto Manufacturer com o nome do fabricante selecionado
                 var manufacturerName = $("#ManufacturerId option:selected").text();
-                $("#Manufacturer").val(manufacturerName); // Preenche o campo Manufacturer com o nome do fabricante
+                $("#Manufacturer").val(manufacturerName);
 
-                $("#ModelId").empty(); // Limpa a combobox de modelos
-                $("#ModelId").append('<option value="0">(Select a model...)</option>'); // Adiciona uma opção padrão
+                $("#ModelId").empty();
+                $("#ModelId").append('<option value="0">(Select a model...)</option>');
 
                 $.ajax({
                     url: '@Url.Action("GetModelsAsync", "Airplanes")',
@@ -60,10 +58,8 @@
                     success: function (response) {
                         console.log("Response received: ", response);
 
-                        // Verifica se o objeto contém a propriedade $values
-                        if (response && response.$values && response.$values.length > 0) {
-                            $.each(response.$values, function (i, model) {
-                                // Adiciona os modelos à combobox, verificando as propriedades
+                        if (response && response.length > 0) {
+                            $.each(response, function (i, model) {
                                 $("#ModelId").append('<option value="' + model.id + '">' + model.name + '</option>');
                             });
                         } else {
@@ -76,12 +72,12 @@
                 });
             });
 
-            // Quando o utilizador seleciona um modelo
             $("#ModelId").change(function () {
                 var modelName = $("#ModelId option:selected").text();
-                $("#Model").val(modelName); // Preenche o campo Model com o nome do modelo
+                $("#Model").val(modelName);
             });
         });
     </script>
 
 }
+
