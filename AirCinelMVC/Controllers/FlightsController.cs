@@ -334,6 +334,11 @@ namespace AirCinelMVC.Controllers
             return View();
         }
 
+        public IActionResult TicketNotFound()
+        {
+            return View();
+        }
+
         [HttpGet]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> PurchaseTicket(int flightId)
@@ -342,7 +347,7 @@ namespace AirCinelMVC.Controllers
 
             if (flight == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("TicketNotFound");
             }
 
             var seatMap = _seatHelper.GenerateSeatMap(flight.Airplane.Model, flight.Airplane.Capacity);
@@ -368,7 +373,7 @@ namespace AirCinelMVC.Controllers
 
             if (flight == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("TicketNotFound");
             }
 
             if (flight.Tickets.Any(t => t.SeatNumber == model.SelectedSeat))
@@ -403,7 +408,7 @@ namespace AirCinelMVC.Controllers
 
             if (ticket == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("TicketNotFound");
             }
 
             return View(ticket);
@@ -415,7 +420,7 @@ namespace AirCinelMVC.Controllers
 
             if (ticket == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("TicketNotFound");
             }
 
             return View(ticket);
@@ -427,7 +432,7 @@ namespace AirCinelMVC.Controllers
 
             if (ticket == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("TicketNotFound");
             }
 
             PdfDocument document = new PdfDocument();
