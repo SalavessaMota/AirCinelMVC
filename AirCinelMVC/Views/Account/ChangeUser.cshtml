@@ -84,9 +84,9 @@
                     success: function (response) {
                         $("#CityId").append('<option value="0">(Select a city...)</option>');
 
-                        // Verifica se o objeto contém a propriedade $values
-                        if (response && response.$values && response.$values.length > 0) {
-                            $.each(response.$values, function (i, city) {
+                        // Agora acessamos diretamente a resposta, sem o uso de $values
+                        if (response && response.length > 0) {
+                            $.each(response, function (i, city) {
                                 // Adiciona as cidades à combobox
                                 $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
                             });
@@ -147,6 +147,7 @@
         });
     </script>
 }
+
 
 
 

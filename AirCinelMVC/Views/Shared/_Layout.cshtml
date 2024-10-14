@@ -79,7 +79,7 @@
                                 @if (this.User.IsInRole("Customer"))
                                 {
                                     <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UserFlightHistory"><i class="fas fa-history"></i>  Flight History</a></li>
-                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UserUpcomingFlights">Next Flights</a></li>
+                                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="UserUpcomingFlights"><i class="fas fa-history fa-flip-horizontal"></i> Next Flights</a></li>
                                 }
                             </ul>
                         </li>
@@ -95,13 +95,15 @@
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="AllTickets"><i class="fas fa-ticket-alt"></i> All Tickets</a></li>
                     }                   
 
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fas fa-user-secret mr-1"></i>Privacy</a>
-                    </li>
 
                 </ul>
 
                 <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fas fa-user-secret mr-1"></i>Privacy</a>
+                    </li>
+
                     @if (this.User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item d-flex align-items-center">

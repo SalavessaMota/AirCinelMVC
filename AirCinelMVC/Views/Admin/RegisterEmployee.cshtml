@@ -39,7 +39,7 @@
 
             $("#CountryId").change(function () {
                 $("#CityId").empty();
-                $("#CityId").append('<option value="0">(Select a city...)</option>'); // Adiciona uma opção padrão
+                $("#CityId").append('<option value="0">(Select a city...)</option>');
 
                 $.ajax({
                     url: '@Url.Action("GetCitiesAsync", "Account")',
@@ -49,12 +49,10 @@
                     success: function (response) {
                         console.log("Cities response: ", response);
 
-                        // Acessa o campo $values para extrair as cidades
-                        var cities = response.$values || [];
+                        var cities = response || [];
 
                         if (cities.length > 0) {
                             $.each(cities, function (i, city) {
-                                // Verifica se o objeto `city` tem `id` e `name`
                                 if (city.id && city.name) {
                                     $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
                                 } else {

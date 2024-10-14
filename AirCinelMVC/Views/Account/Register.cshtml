@@ -132,7 +132,7 @@
                         console.log("Cities response: ", response);
 
                         // Acessa o campo $values para extrair as cidades
-                        var cities = response.$values || [];
+                        var cities = response || [];
 
                         if (cities.length > 0) {
                             $.each(cities, function (i, city) {

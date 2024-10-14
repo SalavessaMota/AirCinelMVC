@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -72,18 +73,18 @@ namespace AirCinelMVC.Controllers.API
                     Name = flight.ArrivalAirport.Name,
                     ImageFullPath = flight.ArrivalAirport.ImageFullPath
                 },
-                Tickets = flight.Tickets.Select(ticket => new TicketDto
+                Tickets = flight.Tickets?.Select(ticket => new TicketDto
                 {
                     Id = ticket.Id,
                     SeatNumber = ticket.SeatNumber,
-                    User = new UserDto
+                    User = ticket.User == null ? null : new UserDto
                     {
                         FirstName = ticket.User.FirstName,
                         LastName = ticket.User.LastName,
                         Email = ticket.User.Email,
                         ImageFullPath = ticket.User.ImageFullPath
                     }
-                }).ToList()
+                }).ToList() ?? new List<TicketDto>()
             }).ToList();
 
             return Ok(flightDtos);
