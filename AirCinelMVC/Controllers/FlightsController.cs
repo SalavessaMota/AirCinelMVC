@@ -339,6 +339,11 @@ namespace AirCinelMVC.Controllers
             return View();
         }
 
+        public IActionResult PastFlight()
+        {
+            return View();
+		}
+
         [HttpGet]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> PurchaseTicket(int flightId)
@@ -348,6 +353,11 @@ namespace AirCinelMVC.Controllers
             if (flight == null)
             {
                 return new NotFoundViewResult("TicketNotFound");
+            }
+
+            if(flight.DepartureTime < DateTime.Now)
+            {
+                return RedirectToAction("PastFlight");
             }
 
             var seatMap = _seatHelper.GenerateSeatMap(flight.Airplane.Model, flight.Airplane.Capacity);

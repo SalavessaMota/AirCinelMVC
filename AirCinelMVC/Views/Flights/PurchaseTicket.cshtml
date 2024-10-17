@@ -9,7 +9,7 @@
 
 <form asp-action="PurchaseTicket" method="post">
     <input type="hidden" asp-for="FlightId" />
-    <div class="seat-map-container">
+    <div class="seat-map-container shadow-lg">
         <div class="seat-map text-center" style="background-color: white;">
             <h6 class="text-center">(Front of the Airplane)</h6>
             @for (int row = 0; row < @Model.SeatMap.GetLength(0); row++)
@@ -48,8 +48,8 @@
         </div>
     </div>
     <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Confirm Seat Selection</button>
-        <a href="~/Home/index" class="btn btn-primary"><i class="fas fa-home"></i> Return Home</a>
+        <button type="submit" class="btn btn-primary shadow-lg"><i class="fa fa-save"></i> Confirm Seat Selection</button>
+        <a href="~/Home/index" class="btn btn-primary shadow-lg"><i class="fas fa-home"></i> Return Home</a>
     </div>
 </form>
 

@@ -34,14 +34,14 @@
         </dl>
 
         <div class="col-md-4">
-            <img src="@Url.Content(Model.ImageFullPath)" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%;" />
+            <img src="@Url.Content(Model.ImageFullPath)" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
         </div>
 
         <br />
     </div>
     <div>
-        <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Index" class="btn btn-success">Back to List</a>
+        <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning shadow-lg">Edit</a>
+        <a asp-action="Index" class="btn btn-success shadow-lg">Back to List</a>
     </div>
 </div>
 
