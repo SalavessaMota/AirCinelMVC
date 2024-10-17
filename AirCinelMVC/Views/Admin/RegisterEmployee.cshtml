@@ -6,16 +6,21 @@
 
 <h2>Register New Employee</h2>
 
-<form method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly"></div>
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly"></div>
 
-    <partial name="_AdminRegisterUser"/>
+            <partial name="_AdminRegisterUser"/>
 
-    <div class="form-group">
-        <input type="submit" value="Register New Employee" class="btn btn-primary shadow-lg" />
-        <a asp-action="Index" class="btn btn-success shadow-lg"><i class="fas fa-list"></i> Back to List</a>
+            <div class="form-group">
+                <input type="submit" value="Register New Employee" class="btn btn-primary shadow-lg" />
+                <a asp-action="Index" class="btn btn-success shadow-lg"><i class="fas fa-list"></i> Back to List</a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+
 
 <div class="text-success">
     <p>
