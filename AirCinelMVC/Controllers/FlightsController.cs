@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace AirCinelMVC.Controllers
 {
@@ -26,6 +27,7 @@ namespace AirCinelMVC.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IUserHelper _userHelper;
         private readonly ISeatHelper _seatHelper;
+        private readonly IFlashMessage _flashMessage;
 
         public FlightsController(
             IFlightRepository flightRepository,
@@ -33,7 +35,8 @@ namespace AirCinelMVC.Controllers
             IAirportRepository airportRepository,
             IUserRepository userRepository,
             IUserHelper userHelper,
-            ISeatHelper seatHelper)
+            ISeatHelper seatHelper,
+            IFlashMessage flashMessage)
         {
             _flightRepository = flightRepository;
             _airplaneRepository = airplaneRepository;
@@ -41,6 +44,7 @@ namespace AirCinelMVC.Controllers
             _userRepository = userRepository;
             _userHelper = userHelper;
             _seatHelper = seatHelper;
+            _flashMessage = flashMessage;
         }
 
         // GET: Flights
@@ -150,42 +154,22 @@ namespace AirCinelMVC.Controllers
         {
             if (flight.DepartureTime >= flight.ArrivalTime)
             {
-                ModelState.AddModelError("ArrivalTime", "The arrival time must be greater than the departure time.");
+                //ModelState.AddModelError("ArrivalTime", "The arrival time must be greater than the departure time.");
+                _flashMessage.Danger("The arrival time must be greater than the departure time.");
+                return RedirectToAction(nameof(Create));
             }
 
             if (ModelState.IsValid)
             {
                 await _flightRepository.CreateAsync(flight);
                 return RedirectToAction(nameof(Index));
-            }
-
-            var airplanes = _airplaneRepository.GetAllAirplanes()
-                .OrderBy(a => a.Manufacturer)
-                .ThenBy(a => a.Model)
-                .Select(a => new
-                {
-                    a.Id,
-                    AirplaneName = a.Manufacturer + " - " + a.Model + " - ID: " + a.Id
-                }).ToList();
-
-            var airports = _airportRepository.GetAllAirports()
-                .Include(a => a.City)
-                .ThenInclude(c => c.Country)
-                .OrderBy(a => a.City.Country.Name)
-                .ThenBy(a => a.City.Name)
-                .ThenBy(a => a.Name)
-                .Select(a => new
-                {
-                    a.Id,
-                    AirportName = a.City.Country.Name + " - " + a.City.Name + " - " + a.Name
-                }).ToList();
-
-            ViewData["AirplaneID"] = new SelectList(airplanes, "Id", "AirplaneName", flight.AirplaneID);
-            ViewData["DepartureAirportID"] = new SelectList(airports, "Id", "AirportName", flight.DepartureAirportID);
-            ViewData["ArrivalAirportID"] = new SelectList(airports, "Id", "AirportName", flight.ArrivalAirportID);
+            }            
 
             return View(flight);
         }
+
+
+
 
         // GET: Flights/Edit/5
         [Authorize(Roles = "Employee")]
@@ -241,6 +225,12 @@ namespace AirCinelMVC.Controllers
             if (id != flight.Id)
             {
                 return new NotFoundViewResult("FlightNotFound");
+            }
+
+            if(flight.DepartureTime >= flight.ArrivalTime)
+            {
+                _flashMessage.Danger("The arrival time must be greater than the departure time.");
+                return RedirectToAction(nameof(Edit), new { id = flight.Id });
             }
 
             if (ModelState.IsValid)
