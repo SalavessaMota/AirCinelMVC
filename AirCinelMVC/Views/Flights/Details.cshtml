@@ -4,11 +4,11 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="col-md-10 offset-md-1">
 
-<div>
-    <h4>Flight</h4>
+    <h1>Flight Details</h1>
     <hr />
+
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DepartureAirport)
@@ -53,11 +53,13 @@
             }
         </dd>
     </dl>
-</div>
-<div>
-    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning shadow-lg">Edit</a>
-    }
+
+    <div>
+        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning shadow-lg">Edit</a>
+        }
     <a asp-action="Index" class="btn btn-success shadow-lg">Back to List</a>
+
+    </div>
 </div>

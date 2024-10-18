@@ -4,26 +4,25 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="col-md-8 offset-md-2">
 
-<h4>Flight</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4 offset-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+    <h1>Edit Flight</h1>
+    <hr />
 
-            <partial name="_Flights" />
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
 
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary shadow-lg" />
-            </div>
-        </form>
+                <partial name="_Flights" />
+
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary shadow-lg" />
+                    <a asp-action="Index" class="btn btn-success">Back to List</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" class="btn btn-success">Back to List</a>
 </div>
 
