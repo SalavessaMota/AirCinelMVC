@@ -148,6 +148,11 @@ namespace AirCinelMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,AirplaneID,DepartureAirportID,ArrivalAirportID,DepartureTime,ArrivalTime")] Flight flight)
         {
+            if (flight.DepartureTime >= flight.ArrivalTime)
+            {
+                ModelState.AddModelError("ArrivalTime", "The arrival time must be greater than the departure time.");
+            }
+
             if (ModelState.IsValid)
             {
                 await _flightRepository.CreateAsync(flight);
