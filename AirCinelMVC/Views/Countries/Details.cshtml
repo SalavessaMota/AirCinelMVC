@@ -8,7 +8,7 @@
 
 <br />
 
-<div>
+<div class="col-md-6 offset-md-3">
     <h4>Country</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -25,56 +25,58 @@
             @Html.DisplayFor(model => model.Code)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
-    <a asp-action="AddCity" asp-route-id="@Model.Id" class="btn btn-info">Add City</a>
-    <a asp-action="Index" class="btn btn-success">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
+        <a asp-action="AddCity" asp-route-id="@Model.Id" class="btn btn-info">Add City</a>
+        <a asp-action="Index" class="btn btn-success">Back to List</a>
+    </div>
 
-<h4>Cities</h4>
-@if (Model.Cities == null || Model.Cities.Count == 0)
-{
-    <h5>No cities added yet</h5>
-}
-else
-{
-    <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Cities</h3>
-            </div>
-            <div class="card-body">
-                <table class="table table-hover table-striped" id="MyTable">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Cities.FirstOrDefault().Name)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Cities.OrderBy(c => c.Name))
-            {
+    <br />
+
+    <h4>Cities</h4>
+    @if (Model.Cities == null || Model.Cities.Count == 0)
+    {
+        <h5>No cities added yet</h5>
+    }
+    else
+    {
+        <div class="row">
+        <div class="col-12">
+                <div class="card shadow-lg rounded">
+                <div class="card-header">
+                    <h3 class="card-title">Cities</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped" id="MyTable">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td id="@item.Id">
-                        <a asp-action="EditCity" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                        <a asp-action="DeleteCity" asp-route-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
-                    </td>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Cities.FirstOrDefault().Name)
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-                    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Cities.OrderBy(c => c.Name))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td id="@item.Id">
+                            <a asp-action="EditCity" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
+                            <a asp-action="DeleteCity" asp-route-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
 
 <div id="deleteDialog" class="modal fade">
     <div class="modal-dialog modal-sm">
