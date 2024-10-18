@@ -4,41 +4,43 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="col-md-6 offset-md-3">
+<div class="col-md-6 offset-md-3 transparent-card">
     
     <h1>Airplane Details</h1>
     <hr />
 
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-6">
             @Html.DisplayNameFor(model => model.Model)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-6">
             @Html.DisplayFor(model => model.Model)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-6">
             @Html.DisplayNameFor(model => model.Capacity)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-6">
             @Html.DisplayFor(model => model.Capacity)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-6">
             @Html.DisplayNameFor(model => model.Manufacturer)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-6">
             @Html.DisplayFor(model => model.Manufacturer)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class = "col-sm-6">
             @Html.DisplayNameFor(model => model.YearOfManufacture)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-6">
             @Html.DisplayFor(model => model.YearOfManufacture)
         </dd>
+        <dt class="col-sm-6">
+            Airplane Photo
+        </dt>
+        <dd class="col-sm-6">
+            <img src="@Url.Content(Model.ImageFullPath)" class="shadow-lg rounded" alt="@Model.Model" style="width: 200px; height: auto; max-width:100%;" />
+        </dd>
     </dl>
-
-    <div class="col-md-4">
-        <img src="@Url.Content(Model.ImageFullPath)" alt="@Model.Model" style="width: 200px; height: auto; max-width:100%;" />
-    </div>
 
     <br />
 

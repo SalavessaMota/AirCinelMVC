@@ -4,24 +4,25 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="col-md-6 offset-md-3">
+<div class="col-md-6 offset-md-3 transparent-card">
 
-    <h4>Airport Details</h4>
+    <h1>Airport Details</h1>
     <hr />
 
     <dl class="row">
-        <dt class="col-sm-4">
+        <dt class="col-sm-6">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class="col-sm-8">
+        <dd class="col-sm-6">
             @Html.DisplayFor(model => model.Name)
         </dd>
+        <dt class="col-sm-6">
+            Country Flag
+        </dt>
+        <dd class="col-sm-6">
+            <img src="@Url.Content(Model.ImageFullPath)" class="shadow-lg rounded" alt="@Model.Name" style="width: 200px; height: auto; max-width:100%;" />
+        </dd>
     </dl>
-
-
-    <div class="col-md-4">
-        <img src="@Url.Content(Model.ImageFullPath)" alt="@Model.Name" style="width: 200px; height: auto; max-width:100%;" />
-    </div>
 
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning shadow-lg">Edit</a>

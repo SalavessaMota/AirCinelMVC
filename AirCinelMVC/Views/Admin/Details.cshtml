@@ -4,48 +4,52 @@
 }
 
 
-<div class="container">
-    <div class="row justify-content-center">
+<div class="col-md-6 offset-md-3 transparent-card">
 
-        <h1>User Details</h1>
+    <h1>User Details</h1>
+    <hr/>
 
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.UserName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.UserName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.FullName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.FullName)
-            <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Address)
-            </dt>
-            <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Address)
-            </dd>
-            <dt class="col-sm-2">
-                City
-            </dt>
-            <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.City.Name)
-            </dd>
-        </dl>
+    <dl class="row">
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.FullName)
+        <dt class="col-sm-6">
+                @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-6">
+            City
+        </dt>
+        <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.City.Name)
+        </dd>
+        <dt class="col-sm-6">
+            User Photo
+        </dt>
+        <dd>
+            <img src="@Url.Content(Model.ImageFullPath)" class="shadow-lg rounded" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
+        </dd>
+    </dl>
 
-        <div class="col-md-4">
-            <img src="@Url.Content(Model.ImageFullPath)" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
-        </div>
 
-        <br />
-    </div>
     <div>
         <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning shadow-lg">Edit</a>
         <a asp-action="Index" class="btn btn-success shadow-lg">Back to List</a>
     </div>
+
 </div>
+
+
 
 
 

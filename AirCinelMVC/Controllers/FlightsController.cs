@@ -169,8 +169,6 @@ namespace AirCinelMVC.Controllers
         }
 
 
-
-
         // GET: Flights/Edit/5
         [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Edit(int? id)

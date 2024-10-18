@@ -10,7 +10,7 @@
 <form asp-action="PurchaseTicket" method="post">
     <input type="hidden" asp-for="FlightId" />
     <div class="seat-map-container">
-        <div class="seat-map text-center shadow-lg" style="background-color: white;">
+        <div class="seat-map text-center transparent-card" style="background-color: white;">
             <h6 class="text-center">(Front of the Airplane)</h6>
             @for (int row = 0; row < @Model.SeatMap.GetLength(0); row++)
             {
