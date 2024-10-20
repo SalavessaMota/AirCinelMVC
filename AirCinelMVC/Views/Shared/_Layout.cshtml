@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
     @inject UserManager<AirCinelMVC.Data.Entities.User> UserManager
@@ -16,7 +18,7 @@
     <header class="mb-3">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                <img src="https://aircinelmvc.blob.core.windows.net/resources/logoAirCinel.jpg" alt="LogoAirCinel" width="auto" height="45" />
+                <img src="https://aircinelmvc.blob.core.windows.net/resources/logoaircinelnavbar.png" alt="LogoAirCinel" width="auto" height="45" />
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -154,9 +156,20 @@
 
     <footer class="border-top footer text-muted text-center mt-6">
         <div class="container-fluid">
-            &copy; 2024 - CINEL & AirCinel – Partners in training and innovation in aviation. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+            &copy; 2024 - AirCinel – Developed by Nuno Salavessa Mota.
+
+            <a href="https://www.linkedin.com/in/nunosalavessamota/" target="_blank">
+                <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+            |
+            <a href="https://github.com/SalavessaMota" target="_blank">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+
         </div>
     </footer>
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

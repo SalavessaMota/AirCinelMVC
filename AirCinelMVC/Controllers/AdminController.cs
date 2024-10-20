@@ -281,6 +281,12 @@ public class AdminController : Controller
     public async Task<IActionResult> EditUser(string id)
     {
         var user = await _userRepository.GetUserByIdAsync(id);
+
+        if (user == null)
+        {
+            return new NotFoundViewResult("UserNotFound");
+        }
+
         var model = new UserViewModel();
         if (user != null)
         {

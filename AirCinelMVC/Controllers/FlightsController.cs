@@ -415,6 +415,11 @@ namespace AirCinelMVC.Controllers
                 return new NotFoundViewResult("TicketNotFound");
             }
 
+            if (ticket.User.Email != User.Identity.Name)
+            {
+                return RedirectToAction("NotAuthorized", "Account");
+            }
+
             return View(ticket);
         }
 
@@ -426,6 +431,11 @@ namespace AirCinelMVC.Controllers
             if (ticket == null)
             {
                 return new NotFoundViewResult("TicketNotFound");
+            }
+
+            if(ticket.User.Email != User.Identity.Name)
+            {
+                return RedirectToAction("NotAuthorized", "Account");
             }
 
             return View(ticket);
