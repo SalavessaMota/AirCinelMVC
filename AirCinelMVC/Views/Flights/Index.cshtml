@@ -11,7 +11,7 @@
 @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
 {
     <p>
-        <a asp-action="Create" class="btn btn-primary shadow-lg">Create New</a>
+        <a asp-action="Create" class="btn btn-primary roundedwithshadow">Create New</a>
     </p>
 }
 
@@ -112,7 +112,7 @@
 </div>
 
 <div class="text-center">
-    <a href="~/Home/index" class="btn btn-primary btn-lg mt-3"><i class="fas fa-home shadow-lg"></i>  Return Home</a>
+    <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i>  Return Home</a>
 </div>
 
 <div id="deleteDialog" class="modal fade">

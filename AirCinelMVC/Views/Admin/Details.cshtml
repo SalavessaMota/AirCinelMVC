@@ -37,14 +37,14 @@
             User Photo
         </dt>
         <dd>
-            <img src="@Url.Content(Model.ImageFullPath)" class="shadow-lg rounded" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
+            <img src="@Url.Content(Model.ImageFullPath)" class="roundedwithshadow" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
         </dd>
     </dl>
 
 
     <div>
-        <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning shadow-lg">Edit</a>
-        <a asp-action="Index" class="btn btn-success shadow-lg">Back to List</a>
+        <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning roundedwithshadow">Edit</a>
+        <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
     </div>
 
 </div>

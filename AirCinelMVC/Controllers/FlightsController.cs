@@ -163,11 +163,10 @@ namespace AirCinelMVC.Controllers
             {
                 await _flightRepository.CreateAsync(flight);
                 return RedirectToAction(nameof(Index));
-            }            
+            }
 
             return View(flight);
         }
-
 
         // GET: Flights/Edit/5
         [Authorize(Roles = "Employee")]
@@ -225,7 +224,7 @@ namespace AirCinelMVC.Controllers
                 return new NotFoundViewResult("FlightNotFound");
             }
 
-            if(flight.DepartureTime >= flight.ArrivalTime)
+            if (flight.DepartureTime >= flight.ArrivalTime)
             {
                 _flashMessage.Danger("The arrival time must be greater than the departure time.");
                 return RedirectToAction(nameof(Edit), new { id = flight.Id });
@@ -335,7 +334,7 @@ namespace AirCinelMVC.Controllers
         public IActionResult PastFlight()
         {
             return View();
-		}
+        }
 
         [HttpGet]
         [Authorize(Roles = "Customer")]
@@ -348,7 +347,7 @@ namespace AirCinelMVC.Controllers
                 return new NotFoundViewResult("TicketNotFound");
             }
 
-            if(flight.DepartureTime < DateTime.Now)
+            if (flight.DepartureTime < DateTime.Now)
             {
                 return RedirectToAction("PastFlight");
             }
@@ -433,7 +432,7 @@ namespace AirCinelMVC.Controllers
                 return new NotFoundViewResult("TicketNotFound");
             }
 
-            if(ticket.User.Email != User.Identity.Name)
+            if (ticket.User.Email != User.Identity.Name)
             {
                 return RedirectToAction("NotAuthorized", "Account");
             }
@@ -552,7 +551,7 @@ namespace AirCinelMVC.Controllers
             return File(stream, "application/pdf", "BoardingPass.pdf");
         }
 
-        [Authorize(Roles = "Customer")] 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserTickets()
         {
             var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);

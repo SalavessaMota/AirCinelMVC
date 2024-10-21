@@ -38,14 +38,14 @@
             Airplane Photo
         </dt>
         <dd class="col-sm-6">
-            <img src="@Url.Content(Model.ImageFullPath)" class="shadow-lg rounded" alt="@Model.Model" style="width: 200px; height: auto; max-width:100%;" />
+            <img src="@Url.Content(Model.ImageFullPath)" class=" roundedwithshadow" alt="@Model.Model" style="width: 400px; height: auto; max-width:100%;" />
         </dd>
     </dl>
 
     <br />
 
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning shadow-lg">Edit</a>
-        <a asp-action="Index" class="btn btn-success shadow-lg">Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning roundedwithshadow">Edit</a>
+        <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
     </div>
 </div>
