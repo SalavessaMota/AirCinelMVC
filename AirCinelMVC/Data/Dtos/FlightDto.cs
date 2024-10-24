@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AirCinelMVC.Data.Entities.Dtos
+namespace AirCinelMVC.Data.Dtos
 {
     public class FlightDto
     {

@@ -20,6 +20,15 @@ namespace AirCinelMVC.Data
             return _context.Flights;
         }
 
+        public IQueryable<Flight> GetAllFlightsWithAirplaneAirportsAndTickets()
+        {
+            return _context.Flights
+                .Include(f => f.Airplane)
+                .Include(f => f.DepartureAirport)
+                .Include(f => f.ArrivalAirport)
+                .Include(f => f.Tickets);
+        }
+
         public IQueryable<Flight> GetAllFlightsWithAirplaneAndAirports()
         {
             return _context.Flights

@@ -1,5 +1,6 @@
 ﻿using AirCinelMVC.Data;
-using AirCinelMVC.Data.Entities.Dtos;
+using AirCinelMVC.Data.Dtos;
+using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -31,8 +32,9 @@ namespace AirCinelMVC.Controllers.API
             _userHelper = userHelper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetFlights()
+        [HttpGet("future")]
+        [Authorize]
+        public async Task<IActionResult> GetFutureFlightsForUser()
         {
             var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userRepository.GetUserByEmailAsync(userEmail);
@@ -89,5 +91,109 @@ namespace AirCinelMVC.Controllers.API
 
             return Ok(flightDtos);
         }
+
+
+        [HttpGet("history")]
+        [Authorize]
+        public async Task<IActionResult> GetFlightHistoryForUser()
+        {
+            var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var pastFlights = _flightRepository.GetFlightsByUserId(user.Id)
+                .Where(f => f.DepartureTime <= DateTime.Now)
+                .OrderBy(f => f.DepartureTime)
+                .ToList();
+
+            var flightDtos = pastFlights.Select(flight => new FlightDto
+            {
+                Id = flight.Id,
+                FlightNumber = flight.FlightNumber,
+                DepartureTime = flight.DepartureTime,
+                ArrivalTime = flight.ArrivalTime,
+                Airplane = new AirplaneDto
+                {
+                    Id = flight.Airplane.Id,
+                    Model = flight.Airplane.Model,
+                    Manufacturer = flight.Airplane.Manufacturer,
+                    Capacity = flight.Airplane.Capacity,
+                    ImageFullPath = flight.Airplane.ImageFullPath
+                },
+                DepartureAirport = new AirportDto
+                {
+                    Id = flight.DepartureAirport.Id,
+                    Name = flight.DepartureAirport.Name,
+                    ImageFullPath = flight.DepartureAirport.ImageFullPath
+                },
+                ArrivalAirport = new AirportDto
+                {
+                    Id = flight.ArrivalAirport.Id,
+                    Name = flight.ArrivalAirport.Name,
+                    ImageFullPath = flight.ArrivalAirport.ImageFullPath
+                },
+                Tickets = flight.Tickets?.Select(ticket => new TicketDto
+                {
+                    Id = ticket.Id,
+                    SeatNumber = ticket.SeatNumber,
+                    User = ticket.User == null ? null : new UserDto
+                    {
+                        FirstName = ticket.User.FirstName,
+                        LastName = ticket.User.LastName,
+                        Email = ticket.User.Email,
+                        ImageFullPath = ticket.User.ImageFullPath
+                    }
+                }).ToList() ?? new List<TicketDto>()
+            }).ToList();
+
+            return Ok(flightDtos);
+        }
+
+
+
+        [HttpGet("available")]
+        [AllowAnonymous]
+        public IActionResult GetAvailableFlightsForAnonymous()
+        {
+            var availableFlights = _flightRepository.GetAllFlightsWithAirplaneAirportsAndTickets()
+                .Where(f => f.DepartureTime >= DateTime.Now)
+                .OrderBy(f => f.DepartureTime)
+                .ToList();
+
+            var flightDtos = availableFlights.Select(flight => new FlightDto
+            {
+                Id = flight.Id,
+                FlightNumber = flight.FlightNumber,
+                DepartureTime = flight.DepartureTime,
+                ArrivalTime = flight.ArrivalTime,
+                Airplane = new AirplaneDto
+                {
+                    Id = flight.Airplane.Id,
+                    Model = flight.Airplane.Model,
+                    Manufacturer = flight.Airplane.Manufacturer,
+                    Capacity = flight.Airplane.Capacity,
+                    ImageFullPath = flight.Airplane.ImageFullPath
+                },
+                DepartureAirport = new AirportDto
+                {
+                    Id = flight.DepartureAirport.Id,
+                    Name = flight.DepartureAirport.Name,
+                    ImageFullPath = flight.DepartureAirport.ImageFullPath
+                },
+                ArrivalAirport = new AirportDto
+                {
+                    Id = flight.ArrivalAirport.Id,
+                    Name = flight.ArrivalAirport.Name,
+                    ImageFullPath = flight.ArrivalAirport.ImageFullPath
+                }
+            }).ToList() ?? new List<FlightDto>();
+
+            return Ok(flightDtos);
+        }
+
     }
 }

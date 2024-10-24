@@ -9,6 +9,10 @@
       "type": "storage",
       "connectionId": "Blob:ConnectionString",
       "dynamicId": null
+    },
+    "identityapp1": {
+      "ignored": "true",
+      "type": "identityapp"
     }
   }
 }

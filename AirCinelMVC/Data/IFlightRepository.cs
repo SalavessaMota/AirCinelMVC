@@ -11,6 +11,8 @@ namespace AirCinelMVC.Data
 
         IQueryable<Flight> GetAllFlightsWithAirplaneAndAirports();
 
+        IQueryable<Flight> GetAllFlightsWithAirplaneAirportsAndTickets();
+
         Task<Flight> GetFlightWithAirplaneAndAirportsAsync(int id);
 
         IEnumerable<Flight> GetFlightsByUserId(string userId);
