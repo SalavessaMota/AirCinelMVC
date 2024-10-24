@@ -274,12 +274,16 @@ namespace AirCinelMVC.Controllers
 
                     if (result.Succeeded)
                     {
+                        var role = await _userHelper.GetRolesAsync(user);
+                        var roleAsString = role.FirstOrDefault();
+
                         var claims = new[]
                         {
                             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                            new Claim(ClaimTypes.Name, user.UserName)
+                            new Claim(ClaimTypes.Name, user.UserName),
+                            new Claim(ClaimTypes.Role, roleAsString)
                         };
 
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));

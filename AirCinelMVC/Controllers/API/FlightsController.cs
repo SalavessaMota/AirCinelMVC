@@ -92,7 +92,6 @@ namespace AirCinelMVC.Controllers.API
             return Ok(flightDtos);
         }
 
-
         [HttpGet("history")]
         [Authorize]
         public async Task<IActionResult> GetFlightHistoryForUser()
@@ -153,8 +152,6 @@ namespace AirCinelMVC.Controllers.API
             return Ok(flightDtos);
         }
 
-
-
         [HttpGet("available")]
         [AllowAnonymous]
         public IActionResult GetAvailableFlightsForAnonymous()
@@ -195,5 +192,52 @@ namespace AirCinelMVC.Controllers.API
             return Ok(flightDtos);
         }
 
+        [HttpPost("purchase")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> PurchaseTicketAPI([FromBody] PurchaseTicketDto model)
+        {
+            var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+
+            if (user == null)
+            {
+                return Unauthorized(new { Message = "User not found." });
+            }
+
+            // Verificar se o voo existe e incluir os dados necessários
+            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTicketsAsync(model.FlightId);
+
+            if (flight == null)
+            {
+                return NotFound(new { Message = "Flight not found" });
+            }
+
+            if (flight.DepartureTime < DateTime.Now)
+            {
+                return BadRequest(new { Message = "Not possible to buy tickets for past flights." });
+            }
+
+            if (flight.Tickets.Any(t => t.SeatNumber == model.SeatNumber))
+            {
+                return BadRequest(new { Message = "The seat is already taken." });
+            }
+
+            if (flight.Tickets.Count >= flight.Airplane.Capacity)
+            {
+                return BadRequest(new { Message = "No more available tickets for this flight." });
+            }
+
+            var ticket = new Ticket
+            {
+                FlightId = model.FlightId,
+                SeatNumber = model.SeatNumber,
+                UserId = user.Id
+            };
+
+            flight.Tickets.Add(ticket);
+            await _flightRepository.UpdateAsync(flight);
+
+            return Ok(new { Message = "Ticket bought successfully", TicketId = ticket.Id });
+        }
     }
 }
