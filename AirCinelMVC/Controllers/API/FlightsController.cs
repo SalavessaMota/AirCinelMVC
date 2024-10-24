@@ -239,5 +239,61 @@ namespace AirCinelMVC.Controllers.API
 
             return Ok(new { Message = "Ticket bought successfully", TicketId = ticket.Id });
         }
+
+        [HttpGet("tickets")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetUserTickets()
+        {
+            var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+
+            if (user == null)
+            {
+                return Unauthorized(new { Message = "User not found." });
+            }
+
+            var tickets = _flightRepository.GetTicketsByUserIdAsync(user.Id).Result;
+
+            if (tickets == null || !tickets.Any())
+            {
+                return NotFound(new { Message = "No tickets found for this user." });
+            }
+
+            var ticketDtos = tickets.Select(ticket => new BoughtTicketDto
+            {
+                Id = ticket.Id,
+                SeatNumber = ticket.SeatNumber,
+                Flight = new FlightDto
+                {
+                    Id = ticket.Flight.Id,
+                    FlightNumber = ticket.Flight.FlightNumber,
+                    DepartureTime = ticket.Flight.DepartureTime,
+                    ArrivalTime = ticket.Flight.ArrivalTime,
+                    Airplane = new AirplaneDto
+                    {
+                        Id = ticket.Flight.Airplane.Id,
+                        Model = ticket.Flight.Airplane.Model,
+                        Manufacturer = ticket.Flight.Airplane.Manufacturer,
+                        Capacity = ticket.Flight.Airplane.Capacity,
+                        ImageFullPath = ticket.Flight.Airplane.ImageFullPath
+                    },
+                    DepartureAirport = new AirportDto
+                    {
+                        Id = ticket.Flight.DepartureAirport.Id,
+                        Name = ticket.Flight.DepartureAirport.Name,
+                        ImageFullPath = ticket.Flight.DepartureAirport.ImageFullPath
+                    },
+                    ArrivalAirport = new AirportDto
+                    {
+                        Id = ticket.Flight.ArrivalAirport.Id,
+                        Name = ticket.Flight.ArrivalAirport.Name,
+                        ImageFullPath = ticket.Flight.ArrivalAirport.ImageFullPath
+                    }
+                }
+            }).ToList();
+
+            return Ok(ticketDtos);
+        }
+
     }
 }

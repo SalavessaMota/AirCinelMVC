@@ -1,6 +1,7 @@
 ﻿using AirCinelMVC.Data;
 using AirCinelMVC.Data.Dtos;
 using AirCinelMVC.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -10,7 +11,7 @@ namespace AirCinelMVC.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -20,7 +21,8 @@ namespace AirCinelMVC.Controllers.API
         public AccountController(
             IUserRepository userRepository,
             IUserHelper userHelper,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper
+            )
         {
             _userRepository = userRepository;
             _userHelper = userHelper;
@@ -29,7 +31,7 @@ namespace AirCinelMVC.Controllers.API
 
         [HttpPost("recoverpassword")]
         [AllowAnonymous]
-        public async Task<IActionResult> RecoverPassword([FromBody] RecoverPasswordDto model)
+        public async Task<IActionResult> RecoverPasswordAPI([FromBody] RecoverPasswordDto model)
         {
             if (!ModelState.IsValid)
             {
@@ -69,7 +71,7 @@ namespace AirCinelMVC.Controllers.API
 
         [HttpPost("changepassword")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
+        public async Task<IActionResult> ChangePasswordAPI([FromBody] ChangePasswordDto model)
         {
             var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userRepository.GetUserByEmailAsync(userEmail);
@@ -88,5 +90,6 @@ namespace AirCinelMVC.Controllers.API
 
             return Ok(new { Message = "Password changed successfully." });
         }
+
     }
 }
