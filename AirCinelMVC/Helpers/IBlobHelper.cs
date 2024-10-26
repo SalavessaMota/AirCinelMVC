@@ -13,5 +13,7 @@ namespace AirCinelMVC.Helpers
         Task<Guid> UploadBlobAsync(string image, string containerName);
 
         Task DeleteBlobAsync(string containerName, string blobName);
+
+        Task<Guid> VerifyAndUploadImageAsync(Guid imageId, string containerName);
     }
 }
