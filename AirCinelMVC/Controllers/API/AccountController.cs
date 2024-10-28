@@ -103,7 +103,7 @@ namespace AirCinelMVC.Controllers.API
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        public async Task<IActionResult> RegisterAPI([FromBody] RegisterDto model)
         {
             if (!ModelState.IsValid)
             {
