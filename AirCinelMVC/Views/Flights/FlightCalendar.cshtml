@@ -47,9 +47,9 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                editable: false,
+                editable: true,
                 selectable: true,
-                displayEventTime: false,
+                displayEventTime: true,
                 events: function (fetchInfo, successCallback, failureCallback) {
                     fetch('/Flights/GetFlights')
                         .then(response => response.json())

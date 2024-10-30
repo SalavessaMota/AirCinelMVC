@@ -168,7 +168,7 @@ public class AdminController : Controller
                     user.ImageId = imageId;
                 }
 
-                var result = await _userRepository.AddUserAsync(user, "123123");
+                var result = await _userRepository.AddUserAsync(user, "Aircinel1!");
                 await _userHelper.AddUserToRoleAsync(user, "Employee");
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
@@ -242,7 +242,7 @@ public class AdminController : Controller
                     user.ImageId = imageId;
                 }
 
-                var result = await _userRepository.AddUserAsync(user, "123123");
+                var result = await _userRepository.AddUserAsync(user, "Aircinel1!");
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
