@@ -5,71 +5,69 @@
 }
 
 <div class="row">
-    <div class="col-12">
-        <div class="card transparent-card">
-            <div class="card-header">
-                <h3 class="card-title">Upcoming Flights</h3>
-            </div>
-            <div class="card-body">
-                <table class="table table-hover table-striped" id="MyTable">
-                    <thead>
+    <div class="card transparent-card">
+        <div class="card-header">
+            <h3 class="card-title">Upcoming Flights</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-striped" id="MyTable">
+                <thead>
+                    <tr>
+                        <th>Flight Number</th>
+                        <th><i class="fas fa-plane-departure"></i> Origin</th>
+                        <th>Departure Time</th>
+                        <th><i class="fas fa-plane-arrival"></i> Destination</th>
+                        <th>Arrival Time</th>
+                        <th><i class="fas fa-plane"></i> Airplane</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
                         <tr>
-                            <th>Flight Number</th>
-                            <th><i class="fas fa-plane-departure"></i> Origin</th>
-                            <th>Departure Time</th>
-                            <th><i class="fas fa-plane-arrival"></i> Destination</th>
-                            <th>Arrival Time</th>
-                            <th><i class="fas fa-plane"></i> Airplane</th>
-                            <th></th>
+                            <td>@item.FlightNumber</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
+                                {
+                                    <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                                }
+                                @item.DepartureAirport.Name
+                            </td>
+                            <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
+                                {
+                                    <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                                }
+                                @item.ArrivalAirport.Name
+                            </td>
+                            <td>@item.ArrivalTime.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
+                                {
+                                    <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
+                                }
+                                @item.Airplane.Manufacturer @item.Airplane.Model
+                            </td>
+                            <td>
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
+                                {
+                                    <a class="btn btn-primary" asp-action="PurchaseTicket" asp-route-flightId="@item.Id">
+                                        <i class="fas fa-ticket-alt"></i> Buy Ticket
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-primary" onclick="showModal()">
+                                        <i class="fas fa-ticket-alt"></i> Buy Ticket
+                                    </button>
+                                }
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.FlightNumber</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
-                                    {
-                                        <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
-                                    }
-                                    @item.DepartureAirport.Name
-                                </td>
-                                <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
-                                    {
-                                        <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
-                                    }
-                                    @item.ArrivalAirport.Name
-                                </td>
-                                <td>@item.ArrivalTime.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
-                                    {
-                                        <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
-                                    }
-                                    @item.Airplane.Manufacturer @item.Airplane.Model
-                                </td>
-                                <td>
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
-                                    {
-                                        <a class="btn btn-primary" asp-action="PurchaseTicket" asp-route-flightId="@item.Id">
-                                            <i class="fas fa-ticket-alt"></i> Buy Ticket
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <button type="button" class="btn btn-primary" onclick="showModal()">
-                                            <i class="fas fa-ticket-alt"></i> Buy Ticket
-                                        </button>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

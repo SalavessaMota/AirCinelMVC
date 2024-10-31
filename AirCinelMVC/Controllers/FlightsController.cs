@@ -1,4 +1,5 @@
 ﻿using AirCinelMVC.Data;
+using AirCinelMVC.Data.Dtos;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Helpers;
 using AirCinelMVC.Models;
@@ -597,5 +598,27 @@ namespace AirCinelMVC.Controllers
 
             return new JsonResult(flights);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateFlightDate([FromBody] UpdateFlightDateDto updateFlight)
+        {
+            if (updateFlight == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            bool updateResult = await _flightRepository.UpdateFlightDatesAsync(updateFlight.Id, updateFlight.NewStart, updateFlight.NewEnd);
+
+            if (updateResult)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error updating flight date or flight not found." });
+            }
+        }
+
     }
 }

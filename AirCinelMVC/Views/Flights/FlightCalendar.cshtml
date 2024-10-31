@@ -10,7 +10,7 @@
 
     <h1>Flight Calendar</h1>
 
-    <div class="container-fluid" id="calendar" style="overflow: auto;"></div>
+    <div id="calendar" style="overflow: auto;"></div>
 </div>
 
 
@@ -50,14 +50,18 @@
                 editable: true,
                 selectable: true,
                 displayEventTime: true,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
                 events: function (fetchInfo, successCallback, failureCallback) {
                     fetch('/Flights/GetFlights')
                         .then(response => response.json())
                         .then(data => {
-                            // Extraindo os valores de $values do JSON
                             const events = data.map(flight => {
-                                const startTime = flight.start.substring(11, 16); // Extrai a hora de início
-                                const endTime = flight.end.substring(11, 16);     // Extrai a hora de fim
+                                const startTime = flight.start.substring(11, 16);
+                                const endTime = flight.end.substring(11, 16);
 
                                 return {
                                     number: flight.number,
@@ -65,10 +69,10 @@
                                     start: flight.start,
                                     end: flight.end,
                                     from: flight.from,
-                                    to: flight.to
+                                    to: flight.to,
+                                    id: flight.id // Certifique-se de que cada evento tem um id único
                                 };
                             });
-                            // Passando os eventos para o calendário
                             successCallback(events);
                         })
                         .catch(error => {
@@ -80,27 +84,58 @@
                     const start = new Date(info.event.start);
                     const end = new Date(info.event.end);
 
-                    // Formatar as datas como "dd/mm/yyyy hh:mm"
                     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
                     const formattedStart = start.toLocaleDateString('en-GB', options).replace(',', '');
                     const formattedEnd = end.toLocaleDateString('en-GB', options).replace(',', '');
 
-                    // Preencher a modal com os dados do voo
                     document.getElementById('flightNumber').textContent = info.event.extendedProps.number;
                     document.getElementById('flightDeparture').textContent = formattedStart;
                     document.getElementById('flightArrival').textContent = formattedEnd;
                     document.getElementById('flightFrom').textContent = info.event.extendedProps.from;
                     document.getElementById('flightTo').textContent = info.event.extendedProps.to;
 
-                    // Exibir a modal
                     $('#flightModal').modal('show');
+                },
+                eventDrop: function (info) {
+                    var event = info.event;
+                    var newStart = event.start.toISOString();
+                    var newEnd = event.end ? event.end.toISOString() : newStart;
+
+                    var requestBody = {
+                        id: event.id,
+                        newStart: newStart,
+                        newEnd: newEnd
+                    };
+
+                    // Verifica o JSON no console para garantir que está correto
+                    console.log("Sending request body:", requestBody);
+
+                    fetch('/Flights/UpdateFlightDate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody) // Converte o objeto para JSON
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Flight updated successfully!');
+                            } else {
+                                alert('Failed to update flight.');
+                                info.revert();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao atualizar o voo:', error);
+                            info.revert();
+                        });
                 }
+
             });
 
             calendar.render();
         });
-
-
     </script>
 }
 

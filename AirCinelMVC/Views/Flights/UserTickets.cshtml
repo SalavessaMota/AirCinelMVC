@@ -8,53 +8,51 @@
 <br />
 
 <div class="row">
-    <div class="col-12">
-        <div class="card transparent-card">
-            <div class="card-header">
-                <h3 class="card-title">Your Tickets</h3>
-            </div>
-            <div class="card-body">
-                <table class="table table-hover table-striped" id="MyTable">
-                    <thead>
+    <div class="card transparent-card">
+        <div class="card-header">
+            <h3 class="card-title">Your Tickets</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-striped" id="MyTable">
+                <thead>
+                    <tr>
+                        <th>Flight Number</th>
+                        <th><i class="fas fa-plane-departure"></i> Origin</th>
+                        <th>Departure Time</th>
+                        <th><i class="fas fa-plane-arrival"></i> Destination</th>
+                        <th>Arrival Time</th>
+                        <th><i class="fas fa-plane"></i> Airplane</th>
+                        <th>Seat Number</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in Model)
+                    {
                         <tr>
-                            <th>Flight Number</th>
-                            <th><i class="fas fa-plane-departure"></i> Origin</th>
-                            <th>Departure Time</th>
-                            <th><i class="fas fa-plane-arrival"></i> Destination</th>
-                            <th>Arrival Time</th>
-                            <th><i class="fas fa-plane"></i> Airplane</th>
-                            <th>Seat Number</th>
-                            <th></th>
+                            <td>@ticket.Flight.FlightNumber</td>
+                            <td>@ticket.Flight.DepartureAirport.Name</td>
+                            <td>
+                                @ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>@ticket.Flight.ArrivalAirport.Name</td>
+                            <td>
+                                @ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @ticket.Flight.Airplane.Manufacturer @ticket.Flight.Airplane.Model
+                            </td>
+                            <td>@ticket.SeatNumber</td>
+                            <td>
+                                <a href="~/Flights/TicketDetails/@ticket.Id" class="btn btn-info"><i class="fas fa-eye"></i> See Ticket</a>
+                                <a href="~/Flights/PrintTicket/@ticket.Id" class="btn btn-primary">
+                                    <i class="fas fa-print"></i> Print
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var ticket in Model)
-                        {
-                            <tr>
-                                <td>@ticket.Flight.FlightNumber</td>
-                                <td>@ticket.Flight.DepartureAirport.Name</td>
-                                <td>
-                                    @ticket.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")
-                                </td>
-                                <td>@ticket.Flight.ArrivalAirport.Name</td>
-                                <td>
-                                    @ticket.Flight.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
-                                </td>
-                                <td>
-                                    @ticket.Flight.Airplane.Manufacturer @ticket.Flight.Airplane.Model
-                                </td>
-                                <td>@ticket.SeatNumber</td>
-                                <td>
-                                    <a href="~/Flights/TicketDetails/@ticket.Id" class="btn btn-info"><i class="fas fa-eye"></i> See Ticket</a>
-                                    <a href="~/Flights/PrintTicket/@ticket.Id" class="btn btn-primary">
-                                        <i class="fas fa-print"></i> Print
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

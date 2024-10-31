@@ -1,5 +1,6 @@
 ﻿using AirCinelMVC.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,6 +99,29 @@ namespace AirCinelMVC.Data
              .Include(t => t.Flight.ArrivalAirport)
              .Include(t => t.User)
              .ToListAsync();
+        }
+
+        public async Task<bool> UpdateFlightDatesAsync(int id, DateTime newStart, DateTime newEnd)
+        {
+            var flight = await _context.Flights.FindAsync(id);
+            if (flight == null)
+            {
+                return false;
+            }
+
+            flight.DepartureTime = newStart;
+            flight.ArrivalTime = newEnd;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message); // Log para depuração
+                return false;
+            }
         }
     }
 }

@@ -16,97 +16,95 @@
 }
 
 <div class="row">
-    <div class="col-12">
-        <div class="card transparent-card">
-            <div class="card-header">
-                <h3 class="card-title">Flights</h3>
-            </div>
-            <div class="card-body">
-                <table class="table table-hover table-striped" id="MyTable">
-                    <thead>
+    <div class="card transparent-card">
+        <div class="card-header">
+            <h3 class="card-title">Flights</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-striped" id="MyTable">
+                <thead>
+                    <tr>
+                        <th>
+                            Flight Number
+                        </th>
+                        <th>
+                            <i class="fas fa-plane-departure"></i>  Origin
+                        </th>
+                        <th>
+                            <i class="fas fa-plane-departure"></i>  @Html.DisplayNameFor(model => model.DepartureTime)
+                        </th>
+                        <th>
+                            <i class="fas fa-plane-arrival"></i>  Destination
+                        </th>
+                        <th>
+                            <i class="fas fa-plane-arrival"></i>  @Html.DisplayNameFor(model => model.ArrivalTime)
+                        </th>
+                        <th>
+                            <i class="fas fa-plane"></i>  @Html.DisplayNameFor(model => model.Airplane)
+                        </th>
+                        @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                        {
+                            <th>
+                                Airplane Id
+                            </th>
+                        }
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model) {
                         <tr>
-                            <th>
-                                Flight Number
-                            </th>
-                            <th>
-                                <i class="fas fa-plane-departure"></i>  Origin
-                            </th>
-                            <th>
-                                <i class="fas fa-plane-departure"></i>  @Html.DisplayNameFor(model => model.DepartureTime)
-                            </th>
-                            <th>
-                                <i class="fas fa-plane-arrival"></i>  Destination
-                            </th>
-                            <th>
-                                <i class="fas fa-plane-arrival"></i>  @Html.DisplayNameFor(model => model.ArrivalTime)
-                            </th>
-                            <th>
-                                <i class="fas fa-plane"></i>  @Html.DisplayNameFor(model => model.Airplane)
-                            </th>
-                            @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
-                            {
-                                <th>
-                                    Airplane Id
-                                </th>
-                            }
-                            <th></th>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FlightNumber)
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
+                                {
+                                    <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                                }
+                                @item.DepartureAirport.Name
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DepartureTime)
+                                </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
+                                {
+                                    <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
+                                }
+                                @item.ArrivalAirport.Name
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ArrivalTime)
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
+                                {
+                                        <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
+                                }
+                                @item.Airplane.Manufacturer @item.Airplane.Model
+                            </td>
+                            <td>
+                                @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                                {
+                                    @item.Airplane.Id
+                                }
+                            </td>
+                            <td>
+                                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                                {
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
+                                }
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+                                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
+                                {
+                                        <a asp-action="Delete" asp-route-id="@item.Id" data-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                                }
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var item in Model) {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FlightNumber)
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.DepartureAirport.ImageFullPath))
-                                    {
-                                        <img src="@Url.Content(item.DepartureAirport.ImageFullPath)" alt="@item.DepartureAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
-                                    }
-                                    @item.DepartureAirport.Name
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.DepartureTime)
-                                    </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.ArrivalAirport.ImageFullPath))
-                                    {
-                                        <img src="@Url.Content(item.ArrivalAirport.ImageFullPath)" alt="@item.ArrivalAirport.Name" style="width: 30px; height: auto; max-width:100%;" />
-                                    }
-                                    @item.ArrivalAirport.Name
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ArrivalTime)
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.Airplane.ImageFullPath))
-                                    {
-                                            <img src="@Url.Content(item.Airplane.ImageFullPath)" alt="@item.Airplane.Model" style="width: 40px; height: auto; max-width:100%;" />
-                                    }
-                                    @item.Airplane.Manufacturer @item.Airplane.Model
-                                </td>
-                                <td>
-                                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
-                                    {
-                                        @item.Airplane.Id
-                                    }
-                                </td>
-                                <td>
-                                            @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
-                                    {
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                                    }
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                            @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee"))
-                                    {
-                                            <a asp-action="Delete" asp-route-id="@item.Id" data-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
-                                    }
-                                </td>
-                            </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
+                }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

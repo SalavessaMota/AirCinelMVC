@@ -1,4 +1,5 @@
 ﻿using AirCinelMVC.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,5 +25,7 @@ namespace AirCinelMVC.Data
         Task<IEnumerable<Ticket>> GetTicketsByUserIdAsync(string userId);
 
         Task<IEnumerable<Ticket>> GetAllTicketsWithAllInfoAsync();
+
+        Task<bool> UpdateFlightDatesAsync(int id, DateTime newStart, DateTime newEnd);
     }
 }
