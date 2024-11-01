@@ -233,7 +233,7 @@ namespace AirCinelMVC.Data
                 };
 
                 //var result = await _userHelper.AddUserAsync(user, "123123");
-                var result = await _userRepository.AddUserAsync(user, "123123");
+                var result = await _userRepository.AddUserAsync(user, "Aircinel1!");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");
