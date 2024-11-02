@@ -40,9 +40,6 @@ a {
 
 .btn {
     margin: 5px;
-    padding: 10px 20px;
-    background-color: #007bff; /* Azul */
-    color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -71,6 +68,20 @@ a {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
+}
+
+/* Efeito de hover para os itens da navbar */
+.navbar-nav .nav-link:hover {
+    color: #0056b3;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+/* Efeito de clique para os itens da navbar */
+.navbar-nav .nav-link:active {
+    color: #004494;
+    transform: scale(0.98);
+    transition: all 0.1s ease;
 }
 
 /* Sticky footer styles
@@ -137,6 +148,10 @@ body {
 .roundedwithshadow {
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal{
+    padding: 10px;
 }
 
 /*Background Video
