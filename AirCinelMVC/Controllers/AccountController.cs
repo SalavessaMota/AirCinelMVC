@@ -42,6 +42,11 @@ namespace AirCinelMVC.Controllers
 
         public IActionResult Login()
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -74,6 +79,11 @@ namespace AirCinelMVC.Controllers
 
         public async Task<IActionResult> Register()
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var model = new RegisterNewUserViewModel
             {
                 Countries = _countryRepository.GetComboCountries(),
@@ -155,6 +165,11 @@ namespace AirCinelMVC.Controllers
         // GET
         public async Task<IActionResult> ChangeUser()
         {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
             var user = await _userRepository.GetUserByEmailAsync(this.User.Identity.Name);
             var model = new UserViewModel();
             if (user != null)
@@ -230,6 +245,11 @@ namespace AirCinelMVC.Controllers
 
         public IActionResult ChangePassword()
         {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
