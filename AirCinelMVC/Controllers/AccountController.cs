@@ -40,11 +40,12 @@ namespace AirCinelMVC.Controllers
             _blobHelper = blobHelper;
         }
 
-        public IActionResult Login()
+        public async Task <IActionResult> Login()
         {
-            if (this.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                await _userHelper.LogoutAsync();
+                return RedirectToAction("Login");
             }
 
             return View();
@@ -79,9 +80,10 @@ namespace AirCinelMVC.Controllers
 
         public async Task<IActionResult> Register()
         {
-            if (this.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                await _userHelper.LogoutAsync();
+                return RedirectToAction("Register"); 
             }
 
             var model = new RegisterNewUserViewModel
