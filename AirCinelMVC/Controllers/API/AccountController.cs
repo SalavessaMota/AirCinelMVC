@@ -2,13 +2,19 @@
 using AirCinelMVC.Data.Dtos;
 using AirCinelMVC.Data.Entities;
 using AirCinelMVC.Helpers;
+using AirCinelMVC.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AirCinelMVC.Controllers.API
@@ -23,13 +29,15 @@ namespace AirCinelMVC.Controllers.API
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
         private readonly IBlobHelper _blobHelper;
+        private readonly IConfiguration _configuration;
 
         public AccountController(
             ICountryRepository countryRepository,
             IUserRepository userRepository,
             IUserHelper userHelper,
             IMailHelper mailHelper,
-            IBlobHelper blobHelper
+            IBlobHelper blobHelper,
+            IConfiguration configuration
             )
         {
             _countryRepository = countryRepository;
@@ -37,6 +45,78 @@ namespace AirCinelMVC.Controllers.API
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _blobHelper = blobHelper;
+            _configuration = configuration;
+        }
+
+        [HttpPost("createtokenapi")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateTokenAPI([FromBody] LoginViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userRepository.GetUserByEmailAsync(model.Username);
+                if (user != null)
+                {
+                    var result = await _userHelper.ValidatePasswordAsync(
+                        user,
+                        model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        var role = await _userHelper.GetRolesAsync(user);
+                        var roleAsString = role.FirstOrDefault();
+
+                        var claims = new[]
+                        {
+                            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                            new Claim(ClaimTypes.Name, user.UserName),
+                            new Claim(ClaimTypes.Role, roleAsString),
+                            new Claim(ClaimTypes.Email, user.Email)
+                        };
+
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+                        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                        var token = new JwtSecurityToken(
+                            _configuration["Tokens:Issuer"],
+                            _configuration["Tokens:Audience"],
+                            claims,
+                            expires: DateTime.UtcNow.AddDays(15),
+                            signingCredentials: credentials);
+                        var results = new
+                        {
+                            Token = new JwtSecurityTokenHandler().WriteToken(token),
+                            Expiration = token.ValidTo,
+                            UserId = user.Id,
+                            UserName = user.UserName,
+                        };
+
+                        return this.Created(string.Empty, results);
+                    }
+                }
+            }
+
+            return BadRequest();
+        }
+
+
+        [Authorize]
+        [HttpGet("getuserimage")]
+        public async Task<IActionResult> UserProfileImage()
+        {
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var userImagePath = user.ImageFullPath;
+
+            return Ok(userImagePath);
         }
 
         [HttpPost("recoverpassword")]

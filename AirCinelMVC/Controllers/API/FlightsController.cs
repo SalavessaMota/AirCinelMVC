@@ -21,15 +21,18 @@ namespace AirCinelMVC.Controllers.API
         private readonly IFlightRepository _flightRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserHelper _userHelper;
+        private readonly ISeatHelper _seatHelper;
 
         public FlightsController(
             IFlightRepository flightRepository,
             IUserRepository userRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            ISeatHelper seatHelper)
         {
             _flightRepository = flightRepository;
             _userRepository = userRepository;
             _userHelper = userHelper;
+            _seatHelper = seatHelper;
         }
 
         [HttpGet("future")]
@@ -239,6 +242,54 @@ namespace AirCinelMVC.Controllers.API
 
             return Ok(new { Message = "Ticket bought successfully", TicketId = ticket.Id });
         }
+
+        [HttpGet("{flightId}/availableseats")]
+        [Authorize]
+        public async Task<IActionResult> GetAvailableSeatsForFlight(int flightId)
+        {
+            // Verificar se o voo existe
+            var flight = await _flightRepository.GetFlightWithAirplaneAirportsAndTicketsAsync(flightId);
+
+            if (flight == null)
+            {
+                return NotFound(new { Message = "Flight not found." });
+            }
+
+            // Obter o número de lugares por fila com base no modelo do avião
+            if(flight.Airplane == null)
+            {
+                return BadRequest(new { Message = "Airplane not found." });
+            }
+
+            int seatsPerRow = _seatHelper.GetSeatsPerRowByModel(flight.Airplane.Model);
+            
+            
+            int totalSeats = flight.Airplane.Capacity;
+            int totalRows = (int)Math.Ceiling((double)totalSeats / seatsPerRow);
+
+            // Gerar a lista de todos os lugares possíveis
+            var seatLetters = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" }; // Até 12 lugares por fila
+            var allSeats = new List<string>();
+
+            for (int row = 1; row <= totalRows; row++)
+            {
+                for (int col = 0; col < seatsPerRow; col++)
+                {
+                    if (col >= seatLetters.Length) break; // Prevenir exceder o limite de letras
+                    allSeats.Add($"{row}{seatLetters[col]}");
+                }
+            }
+
+            // Obter a lista de lugares ocupados
+            var occupiedSeats = flight.Tickets.Select(t => t.SeatNumber).ToList();
+
+            // Filtrar os lugares disponíveis
+            var availableSeats = allSeats.Except(occupiedSeats).ToList();
+
+            return Ok(availableSeats);
+        }
+
+
 
         [HttpGet("tickets")]
         [Authorize(Roles = "Customer")]

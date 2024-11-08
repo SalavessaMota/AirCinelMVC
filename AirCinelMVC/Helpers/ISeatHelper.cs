@@ -13,6 +13,8 @@ namespace AirCinelMVC.Helpers
 
         int GetSeatsAndCorridorsPerRowByModel(string model);
 
+        int GetSeatsPerRowByModel(string model);
+
         int[,] GenerateSeatMap(string airplaneModel, int capacity);
 
         List<int> GetCorridorPositions(int seatsPerRow);

@@ -79,6 +79,29 @@ namespace AirCinelMVC.Helpers
             };
         }
 
+        public int GetSeatsPerRowByModel(string model)
+        {
+            return model switch
+            {
+                "A319" => 6,
+                "A320" => 6,
+                "A330" => 8,
+                "A350" => 8,
+                "A380" => 10,
+                "737" => 6,
+                "747" => 10,
+                "757" => 6,
+                "767" => 7,
+                "777" => 8,
+                "E170" => 4,
+                "E175" => 4,
+                "E190" => 4,
+                "E195" => 4,
+                _ => 6
+            };
+        }
+
+
         public int[,] GenerateSeatMap(string airplaneModel, int capacity)
         {
             int seatsPerRow = GetSeatsAndCorridorsPerRowByModel(airplaneModel);
