@@ -2,7 +2,7 @@
 
 ## Description
 
-**AirCinelMVC** is a web application for managing a fictitious airline. Developed with **ASP.NET MVC (.NET 5)**, it allows administrators to manage flights, airplanes, airports, and tickets, while also enabling customers to purchase and manage their tickets. This project was developed for the **CET Programming course at CINEL**.
+**AirCinelMVC** is a web application for managing a fictitious airline. Developed with **ASP.NET Core MVC (.NET 5)**, it allows administrators to manage flights, airplanes, airports, and tickets, while also enabling customers to purchase and manage their tickets. This project was developed for the **CET Programming course at CINEL**.
 
 ## Features
 
@@ -15,7 +15,7 @@
 
 ## Technologies Used
 
-- **ASP.NET MVC 5**
+- **ASP.NET Core MVC**
 - **Entity Framework Core**
 - **Azure Blob Storage**
 - **Syncfusion (PDF Generation)**
