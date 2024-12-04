@@ -26,7 +26,9 @@ namespace AirCinelMVC.Data
             return _context.Flights
                 .Include(f => f.Airplane)
                 .Include(f => f.DepartureAirport)
+                .ThenInclude(a => a.City)
                 .Include(f => f.ArrivalAirport)
+                .ThenInclude(a => a.City)
                 .Include(f => f.Tickets);
         }
 

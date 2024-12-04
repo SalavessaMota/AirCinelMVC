@@ -20,17 +20,20 @@ namespace AirCinelMVC.Controllers.API
     {
         private readonly IFlightRepository _flightRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IAirportRepository _airportRepository;
         private readonly IUserHelper _userHelper;
         private readonly ISeatHelper _seatHelper;
 
         public FlightsController(
             IFlightRepository flightRepository,
             IUserRepository userRepository,
+            IAirportRepository airportRepository,
             IUserHelper userHelper,
             ISeatHelper seatHelper)
         {
             _flightRepository = flightRepository;
             _userRepository = userRepository;
+            _airportRepository = airportRepository;
             _userHelper = userHelper;
             _seatHelper = seatHelper;
         }
@@ -346,5 +349,82 @@ namespace AirCinelMVC.Controllers.API
             return Ok(ticketDtos);
         }
 
+
+        [HttpGet("filter")]
+        [AllowAnonymous]
+        public IActionResult GetFilteredFlights(
+    [FromQuery] string? departureCity = null,
+    [FromQuery] string? arrivalCity = null)
+        {
+            // Obter todos os voos futuros
+            var flights = _flightRepository.GetAllFlightsWithAirplaneAirportsAndTickets()
+                                           .Where(f => f.DepartureTime >= DateTime.Now);
+
+            // Filtrar por cidade de partida, se fornecido
+            if (!string.IsNullOrEmpty(departureCity))
+            {
+                departureCity = departureCity.ToLower(); // Convertendo para minúsculas
+                flights = flights.Where(f => f.DepartureAirport.City.Name.ToLower() == departureCity);
+            }
+
+            // Filtrar por cidade de chegada, se fornecido
+            if (!string.IsNullOrEmpty(arrivalCity))
+            {
+                arrivalCity = arrivalCity.ToLower(); // Convertendo para minúsculas
+                flights = flights.Where(f => f.ArrivalAirport.City.Name.ToLower() == arrivalCity);
+            }
+
+            // Mapear os voos filtrados para DTOs
+            var flightDtos = flights.OrderBy(f => f.DepartureTime)
+                                    .Select(flight => new FlightDto
+                                    {
+                                        Id = flight.Id,
+                                        FlightNumber = flight.FlightNumber,
+                                        DepartureTime = flight.DepartureTime,
+                                        ArrivalTime = flight.ArrivalTime,
+                                        Airplane = new AirplaneDto
+                                        {
+                                            Id = flight.Airplane.Id,
+                                            Model = flight.Airplane.Model,
+                                            Manufacturer = flight.Airplane.Manufacturer,
+                                            Capacity = flight.Airplane.Capacity,
+                                            ImageFullPath = flight.Airplane.ImageFullPath
+                                        },
+                                        DepartureAirport = new AirportDto
+                                        {
+                                            Id = flight.DepartureAirport.Id,
+                                            Name = flight.DepartureAirport.Name,
+                                            ImageFullPath = flight.DepartureAirport.ImageFullPath
+                                        },
+                                        ArrivalAirport = new AirportDto
+                                        {
+                                            Id = flight.ArrivalAirport.Id,
+                                            Name = flight.ArrivalAirport.Name,
+                                            ImageFullPath = flight.ArrivalAirport.ImageFullPath
+                                        }
+                                    })
+                                    .ToList();
+
+            return Ok(flightDtos);
+        }
+
+
+        [HttpGet("cities")]
+        [AllowAnonymous]
+        public IActionResult GetCities()
+        {
+            // Obter todas as cidades únicas dos aeroportos
+            var cities = _airportRepository.GetAllAirports()
+                                           .Select(a => a.City)
+                                           .Distinct()
+                                           .Select(city => new City
+                                           {
+                                               Id = city.Id,
+                                               Name = city.Name
+                                           })
+                                           .ToList();
+
+            return Ok(cities);
+        }
     }
 }

@@ -264,15 +264,106 @@ namespace AirCinelMVC.Controllers.API
                 return BadRequest("File is empty or not provided.");
             }
 
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized(new { Message = "Unauthorized access." });
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found." });
+            }
+
             try
             {
                 var imageId = await _blobHelper.UploadBlobAsync(file, "users");
-                return Ok(imageId);
+                user.ImageId = imageId;
+
+                var result = await _userRepository.UpdateUserAsync(user);
+                if (!result.Succeeded)
+                {
+                    return StatusCode(500, new { Message = "Failed to update user profile picture." });
+                }
+
+                return Ok(user.ImageFullPath);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
             }
         }
+
+        [HttpPut("updateuser")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized(new { Message = "Unauthorized access." });
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found." });
+            }
+
+            user.FirstName = model.FirstName ?? user.FirstName;
+            user.LastName = model.LastName ?? user.LastName;
+            user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
+            user.Address = model.Address ?? user.Address;
+
+            try
+            {
+                var result = await _userRepository.UpdateUserAsync(user);
+                if (!result.Succeeded)
+                {
+                    return StatusCode(500, new { Message = "Failed to update user information." });
+                }
+
+                return Ok(new { Message = "User information updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+            }
+        }
+
+        [HttpGet("getuser")]
+        [Authorize]
+        public async Task<IActionResult> GetUser()
+        {
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized(new { Message = "Unauthorized access." });
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found." });
+            }
+
+            var userDto = new
+            {
+                user.FirstName,
+                user.LastName,
+                user.PhoneNumber,
+                user.Address
+            };
+
+            return Ok(userDto);
+        }
+
     }
 }
