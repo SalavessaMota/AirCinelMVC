@@ -94,6 +94,10 @@ namespace AirCinelMVC.Controllers.API
 
                         return this.Created(string.Empty, results);
                     }
+                    else
+                    {
+                       return this.BadRequest("Invalid login.");
+                    }
                 }
             }
 
@@ -175,15 +179,88 @@ namespace AirCinelMVC.Controllers.API
 
             if (!result.Succeeded)
             {
-                return BadRequest(new { Message = "Error changing password." });
+                return BadRequest(new { Message = "Error changing password. Make sure your password is strong enough." });
             }
 
             return Ok(new { Message = "Password changed successfully." });
         }
 
-        [HttpPost("register")]
+        //[HttpPost("register")]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> RegisterAPI([FromBody] RegisterDto model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    var user = await _userRepository.GetUserByEmailAsync(model.Username);
+        //    if (user != null)
+        //    {
+        //        return BadRequest(new { Message = "The email is already registered." });
+        //    }
+
+        //    var city = await _countryRepository.GetCityAsync(model.CityId);
+        //    if (city == null)
+        //    {
+        //        return BadRequest(new { Message = "Invalid city selected." });
+        //    }
+
+        //    user = new User
+        //    {
+        //        FirstName = model.FirstName,
+        //        LastName = model.LastName,
+        //        Email = model.Username,
+        //        UserName = model.Username,
+        //        Address = model.Address,
+        //        PhoneNumber = model.PhoneNumber,
+        //        CityId = model.CityId,
+        //        ImageId = model.ImageId
+        //    };
+
+        //    if (model.ImageId != Guid.Empty)
+        //    {
+        //        var imageId = await _blobHelper.VerifyAndUploadImageAsync(model.ImageId, "users");
+        //        user.ImageId = imageId; 
+        //    }
+
+        //    var result = await _userRepository.AddUserAsync(user, model.Password);
+        //    if (result != IdentityResult.Success)
+        //    {
+        //        return BadRequest(new { Message = "The user couldn't be created.", Errors = result.Errors });
+        //    }
+
+        //    await _userHelper.AddUserToRoleAsync(user, "Customer");
+        //    string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+
+        //    string tokenLink = Url.Action("ConfirmEmail", "Account", new
+        //    {
+        //        userid = user.Id,
+        //        token = myToken
+        //    }, protocol: HttpContext.Request.Scheme);
+
+        //    var response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
+        //        $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
+        //        $"<p>Thank you for choosing AirCinel, your trusted airline for premium travel experiences.</p>" +
+        //        $"<p>To complete your registration, please confirm your email address by clicking the link below:</p>" +
+        //        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+        //        $"<p>If you didn’t create this account, please disregard this email.</p><br>" +
+        //        $"<p>Safe travels,</p>" +
+        //        $"<p>The AirCinel Team</p>" +
+        //        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>"
+        //    );
+
+        //    if (!response.IsSuccess)
+        //    {
+        //        return StatusCode(500, "The registration email couldn't be sent.");
+        //    }
+
+        //    return Ok(new { Message = "User registered successfully. Please confirm your email." });
+        //}
+
+        [HttpPost("registerWithImage")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterAPI([FromBody] RegisterDto model)
+        public async Task<IActionResult> RegisterWithImage([FromForm] RegisterDto model)
         {
             if (!ModelState.IsValid)
             {
@@ -202,6 +279,7 @@ namespace AirCinelMVC.Controllers.API
                 return BadRequest(new { Message = "Invalid city selected." });
             }
 
+            // Criar o novo utilizador
             user = new User
             {
                 FirstName = model.FirstName,
@@ -210,23 +288,34 @@ namespace AirCinelMVC.Controllers.API
                 UserName = model.Username,
                 Address = model.Address,
                 PhoneNumber = model.PhoneNumber,
-                CityId = model.CityId,
-                ImageId = model.ImageId
+                CityId = model.CityId
             };
 
-            if (model.ImageId != Guid.Empty)
+            // Upload da imagem, se fornecida
+            if (model.ImageFile != null)
             {
-                var imageId = await _blobHelper.VerifyAndUploadImageAsync(model.ImageId, "users");
-                user.ImageId = imageId; 
+                try
+                {
+                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                    user.ImageId = imageId;
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { Message = $"Error uploading image: {ex.Message}" });
+                }
             }
 
+            // Adicionar o utilizador
             var result = await _userRepository.AddUserAsync(user, model.Password);
             if (result != IdentityResult.Success)
             {
                 return BadRequest(new { Message = "The user couldn't be created.", Errors = result.Errors });
             }
 
+            // Atribuir o role ao utilizador
             await _userHelper.AddUserToRoleAsync(user, "Customer");
+
+            // Gerar token de confirmação de email
             string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
             string tokenLink = Url.Action("ConfirmEmail", "Account", new
@@ -237,13 +326,8 @@ namespace AirCinelMVC.Controllers.API
 
             var response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
                 $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
-                $"<p>Thank you for choosing AirCinel, your trusted airline for premium travel experiences.</p>" +
                 $"<p>To complete your registration, please confirm your email address by clicking the link below:</p>" +
-                $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
-                $"<p>If you didn’t create this account, please disregard this email.</p><br>" +
-                $"<p>Safe travels,</p>" +
-                $"<p>The AirCinel Team</p>" +
-                $"<p><small>This is an automated message. Please do not reply to this email.</small></p>"
+                $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>"
             );
 
             if (!response.IsSuccess)
@@ -253,6 +337,7 @@ namespace AirCinelMVC.Controllers.API
 
             return Ok(new { Message = "User registered successfully. Please confirm your email." });
         }
+
 
 
         [HttpPost("uploadImage")]

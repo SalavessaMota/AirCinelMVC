@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace AirCinelMVC.Data.Dtos
@@ -25,15 +26,20 @@ namespace AirCinelMVC.Data.Dtos
         [DataType(DataType.EmailAddress)]
         public string Username { get; set; }
 
-        [Required]
-        [MinLength(6)]
+        [Required(ErrorMessage = "The password is required.")]
+        [DataType(DataType.Password)]
+        [MinLength(8, ErrorMessage = "The password must be at least 8 characters long.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+            ErrorMessage = "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.")]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password")]
+        [Required(ErrorMessage = "Please confirm your password.")]
+        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        public Guid ImageId { get; set; }
+
+        public IFormFile? ImageFile { get; set; } // Para o upload da imagem
 
     }
 }
